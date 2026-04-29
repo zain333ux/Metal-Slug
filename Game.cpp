@@ -1,0 +1,82 @@
+#include "Game.h"
+
+#include "Constants.h"
+#include "Level.h"
+#include "PlayState.h"
+
+Game::Game()
+	: window(sf::VideoMode(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT), "Metal Slug OOP", sf::Style::Close)
+{
+	running = false;
+}
+
+void Game::initialize()
+{
+	window.setVerticalSyncEnabled(true);
+	window.setFramerateLimit(Constants::FRAME_LIMIT);
+
+	levelManager.loadLevel(new Level());
+	gameStateManager.changeState(new PlayState());
+	running = true;
+}
+
+void Game::run()
+{
+	initialize();
+
+	sf::Clock clock;
+	while (running && window.isOpen())
+	{
+		float deltaTime = clock.restart().asSeconds();
+		processEvents();
+		update(deltaTime);
+		render();
+	}
+}
+
+void Game::close()
+{
+	running = false;
+	window.close();
+}
+
+void Game::processEvents()
+{
+	sf::Event event;
+	while (window.pollEvent(event))
+	{
+		if (event.type == sf::Event::Closed)
+		{
+			close();
+		}
+	}
+
+	gameStateManager.handleInput(*this);
+}
+
+void Game::update(float deltaTime)
+{
+	gameStateManager.update(*this, deltaTime);
+}
+
+void Game::render()
+{
+	window.clear(sf::Color(30, 35, 40));
+	gameStateManager.draw(*this, window);
+	window.display();
+}
+
+EntityManager& Game::getEntityManager()
+{
+	return entityManager;
+}
+
+LevelManager& Game::getLevelManager()
+{
+	return levelManager;
+}
+
+sf::RenderWindow& Game::getWindow()
+{
+	return window;
+}

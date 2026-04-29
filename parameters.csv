@@ -1,0 +1,261 @@
+parameter_id,category,parameter_name,value,weight,min_val,max_val,unit,data_type,description
+PSP_001,METADATA,profile_version,1.0,1.0,1.0,1.0,semver,string,Schema version for cross-device compatibility validation
+PSP_002,METADATA,player_alias,GhostMarcO,1.0,,,,string,Display name for ghost player label
+PSP_003,METADATA,session_count,47,1.0,1,9999,count,int,Number of sessions this profile was sampled over
+PSP_004,METADATA,total_playtime_minutes,382.5,1.0,0,99999,minutes,float,Total recorded playtime used to build this fingerprint
+PSP_005,METADATA,profile_checksum,0xA3F2,1.0,,,,hex_string,CRC32 checksum for file integrity validation on upload
+PSP_006,METADATA,capture_timestamp,1745001600,1.0,,,,unix_epoch,int,UNIX timestamp of when the profile was last exported
+PSP_007,METADATA,game_version,MS3_v1.04,1.0,,,,string,Game build this profile was recorded on
+PSP_008,MOVEMENT,base_walk_speed_ratio,0.74,0.82,0.0,1.0,ratio,float,Proportion of time player walks at full speed vs slowed
+PSP_009,MOVEMENT,run_engagement_threshold,0.61,0.78,0.0,1.0,ratio,float,Likelihood to run toward enemies rather than hold ground
+PSP_010,MOVEMENT,crouch_frequency,0.38,0.71,0.0,1.0,ratio,float,How often the player crouches during active combat
+PSP_011,MOVEMENT,crouch_duration_avg_ms,420.0,0.65,50.0,2000.0,ms,float,Average duration of a single crouch event
+PSP_012,MOVEMENT,jump_frequency,0.55,0.80,0.0,1.0,ratio,float,How often the player jumps per 10-second window
+PSP_013,MOVEMENT,jump_attack_ratio,0.42,0.76,0.0,1.0,ratio,float,Proportion of jumps that are accompanied by a shot or melee
+PSP_014,MOVEMENT,backpedal_tendency,0.29,0.73,0.0,1.0,ratio,float,Tendency to move backward while firing
+PSP_015,MOVEMENT,lateral_oscillation_rate,0.67,0.69,0.0,1.0,ratio,float,How often player side-steps repeatedly to dodge projectiles
+PSP_016,MOVEMENT,screen_edge_avoidance,0.55,0.60,0.0,1.0,ratio,float,Tendency to stay away from left and right screen edges
+PSP_017,MOVEMENT,vertical_layer_preference,0.44,0.58,0.0,1.0,ratio,float,0=prefers ground; 1=prefers elevated platforms
+PSP_018,MOVEMENT,prone_usage_ratio,0.12,0.55,0.0,1.0,ratio,float,How often player goes prone (down+crouch) during combat
+PSP_019,MOVEMENT,idle_duration_avg_ms,185.0,0.50,0.0,5000.0,ms,float,Average time player stays stationary mid-level
+PSP_020,MOVEMENT,direction_change_rate,3.2,0.72,0.0,20.0,changes/sec,float,How frequently movement direction changes per second
+PSP_021,MOVEMENT,stair_climb_speed_ratio,0.88,0.45,0.0,1.0,ratio,float,Proportion of max speed used while climbing stairs/ladders
+PSP_022,MOVEMENT,ladder_combat_ratio,0.18,0.62,0.0,1.0,ratio,float,How often player shoots while on a ladder
+PSP_023,MOVEMENT,forward_lean_aggression,0.63,0.77,0.0,1.0,ratio,float,Tendency to advance toward the right side of the screen
+PSP_024,MOVEMENT,retreat_trigger_health_pct,0.28,0.81,0.0,1.0,ratio,float,Health percentage at which player starts retreating
+PSP_025,MOVEMENT,terrain_hug_tendency,0.51,0.55,0.0,1.0,ratio,float,How often player moves along terrain contours vs open air jumps
+PSP_026,COMBAT_TIMING,shot_burst_length_avg,4.3,0.85,1.0,30.0,shots,float,Average number of shots fired in a single burst
+PSP_027,COMBAT_TIMING,burst_interval_avg_ms,310.0,0.83,50.0,2000.0,ms,float,Average pause between shot bursts
+PSP_028,COMBAT_TIMING,trigger_hold_ratio,0.71,0.80,0.0,1.0,ratio,float,Proportion of time trigger is held vs tapped
+PSP_029,COMBAT_TIMING,first_shot_reaction_ms,195.0,0.90,50.0,1500.0,ms,float,Reaction time from enemy spawn to first shot fired
+PSP_030,COMBAT_TIMING,grenade_throw_frequency,0.22,0.78,0.0,1.0,ratio,float,Grenade throws per 10-second window
+PSP_031,COMBAT_TIMING,grenade_aim_duration_ms,380.0,0.74,0.0,2000.0,ms,float,Average time spent aiming before throwing grenade
+PSP_032,COMBAT_TIMING,melee_frequency,0.14,0.72,0.0,1.0,ratio,float,How often knife/melee is used per 10-second window
+PSP_033,COMBAT_TIMING,melee_range_threshold_px,55.0,0.70,0.0,200.0,px,float,Pixel distance at which player switches to melee
+PSP_034,COMBAT_TIMING,shot_angle_diagonal_ratio,0.33,0.68,0.0,1.0,ratio,float,Proportion of shots fired at 45-degree angles
+PSP_035,COMBAT_TIMING,shot_angle_upward_ratio,0.27,0.65,0.0,1.0,ratio,float,Proportion of shots aimed upward
+PSP_036,COMBAT_TIMING,shot_angle_downward_ratio,0.19,0.60,0.0,1.0,ratio,float,Proportion of shots aimed downward
+PSP_037,COMBAT_TIMING,continuous_fire_duration_avg_ms,1250.0,0.79,0.0,10000.0,ms,float,Average duration of continuous fire events
+PSP_038,COMBAT_TIMING,reload_hesitation_ms,90.0,0.66,0.0,500.0,ms,float,Average delay after weapon runs out before switching
+PSP_039,COMBAT_TIMING,overkill_tendency,0.41,0.60,0.0,1.0,ratio,float,How often player continues firing after enemy is dead
+PSP_040,COMBAT_TIMING,preemptive_shot_ratio,0.55,0.75,0.0,1.0,ratio,float,Shots fired before enemy appears on screen (anticipatory)
+PSP_041,COMBAT_TIMING,grenade_vs_gun_preference,0.28,0.77,0.0,1.0,ratio,float,0=guns only; 1=grenades only
+PSP_042,COMBAT_TIMING,combo_action_interval_ms,120.0,0.82,50.0,1000.0,ms,float,Time between chained actions in a combat sequence
+PSP_043,COMBAT_TIMING,evasion_before_shot_ratio,0.36,0.71,0.0,1.0,ratio,float,How often player evades before returning fire
+PSP_044,COMBAT_TIMING,suppression_fire_ratio,0.48,0.68,0.0,1.0,ratio,float,Proportion of shots used to suppress rather than kill
+PSP_045,COMBAT_TIMING,shot_cadence_variance,0.31,0.64,0.0,1.0,ratio,float,Variance in timing between individual shots (0=metronome, 1=erratic)
+PSP_046,WEAPON_PREFERENCE,pistol_usage_ratio,0.18,0.75,0.0,1.0,ratio,float,Proportion of combat time spent using default pistol
+PSP_047,WEAPON_PREFERENCE,heavy_machine_gun_preference,0.82,0.88,0.0,1.0,ratio,float,Affinity for picking up and retaining the HMG
+PSP_048,WEAPON_PREFERENCE,rocket_launcher_preference,0.65,0.85,0.0,1.0,ratio,float,Affinity for the rocket launcher
+PSP_049,WEAPON_PREFERENCE,flame_shot_preference,0.44,0.80,0.0,1.0,ratio,float,Affinity for the flame thrower weapon
+PSP_050,WEAPON_PREFERENCE,laser_gun_preference,0.71,0.82,0.0,1.0,ratio,float,Affinity for the laser gun
+PSP_051,WEAPON_PREFERENCE,iron_lizard_preference,0.39,0.78,0.0,1.0,ratio,float,Affinity for the iron lizard
+PSP_052,WEAPON_PREFERENCE,super_grenade_preference,0.55,0.80,0.0,1.0,ratio,float,Affinity for the super grenade
+PSP_053,WEAPON_PREFERENCE,enemy_chaser_preference,0.47,0.77,0.0,1.0,ratio,float,Affinity for the enemy chaser homing weapon
+PSP_054,WEAPON_PREFERENCE,drop_weak_weapon_threshold,0.35,0.72,0.0,1.0,ratio,float,Ammo % at which player drops a weapon in favor of pickups
+PSP_055,WEAPON_PREFERENCE,weapon_switch_frequency,0.28,0.70,0.0,1.0,ratio,float,How often player switches weapons per minute
+PSP_056,WEAPON_PREFERENCE,conserve_ammo_tendency,0.61,0.74,0.0,1.0,ratio,float,Tendency to switch to pistol to conserve special ammo
+PSP_057,WEAPON_PREFERENCE,weapon_pickup_hesitation_ms,210.0,0.65,0.0,2000.0,ms,float,Average delay before picking up a weapon item
+PSP_058,WEAPON_PREFERENCE,short_range_weapon_bias,0.43,0.71,0.0,1.0,ratio,float,Preference for short range weapons when available
+PSP_059,WEAPON_PREFERENCE,area_weapon_bias,0.58,0.73,0.0,1.0,ratio,float,Preference for weapons with area-of-effect damage
+PSP_060,WEAPON_PREFERENCE,grenade_stock_conservation,0.52,0.69,0.0,1.0,ratio,float,How aggressively player conserves grenade count
+PSP_061,POSITIONING,center_screen_affinity,0.61,0.72,0.0,1.0,ratio,float,How often player stays in horizontal center of screen
+PSP_062,POSITIONING,spawn_proximity_comfort_px,140.0,0.68,0.0,500.0,px,float,Preferred distance from enemy spawn points
+PSP_063,POSITIONING,high_ground_preference,0.55,0.74,0.0,1.0,ratio,float,How often player seeks elevated terrain
+PSP_064,POSITIONING,cover_usage_ratio,0.38,0.77,0.0,1.0,ratio,float,How often player uses terrain as cover
+PSP_065,POSITIONING,clustered_enemy_approach,0.44,0.71,0.0,1.0,ratio,float,0=avoids groups; 1=charges groups
+PSP_066,POSITIONING,right_side_advance_bias,0.68,0.79,0.0,1.0,ratio,float,Tendency to advance on the right side of the screen
+PSP_067,POSITIONING,boss_distance_preference_px,185.0,0.85,50.0,600.0,px,float,Preferred fighting distance from boss entities
+PSP_068,POSITIONING,wall_hugging_tendency,0.29,0.60,0.0,1.0,ratio,float,How often player stays near a wall or screen boundary
+PSP_069,POSITIONING,safe_zone_retreat_ratio,0.33,0.70,0.0,1.0,ratio,float,How often player retreats to a learned safe zone
+PSP_070,POSITIONING,vertical_jump_aim_ratio,0.47,0.72,0.0,1.0,ratio,float,Proportion of vertical movement used to acquire aim angle
+PSP_071,POSITIONING,patrol_range_px,310.0,0.65,0.0,1000.0,px,float,Average horizontal range player moves within per room
+PSP_072,POSITIONING,choke_point_camping_ratio,0.24,0.64,0.0,1.0,ratio,float,Tendency to wait at narrow passages for enemies
+PSP_073,POSITIONING,vehicle_board_eagerness,0.78,0.80,0.0,1.0,ratio,float,How quickly player boards available vehicles
+PSP_074,POSITIONING,hostage_proximity_approach,0.62,0.66,0.0,1.0,ratio,float,How close player moves to hostages before rescuing
+PSP_075,POSITIONING,aerial_combat_ratio,0.31,0.73,0.0,1.0,ratio,float,Proportion of combat occurring while airborne
+PSP_076,ENEMY_ENGAGEMENT,small_soldier_priority,0.52,0.72,0.0,1.0,ratio,float,Priority assigned to regular foot soldiers
+PSP_077,ENEMY_ENGAGEMENT,heavy_soldier_priority,0.78,0.80,0.0,1.0,ratio,float,Priority assigned to heavy armored soldiers
+PSP_078,ENEMY_ENGAGEMENT,tank_priority,0.88,0.85,0.0,1.0,ratio,float,Priority assigned to enemy tank units
+PSP_079,ENEMY_ENGAGEMENT,aircraft_priority,0.71,0.82,0.0,1.0,ratio,float,Priority assigned to aerial enemies
+PSP_080,ENEMY_ENGAGEMENT,projectile_source_priority,0.91,0.88,0.0,1.0,ratio,float,Priority to eliminate enemies firing projectiles first
+PSP_081,ENEMY_ENGAGEMENT,nearest_enemy_targeting,0.65,0.76,0.0,1.0,ratio,float,How often player targets the nearest enemy
+PSP_082,ENEMY_ENGAGEMENT,highest_threat_targeting,0.74,0.80,0.0,1.0,ratio,float,How often player targets the highest-damage enemy
+PSP_083,ENEMY_ENGAGEMENT,group_clear_tendency,0.58,0.74,0.0,1.0,ratio,float,Preference for clearing all enemies before advancing
+PSP_084,ENEMY_ENGAGEMENT,skip_minor_enemy_ratio,0.22,0.68,0.0,1.0,ratio,float,How often player ignores minor enemies to advance
+PSP_085,ENEMY_ENGAGEMENT,ambush_response_time_ms,240.0,0.88,50.0,2000.0,ms,float,Reaction time to enemies appearing from behind
+PSP_086,ENEMY_ENGAGEMENT,flanking_attempt_ratio,0.35,0.72,0.0,1.0,ratio,float,How often player attempts to flank enemy positions
+PSP_087,ENEMY_ENGAGEMENT,aggressive_pursuit_ratio,0.61,0.78,0.0,1.0,ratio,float,How often player chases retreating enemies
+PSP_088,ENEMY_ENGAGEMENT,enemy_pattern_adaptation_rate,0.54,0.82,0.0,1.0,ratio,float,How quickly player adapts to enemy attack patterns (0=slow, 1=fast)
+PSP_089,ENEMY_ENGAGEMENT,zombie_enemy_handling,0.43,0.70,0.0,1.0,ratio,float,0=avoids zombies; 1=engages directly
+PSP_090,ENEMY_ENGAGEMENT,underwater_enemy_comfort,0.38,0.65,0.0,1.0,ratio,float,Combat effectiveness comfort in underwater sections
+PSP_091,ENEMY_ENGAGEMENT,boss_phase_recognition_speed,0.67,0.85,0.0,1.0,ratio,float,How quickly player identifies boss phase transitions
+PSP_092,ENEMY_ENGAGEMENT,multi_target_spread_ratio,0.44,0.74,0.0,1.0,ratio,float,Tendency to spread fire across multiple targets vs focus
+PSP_093,ENEMY_ENGAGEMENT,corpse_avoidance_ratio,0.19,0.50,0.0,1.0,ratio,float,How often player avoids walking over enemy corpses
+PSP_094,ENEMY_ENGAGEMENT,enemy_projectile_memorization,0.72,0.80,0.0,1.0,ratio,float,Degree to which player anticipates known projectile patterns
+PSP_095,ENEMY_ENGAGEMENT,turret_engagement_priority,0.84,0.82,0.0,1.0,ratio,float,Priority assigned to destroying enemy turrets
+PSP_096,RESOURCE_MANAGEMENT,grenade_entry_usage_ratio,0.45,0.76,0.0,1.0,ratio,float,How often grenades are used at room entry
+PSP_097,RESOURCE_MANAGEMENT,grenade_boss_reservation_ratio,0.62,0.82,0.0,1.0,ratio,float,Proportion of grenades reserved specifically for boss fights
+PSP_098,RESOURCE_MANAGEMENT,ammo_pickup_priority,0.88,0.78,0.0,1.0,ratio,float,How aggressively player seeks ammo pickups
+PSP_099,RESOURCE_MANAGEMENT,health_pickup_timing,0.71,0.80,0.0,1.0,ratio,float,0=picks up health immediately; 1=waits for critical health
+PSP_100,RESOURCE_MANAGEMENT,food_item_collection_ratio,0.55,0.68,0.0,1.0,ratio,float,Proportion of food/health items collected vs ignored
+PSP_101,RESOURCE_MANAGEMENT,score_item_priority,0.39,0.55,0.0,1.0,ratio,float,How much player prioritizes score items over safety
+PSP_102,RESOURCE_MANAGEMENT,vehicle_fuel_conservation,0.47,0.70,0.0,1.0,ratio,float,How efficiently player manages vehicle durability
+PSP_103,RESOURCE_MANAGEMENT,slug_exit_timing_ratio,0.58,0.74,0.0,1.0,ratio,float,0=stays in slug until destroyed; 1=exits before damage
+PSP_104,RESOURCE_MANAGEMENT,grenade_lob_arc_preference,0.52,0.66,0.0,1.0,ratio,float,0=flat throw; 1=high arc throw
+PSP_105,RESOURCE_MANAGEMENT,item_box_detection_ratio,0.76,0.71,0.0,1.0,ratio,float,How often player finds and opens hidden item boxes
+PSP_106,RESOURCE_MANAGEMENT,life_risk_for_items_ratio,0.28,0.64,0.0,1.0,ratio,float,How often player risks death to collect a pickup
+PSP_107,RESOURCE_MANAGEMENT,ammo_low_threshold_ratio,0.22,0.72,0.0,1.0,ratio,float,Ammo % at which behavior changes to conserve fire
+PSP_108,RESOURCE_MANAGEMENT,continue_usage_threshold,0.15,0.80,0.0,1.0,ratio,float,Health ratio at which player accepts death vs fights on
+PSP_109,RESOURCE_MANAGEMENT,prisoner_bonus_awareness,0.81,0.66,0.0,1.0,ratio,float,How consistently player rescues prisoners for bonuses
+PSP_110,RESOURCE_MANAGEMENT,weapon_cache_route_bias,0.64,0.69,0.0,1.0,ratio,float,How often player takes routes with weapon caches
+PSP_111,VEHICLE_USAGE,metal_slug_boarding_speed_ms,320.0,0.82,100.0,2000.0,ms,float,Time from vehicle appearance to boarding
+PSP_112,VEHICLE_USAGE,slug_cannon_fire_rate,0.77,0.80,0.0,1.0,ratio,float,How frequently slug cannon is fired vs machine gun
+PSP_113,VEHICLE_USAGE,vehicle_melee_usage_ratio,0.33,0.68,0.0,1.0,ratio,float,How often vehicle stomp/melee attack is used
+PSP_114,VEHICLE_USAGE,vehicle_retreat_tendency,0.41,0.72,0.0,1.0,ratio,float,How often player retreats in a vehicle vs advances
+PSP_115,VEHICLE_USAGE,dismount_under_fire_ratio,0.24,0.74,0.0,1.0,ratio,float,Tendency to dismount vehicle when taking heavy fire
+PSP_116,VEHICLE_USAGE,camel_slug_preference,0.48,0.65,0.0,1.0,ratio,float,Preference for using camel slug when available
+PSP_117,VEHICLE_USAGE,ostrich_slug_preference,0.52,0.65,0.0,1.0,ratio,float,Preference for using ostrich slug when available
+PSP_118,VEHICLE_USAGE,submarine_slug_comfort,0.44,0.70,0.0,1.0,ratio,float,Combat effectiveness comfort in submarine sections
+PSP_119,VEHICLE_USAGE,vehicle_ram_tendency,0.35,0.68,0.0,1.0,ratio,float,How often player uses vehicle to ram enemies directly
+PSP_120,VEHICLE_USAGE,vehicle_use_duration_avg_ms,8400.0,0.75,0.0,60000.0,ms,float,Average time spent inside a vehicle per session
+PSP_121,HOSTAGE_BEHAVIOR,rescue_speed_ms,410.0,0.72,100.0,3000.0,ms,float,Average time from hostage sighting to rescue
+PSP_122,HOSTAGE_BEHAVIOR,rescue_route_deviation_ratio,0.63,0.70,0.0,1.0,ratio,float,How far player deviates from main path to rescue hostages
+PSP_123,HOSTAGE_BEHAVIOR,hostage_clear_first_ratio,0.55,0.68,0.0,1.0,ratio,float,How often player clears enemies before approaching hostages
+PSP_124,HOSTAGE_BEHAVIOR,missed_prisoner_ratio,0.14,0.75,0.0,1.0,ratio,float,Average ratio of missed hostages per stage
+PSP_125,HOSTAGE_BEHAVIOR,prisoner_follow_exploitation,0.47,0.62,0.0,1.0,ratio,float,How often player uses prisoner weapons effectively
+PSP_126,REACTION_PATTERN,dodge_roll_reaction_ms,160.0,0.90,50.0,800.0,ms,float,Reaction time from projectile detection to dodge
+PSP_127,REACTION_PATTERN,jump_evade_frequency,0.58,0.85,0.0,1.0,ratio,float,How often jump is used as evasion vs combat
+PSP_128,REACTION_PATTERN,crouch_dodge_frequency,0.42,0.82,0.0,1.0,ratio,float,How often crouch is used to dodge incoming fire
+PSP_129,REACTION_PATTERN,pattern_memorization_depth,0.69,0.84,0.0,1.0,ratio,float,How deeply player memorizes and exploits enemy patterns
+PSP_130,REACTION_PATTERN,panic_fire_tendency,0.31,0.76,0.0,1.0,ratio,float,Tendency to spray fire uncontrolled when health is critical
+PSP_131,REACTION_PATTERN,screen_scroll_anticipation,0.62,0.78,0.0,1.0,ratio,float,How often player prepares for enemies before scroll reveals them
+PSP_132,REACTION_PATTERN,audio_cue_responsiveness,0.71,0.80,0.0,1.0,ratio,float,Response rate to audio cues vs visual cues
+PSP_133,REACTION_PATTERN,environmental_hazard_avoidance,0.77,0.82,0.0,1.0,ratio,float,Accuracy of avoiding environmental hazards (fire, falls)
+PSP_134,REACTION_PATTERN,multi_threat_prioritization_speed_ms,280.0,0.86,100.0,1500.0,ms,float,Speed at which player re-prioritizes when multiple threats appear
+PSP_135,REACTION_PATTERN,death_animation_interrupt_ratio,0.22,0.60,0.0,1.0,ratio,float,How often player fires during personal death animation
+PSP_136,RISK_TOLERANCE,health_aggression_correlation,0.48,0.82,0.0,1.0,ratio,float,How much health loss changes aggression (0=no change, 1=full retreat)
+PSP_137,RISK_TOLERANCE,low_health_play_change_ratio,0.55,0.80,0.0,1.0,ratio,float,Degree of behavior change at critical health
+PSP_138,RISK_TOLERANCE,grenade_self_blast_tolerance,0.29,0.72,0.0,1.0,ratio,float,Willingness to be caught in own grenade blast for kills
+PSP_139,RISK_TOLERANCE,aggressive_entry_ratio,0.61,0.78,0.0,1.0,ratio,float,How often player charges into new rooms without scouting
+PSP_140,RISK_TOLERANCE,risky_pickup_ratio,0.38,0.74,0.0,1.0,ratio,float,How often player risks taking damage to collect items
+PSP_141,RISK_TOLERANCE,cliff_edge_comfort,0.52,0.66,0.0,1.0,ratio,float,Comfort level fighting at screen/platform edges
+PSP_142,RISK_TOLERANCE,tank_engagement_willingness,0.74,0.80,0.0,1.0,ratio,float,Willingness to engage armored vehicles without power weapon
+PSP_143,RISK_TOLERANCE,death_count_tolerance,0.44,0.68,0.0,1.0,ratio,float,How many deaths occur before player changes strategy
+PSP_144,RISK_TOLERANCE,boss_rush_tendency,0.57,0.76,0.0,1.0,ratio,float,How often player charges boss directly vs safe distance
+PSP_145,RISK_TOLERANCE,stage_speed_run_bias,0.42,0.70,0.0,1.0,ratio,float,How much player optimizes for speed vs thorough clearing
+PSP_146,BOSS_STRATEGY,boss_pre_fight_grenade_dump,0.68,0.84,0.0,1.0,ratio,float,How often player dumps grenades at boss fight start
+PSP_147,BOSS_STRATEGY,boss_phase_1_aggression,0.72,0.82,0.0,1.0,ratio,float,Aggression level during boss phase 1
+PSP_148,BOSS_STRATEGY,boss_phase_2_aggression,0.58,0.84,0.0,1.0,ratio,float,Aggression level during boss phase 2 (usually harder)
+PSP_149,BOSS_STRATEGY,boss_safe_spot_exploitation,0.81,0.86,0.0,1.0,ratio,float,How often player exploits known boss safe spots
+PSP_150,BOSS_STRATEGY,boss_dps_over_safety_ratio,0.54,0.80,0.0,1.0,ratio,float,0=prioritizes survival; 1=prioritizes damage output
+PSP_151,BOSS_STRATEGY,boss_weapon_choice_optimality,0.76,0.82,0.0,1.0,ratio,float,How well player selects optimal weapon for each boss
+PSP_152,BOSS_STRATEGY,boss_pattern_loop_exploitation,0.70,0.84,0.0,1.0,ratio,float,How often player exploits pattern loops in boss AI
+PSP_153,BOSS_STRATEGY,boss_stagger_followup_speed_ms,180.0,0.88,50.0,1000.0,ms,float,Speed of follow-up attack after boss stagger
+PSP_154,BOSS_STRATEGY,final_boss_grenade_reserve,0.74,0.82,0.0,1.0,ratio,float,Proportion of grenades saved specifically for final boss
+PSP_155,BOSS_STRATEGY,boss_retreat_frequency,0.36,0.78,0.0,1.0,ratio,float,How often player retreats to reset during boss fights
+PSP_156,EVASION,roll_direction_bias,0.55,0.72,0.0,1.0,ratio,float,0=always rolls left; 1=always rolls right
+PSP_157,EVASION,jump_arc_height_preference,0.61,0.74,0.0,1.0,ratio,float,0=prefers low jumps; 1=prefers max height jumps
+PSP_158,EVASION,ground_dodge_preference,0.44,0.72,0.0,1.0,ratio,float,Preference for ground evasion vs aerial evasion
+PSP_159,EVASION,double_back_tendency,0.32,0.68,0.0,1.0,ratio,float,How often player reverses direction to evade
+PSP_160,EVASION,slide_under_projectile_ratio,0.48,0.74,0.0,1.0,ratio,float,How often player crouches to slide under projectiles
+PSP_161,EVASION,vertical_evasion_ratio,0.53,0.76,0.0,1.0,ratio,float,How often player uses vertical movement to evade
+PSP_162,EVASION,projectile_reading_accuracy,0.69,0.82,0.0,1.0,ratio,float,Accuracy of predicting and dodging enemy projectiles
+PSP_163,EVASION,evasion_lag_ms,145.0,0.85,0.0,600.0,ms,float,Delay between dodge decision and movement execution
+PSP_164,EVASION,multi_dodge_chain_ratio,0.41,0.76,0.0,1.0,ratio,float,How often player chains multiple evasive moves together
+PSP_165,EVASION,attack_during_evasion_ratio,0.37,0.74,0.0,1.0,ratio,float,How often player fires while performing evasive maneuvers
+PSP_166,COMBO_STYLE,action_chain_avg_length,3.8,0.80,1.0,10.0,actions,float,Average number of actions in a chained combo
+PSP_167,COMBO_STYLE,move_attack_blend_ratio,0.58,0.78,0.0,1.0,ratio,float,How often movement and attack actions are simultaneously executed
+PSP_168,COMBO_STYLE,grenade_gun_combo_ratio,0.34,0.76,0.0,1.0,ratio,float,How often grenade throw is followed immediately by gunfire
+PSP_169,COMBO_STYLE,jump_shoot_land_combo_ratio,0.47,0.78,0.0,1.0,ratio,float,How often jump attack is followed by immediate landing shot
+PSP_170,COMBO_STYLE,melee_followup_shot_ratio,0.28,0.72,0.0,1.0,ratio,float,How often melee attack is followed by a shot
+PSP_171,COMBO_STYLE,stutter_step_ratio,0.52,0.74,0.0,1.0,ratio,float,How often player alternates between moving and shooting
+PSP_172,COMBO_STYLE,combo_reset_trigger_ratio,0.39,0.68,0.0,1.0,ratio,float,How often player resets combo chains mid-sequence
+PSP_173,COMBO_STYLE,environment_combo_usage,0.31,0.65,0.0,1.0,ratio,float,How often environmental objects are included in combos
+PSP_174,COMBO_STYLE,rapid_action_window_ms,80.0,0.82,20.0,300.0,ms,float,Time window in which actions are considered part of same combo
+PSP_175,COMBO_STYLE,combo_consistency_ratio,0.66,0.76,0.0,1.0,ratio,float,How consistently the same combo patterns are repeated
+PSP_176,TERRAIN_USAGE,platform_jump_precision,0.74,0.78,0.0,1.0,ratio,float,Jump accuracy on precise platform sections
+PSP_177,TERRAIN_USAGE,destructible_terrain_usage,0.48,0.70,0.0,1.0,ratio,float,How often player destroys terrain for tactical advantage
+PSP_178,TERRAIN_USAGE,underground_section_comfort,0.62,0.68,0.0,1.0,ratio,float,Combat effectiveness in underground sections
+PSP_179,TERRAIN_USAGE,slope_combat_usage,0.41,0.66,0.0,1.0,ratio,float,How often player fights on sloped terrain intentionally
+PSP_180,TERRAIN_USAGE,water_section_combat_ratio,0.55,0.70,0.0,1.0,ratio,float,Combat activity during water/underwater sections
+PSP_181,TERRAIN_USAGE,vertical_section_preference,0.49,0.68,0.0,1.0,ratio,float,Preference for vertical sections over horizontal
+PSP_182,TERRAIN_USAGE,shortcut_usage_ratio,0.37,0.65,0.0,1.0,ratio,float,How often player uses known terrain shortcuts
+PSP_183,TERRAIN_USAGE,narrow_passage_tactics,0.58,0.70,0.0,1.0,ratio,float,Tactical adjustment in narrow passages (0=no change, 1=full change)
+PSP_184,TERRAIN_USAGE,rooftop_combat_ratio,0.33,0.64,0.0,1.0,ratio,float,Proportion of combat occurring on elevated surfaces
+PSP_185,TERRAIN_USAGE,terrain_reading_speed_ms,350.0,0.72,100.0,2000.0,ms,float,Speed at which player identifies safe terrain routes
+PSP_186,DEATH_RESPONSE,respawn_aggression_level,0.58,0.76,0.0,1.0,ratio,float,Aggression level immediately after respawn
+PSP_187,DEATH_RESPONSE,death_cause_adaptation_ratio,0.65,0.80,0.0,1.0,ratio,float,How likely player is to change behavior after dying to same cause
+PSP_188,DEATH_RESPONSE,respawn_position_preference,0.44,0.68,0.0,1.0,ratio,float,0=stays at spawn; 1=immediately advances
+PSP_189,DEATH_RESPONSE,death_tilt_duration_ms,4200.0,0.72,0.0,30000.0,ms,float,Duration of impaired play after a death event
+PSP_190,DEATH_RESPONSE,consecutive_death_retreat_ratio,0.52,0.74,0.0,1.0,ratio,float,How much player retreats after two consecutive deaths
+PSP_191,DEATH_RESPONSE,last_life_behavior_change,0.71,0.82,0.0,1.0,ratio,float,Degree of behavior change on final life (0=none, 1=extreme caution)
+PSP_192,DEATH_RESPONSE,revenge_aggression_spike,0.48,0.70,0.0,1.0,ratio,float,Aggression spike after dying to a specific enemy
+PSP_193,DEATH_RESPONSE,death_zone_avoidance_ratio,0.67,0.76,0.0,1.0,ratio,float,How reliably player avoids zones where they previously died
+PSP_194,SESSION_RHYTHM,stage_opening_aggression,0.69,0.78,0.0,1.0,ratio,float,Aggression level at the start of each stage
+PSP_195,SESSION_RHYTHM,mid_stage_energy_dip,0.38,0.70,0.0,1.0,ratio,float,Tendency for activity to drop in mid-stage sections
+PSP_196,SESSION_RHYTHM,stage_final_push_ratio,0.74,0.76,0.0,1.0,ratio,float,Increase in aggression when near end of stage
+PSP_197,SESSION_RHYTHM,rest_interval_avg_ms,220.0,0.64,0.0,5000.0,ms,float,Average pause duration between active combat engagements
+PSP_198,SESSION_RHYTHM,consistency_across_stages,0.61,0.72,0.0,1.0,ratio,float,How consistently player applies same strategy across stages
+PSP_199,SESSION_RHYTHM,learning_rate_intra_session,0.54,0.78,0.0,1.0,ratio,float,How much strategy improves within a single play session
+PSP_200,SESSION_RHYTHM,fatigue_degradation_ratio,0.29,0.68,0.0,1.0,ratio,float,Performance drop over time in a session (0=none, 1=severe)
+PSP_201,MOVEMENT,input_hold_vs_tap_ratio,0.62,0.74,0.0,1.0,ratio,float,Ratio of held directional inputs vs tapped inputs
+PSP_202,MOVEMENT,turn_around_frequency,2.1,0.66,0.0,15.0,turns/min,float,How often player reverses facing direction per minute
+PSP_203,MOVEMENT,diagonal_movement_ratio,0.44,0.70,0.0,1.0,ratio,float,How often player moves diagonally vs in cardinal directions
+PSP_204,MOVEMENT,air_time_per_jump_ms,380.0,0.68,100.0,1200.0,ms,float,Average duration of airborne phase per jump
+PSP_205,MOVEMENT,stop_before_shoot_ratio,0.47,0.72,0.0,1.0,ratio,float,How often player stops moving before firing
+PSP_206,COMBAT_TIMING,shot_tracking_accuracy,0.71,0.84,0.0,1.0,ratio,float,Accuracy of tracking moving targets with fire
+PSP_207,COMBAT_TIMING,lead_shot_tendency,0.58,0.78,0.0,1.0,ratio,float,How often player leads moving targets (fires ahead of movement)
+PSP_208,COMBAT_TIMING,area_denial_shot_ratio,0.36,0.70,0.0,1.0,ratio,float,How often player fires at locations before enemies reach them
+PSP_209,COMBAT_TIMING,burst_fire_preferred_over_full_auto,0.61,0.74,0.0,1.0,ratio,float,Preference for burst fire over continuous fire
+PSP_210,COMBAT_TIMING,hip_fire_ratio,0.52,0.68,0.0,1.0,ratio,float,Ratio of fire while moving vs stationary
+PSP_211,WEAPON_PREFERENCE,dual_weapon_management,0.44,0.72,0.0,1.0,ratio,float,How effectively player manages two-weapon situations
+PSP_212,WEAPON_PREFERENCE,incendiary_preference,0.49,0.74,0.0,1.0,ratio,float,Preference for fire-based weapons overall
+PSP_213,WEAPON_PREFERENCE,explosive_preference,0.67,0.76,0.0,1.0,ratio,float,Preference for explosive weapons overall
+PSP_214,WEAPON_PREFERENCE,precision_weapon_preference,0.41,0.72,0.0,1.0,ratio,float,Preference for precision/single-shot weapons
+PSP_215,WEAPON_PREFERENCE,spray_weapon_preference,0.58,0.72,0.0,1.0,ratio,float,Preference for high-spread spray weapons
+PSP_216,POSITIONING,off_center_fight_ratio,0.38,0.66,0.0,1.0,ratio,float,How often player fights from off-center screen positions
+PSP_217,POSITIONING,enemy_sandwich_avoidance,0.72,0.80,0.0,1.0,ratio,float,How well player avoids being surrounded on both sides
+PSP_218,POSITIONING,vertical_spread_combat_ratio,0.44,0.68,0.0,1.0,ratio,float,How often player uses full vertical space during combat
+PSP_219,POSITIONING,bottleneck_creation_tendency,0.31,0.64,0.0,1.0,ratio,float,Tendency to funnel enemies into narrow choke points
+PSP_220,POSITIONING,spawn_camp_tendency,0.18,0.58,0.0,1.0,ratio,float,How often player camps at or near enemy spawn points
+PSP_221,ENEMY_ENGAGEMENT,threat_stack_ranking_variance,0.48,0.76,0.0,1.0,ratio,float,Consistency of target prioritization order
+PSP_222,ENEMY_ENGAGEMENT,paratrooper_handling_speed_ms,320.0,0.80,100.0,2000.0,ms,float,Response speed to paratrooper drops
+PSP_223,ENEMY_ENGAGEMENT,masked_soldier_caution,0.59,0.74,0.0,1.0,ratio,float,Increased caution when engaging masked/shielded soldiers
+PSP_224,ENEMY_ENGAGEMENT,sniper_threat_awareness,0.76,0.84,0.0,1.0,ratio,float,Ability to identify and eliminate sniper threats quickly
+PSP_225,ENEMY_ENGAGEMENT,flamethrower_enemy_priority,0.82,0.82,0.0,1.0,ratio,float,Priority assigned to enemy flamethrower units
+PSP_226,RESOURCE_MANAGEMENT,bonus_score_route_ratio,0.44,0.66,0.0,1.0,ratio,float,How often player takes bonus-score item routes
+PSP_227,RESOURCE_MANAGEMENT,medical_kit_save_ratio,0.58,0.74,0.0,1.0,ratio,float,How often player saves medkits for boss fights
+PSP_228,RESOURCE_MANAGEMENT,power_grenade_conservation,0.67,0.78,0.0,1.0,ratio,float,How well player conserves super grenades vs regular
+PSP_229,RESOURCE_MANAGEMENT,slug_ammo_efficiency,0.72,0.76,0.0,1.0,ratio,float,Efficiency of slug weapon ammo usage
+PSP_230,RESOURCE_MANAGEMENT,prisoner_weapon_retention,0.55,0.70,0.0,1.0,ratio,float,How long player keeps prisoner-given weapons active
+PSP_231,VEHICLE_USAGE,slug_cannon_aim_precision,0.69,0.80,0.0,1.0,ratio,float,Accuracy of slug cannon shots
+PSP_232,VEHICLE_USAGE,vehicle_used_as_shield_ratio,0.42,0.70,0.0,1.0,ratio,float,How often vehicle is intentionally used to absorb damage
+PSP_233,VEHICLE_USAGE,dismount_combat_transition_ms,290.0,0.76,100.0,1500.0,ms,float,Speed of combat readiness after dismounting vehicle
+PSP_234,VEHICLE_USAGE,vehicle_stomp_chain_ratio,0.34,0.68,0.0,1.0,ratio,float,How often vehicle stomp is chained multiple times
+PSP_235,BOSS_STRATEGY,boss_entry_item_dump_ratio,0.61,0.80,0.0,1.0,ratio,float,How often all power items are used at boss room entry
+PSP_236,BOSS_STRATEGY,boss_tracking_continuity,0.74,0.82,0.0,1.0,ratio,float,How consistently player maintains tracking fire on boss
+PSP_237,BOSS_STRATEGY,boss_weak_point_focus_ratio,0.81,0.86,0.0,1.0,ratio,float,Accuracy of targeting boss weak points
+PSP_238,BOSS_STRATEGY,boss_invulnerability_recognition,0.68,0.84,0.0,1.0,ratio,float,How quickly player stops firing during boss invulnerability frames
+PSP_239,EVASION,narrow_gap_evasion_ratio,0.52,0.76,0.0,1.0,ratio,float,How often player evasion uses the exact narrow gap in enemy fire
+PSP_240,EVASION,evasion_pattern_consistency,0.59,0.72,0.0,1.0,ratio,float,How consistent/predictable player evasion patterns are
+PSP_241,EVASION,feint_frequency,0.27,0.66,0.0,1.0,ratio,float,How often player makes false starts to bait enemy fire
+PSP_242,COMBO_STYLE,input_overlap_ratio,0.48,0.74,0.0,1.0,ratio,float,How often inputs overlap (button held during direction change)
+PSP_243,COMBO_STYLE,tactical_pause_insertion_ratio,0.35,0.68,0.0,1.0,ratio,float,How often deliberate pauses are inserted between actions
+PSP_244,TERRAIN_USAGE,ledge_grab_usage_ratio,0.44,0.68,0.0,1.0,ratio,float,How often player uses ledge grabs for tactical repositioning
+PSP_245,TERRAIN_USAGE,ceiling_fire_ratio,0.29,0.64,0.0,1.0,ratio,float,How often player fires upward at ceiling-mounted threats
+PSP_246,SESSION_RHYTHM,attention_decay_rate,0.33,0.70,0.0,1.0,ratio,float,Rate of performance decay over a long session
+PSP_247,SESSION_RHYTHM,boss_approach_tension_index,0.62,0.74,0.0,1.0,ratio,float,Change in play style as player approaches a boss zone
+PSP_248,SESSION_RHYTHM,recovery_time_after_hit_ms,520.0,0.78,100.0,3000.0,ms,float,Time to resume normal play pattern after taking damage
+PSP_249,SESSION_RHYTHM,stage_completion_speed_variance,0.41,0.66,0.0,1.0,ratio,float,Variance in stage completion times across sessions
+PSP_250,SESSION_RHYTHM,overall_aggression_index,0.63,0.88,0.0,1.0,ratio,float,Composite weighted aggression score across all sessions
+PSP_251,MOVEMENT,jump_cancel_ratio,0.31,0.68,0.0,1.0,ratio,float,How often player cancels a jump by crouching mid-air (where applicable)
+PSP_252,COMBAT_TIMING,aim_snap_speed_ms,95.0,0.86,20.0,600.0,ms,float,Speed of aim adjustment between two different vertical angles
+PSP_253,WEAPON_PREFERENCE,weapon_type_entropy,0.55,0.72,0.0,1.0,ratio,float,Shannon entropy of weapon usage distribution (0=one weapon only, 1=perfectly even)
+PSP_254,POSITIONING,y_axis_combat_centroid,0.48,0.68,0.0,1.0,ratio,float,Normalized vertical position of average combat engagement (0=ground, 1=top)
+PSP_255,ENEMY_ENGAGEMENT,overkill_shot_count_avg,2.3,0.60,0.0,20.0,shots,float,Average extra shots fired after an enemy is confirmed dead
+PSP_256,RISK_TOLERANCE,no_hit_attempt_ratio,0.28,0.72,0.0,1.0,ratio,float,Proportion of stages where player actively attempts no-hit clear
+PSP_257,BOSS_STRATEGY,boss_timeout_aggression_shift,0.58,0.76,0.0,1.0,ratio,float,Aggression increase when boss fight is taking too long
+PSP_258,DEATH_RESPONSE,rage_quit_indicator,0.05,0.50,0.0,1.0,ratio,float,Normalized score for session abandonment after consecutive deaths
+PSP_259,SESSION_RHYTHM,stage_select_repeat_bias,0.44,0.65,0.0,1.0,ratio,float,How often player replays same stages vs progresses linearly
+PSP_260,METADATA,sample_quality_score,0.87,1.0,0.0,1.0,ratio,float,Confidence score for this profile's accuracy (higher = more data)

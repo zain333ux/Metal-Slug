@@ -1,0 +1,303 @@
+#include "Soldier.h"
+
+#include "Constants.h"
+
+Soldier::Soldier()
+{
+	width = 52.0f;
+	height = 96.0f;
+	moveSpeed = Constants::PLAYER_MOVE_SPEED;
+	jumpSpeed = Constants::PLAYER_JUMP_SPEED;
+	facingRight = true;
+	grounded = false;
+	currentState = Constants::SOLDIER_STATE_IDLE;
+	stateTimer = 0.0f;
+	usingSprite = false;
+	spriteScale = 2.0f;
+	frameWidth = Constants::PLAYER_FRAME_SIZE;
+	frameHeight = Constants::PLAYER_FRAME_SIZE;
+	animationRow = 0;
+	animationFrameCount = 1;
+	currentAnimationFrame = 0;
+	animationTimer = 0.0f;
+	animationFrameDuration = 0.15f;
+	maxHealth = 100;
+	health = maxHealth;
+
+	body.setSize(sf::Vector2f(width, height));
+	body.setFillColor(sf::Color(70, 170, 240));
+	body.setOutlineColor(sf::Color::Black);
+	body.setOutlineThickness(2.0f);
+	body.setPosition(x, y);
+}
+
+void Soldier::update(float deltaTime)
+{
+	velocityY += Constants::GRAVITY * deltaTime;
+
+	Entity::update(deltaTime);
+
+	if (y + height >= Constants::GROUND_Y)
+	{
+		y = static_cast<float>(Constants::GROUND_Y) - height;
+		velocityY = 0.0f;
+		grounded = true;
+	}
+	else
+	{
+		grounded = false;
+	}
+
+	if (x < 0.0f)
+	{
+		x = 0.0f;
+	}
+
+	if (x + width > Constants::SCREEN_WIDTH)
+	{
+		x = static_cast<float>(Constants::SCREEN_WIDTH) - width;
+	}
+
+	updateVisualPosition();
+	updateState(deltaTime);
+	updateAnimation(deltaTime);
+	updateDebugColor();
+}
+
+void Soldier::updateAnimation(float deltaTime)
+{
+	if (!usingSprite || animationFrameCount <= 1)
+	{
+		return;
+	}
+
+	animationTimer += deltaTime;
+	if (animationTimer >= animationFrameDuration)
+	{
+		animationTimer = 0.0f;
+		currentAnimationFrame += 1;
+
+		if (currentAnimationFrame >= animationFrameCount)
+		{
+			currentAnimationFrame = 0;
+		}
+
+		setSpriteFrame(currentAnimationFrame * frameWidth, animationRow * frameHeight, frameWidth, frameHeight);
+	}
+}
+
+void Soldier::updateVisualPosition()
+{
+	body.setPosition(x, y);
+
+	if (usingSprite)
+	{
+		if (facingRight)
+		{
+			sprite.setScale(spriteScale, spriteScale);
+		}
+		else
+		{
+			sprite.setScale(-spriteScale, spriteScale);
+		}
+
+		sf::FloatRect spriteBounds = sprite.getGlobalBounds();
+		float spriteX = x + width / 2.0f - spriteBounds.width / 2.0f;
+		if (!facingRight)
+		{
+			spriteX = x + width / 2.0f + spriteBounds.width / 2.0f;
+		}
+
+		float spriteY = y + height - spriteBounds.height;
+		sprite.setPosition(spriteX, spriteY);
+	}
+}
+
+void Soldier::updateState(float deltaTime)
+{
+	stateTimer += deltaTime;
+
+	int nextState = Constants::SOLDIER_STATE_IDLE;
+
+	if (!grounded && velocityY < 0.0f)
+	{
+		nextState = Constants::SOLDIER_STATE_JUMPING;
+	}
+	else if (!grounded && velocityY > 0.0f)
+	{
+		nextState = Constants::SOLDIER_STATE_FALLING;
+	}
+	else if (velocityX != 0.0f)
+	{
+		nextState = Constants::SOLDIER_STATE_RUNNING;
+	}
+
+	if (nextState != currentState)
+	{
+		currentState = nextState;
+		stateTimer = 0.0f;
+	}
+}
+
+void Soldier::updateDebugColor()
+{
+	if (usingSprite)
+	{
+		return;
+	}
+
+	if (currentState == Constants::SOLDIER_STATE_RUNNING)
+	{
+		body.setFillColor(sf::Color(80, 210, 120));
+	}
+	else if (currentState == Constants::SOLDIER_STATE_JUMPING)
+	{
+		body.setFillColor(sf::Color(240, 210, 80));
+	}
+	else if (currentState == Constants::SOLDIER_STATE_FALLING)
+	{
+		body.setFillColor(sf::Color(240, 140, 80));
+	}
+	else
+	{
+		body.setFillColor(sf::Color(70, 170, 240));
+	}
+}
+
+void Soldier::draw(sf::RenderWindow& window)
+{
+	if (visible)
+	{
+		if (usingSprite)
+		{
+			window.draw(sprite);
+		}
+		else
+		{
+			window.draw(body);
+		}
+
+		if (maxHealth > 0)
+		{
+			float healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
+			if (healthRatio < 0.0f)
+			{
+				healthRatio = 0.0f;
+			}
+
+			sf::RectangleShape healthBack;
+			healthBack.setPosition(x, y - 12.0f);
+			healthBack.setSize(sf::Vector2f(width, 6.0f));
+			healthBack.setFillColor(sf::Color(80, 20, 20));
+			window.draw(healthBack);
+
+			sf::RectangleShape healthFront;
+			healthFront.setPosition(x, y - 12.0f);
+			healthFront.setSize(sf::Vector2f(width * healthRatio, 6.0f));
+			healthFront.setFillColor(sf::Color(60, 220, 90));
+			window.draw(healthFront);
+		}
+	}
+}
+
+void Soldier::moveLeft()
+{
+	velocityX = -moveSpeed;
+	facingRight = false;
+}
+
+void Soldier::moveRight()
+{
+	velocityX = moveSpeed;
+	facingRight = true;
+}
+
+void Soldier::stopMoving()
+{
+	velocityX = 0.0f;
+}
+
+void Soldier::jump()
+{
+	if (grounded)
+	{
+		velocityY = -jumpSpeed;
+		grounded = false;
+	}
+}
+
+bool Soldier::loadSpriteSheet(const char* fileName)
+{
+	if (!texture.loadFromFile(fileName))
+	{
+		usingSprite = false;
+		return false;
+	}
+
+	sprite.setTexture(texture);
+	sprite.setScale(spriteScale, spriteScale);
+	usingSprite = true;
+	updateVisualPosition();
+	return true;
+}
+
+void Soldier::setSpriteFrame(int left, int top, int frameWidth, int frameHeight)
+{
+	this->frameWidth = frameWidth;
+	this->frameHeight = frameHeight;
+	sprite.setTextureRect(sf::IntRect(left, top, frameWidth, frameHeight));
+	updateVisualPosition();
+}
+
+void Soldier::setSpriteScale(float scale)
+{
+	if (scale <= 0.0f)
+	{
+		return;
+	}
+
+	spriteScale = scale;
+	sprite.setScale(spriteScale, spriteScale);
+	updateVisualPosition();
+}
+
+void Soldier::playAnimation(int row, int frameCount, float frameDuration)
+{
+	if (frameCount < 1)
+	{
+		frameCount = 1;
+	}
+
+	if (frameDuration <= 0.0f)
+	{
+		frameDuration = 0.15f;
+	}
+
+	if (animationRow == row && animationFrameCount == frameCount)
+	{
+		animationFrameDuration = frameDuration;
+		return;
+	}
+
+	animationRow = row;
+	animationFrameCount = frameCount;
+	currentAnimationFrame = 0;
+	animationTimer = 0.0f;
+	animationFrameDuration = frameDuration;
+	setSpriteFrame(0, animationRow * frameHeight, frameWidth, frameHeight);
+}
+
+int Soldier::getCurrentState() const
+{
+	return currentState;
+}
+
+bool Soldier::isFacingRight() const
+{
+	return facingRight;
+}
+
+bool Soldier::isGrounded() const
+{
+	return grounded;
+}
