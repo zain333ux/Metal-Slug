@@ -37,7 +37,8 @@ void DamageableEntity::heal(int amount)
 
 bool DamageableEntity::isDead() const
 {
-	return health <= 0;
+	if(health <= 0) return true;
+	return false;
 }
 
 int DamageableEntity::getHealth() const

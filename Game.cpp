@@ -1,11 +1,10 @@
 #include "Game.h"
-
 #include "Constants.h"
-#include "Level.h"
-#include "PlayState.h"
+#include "ModeSelectState.h"
+using namespace sf;
 
-Game::Game()
-	: window(sf::VideoMode(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT), "Metal Slug OOP", sf::Style::Close)
+
+Game::Game(): window(VideoMode(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT), "Metal Slug OOP", Style::Close)
 {
 	running = false;
 }
@@ -15,16 +14,16 @@ void Game::initialize()
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(Constants::FRAME_LIMIT);
 
-	levelManager.loadLevel(new Level());
-	gameStateManager.changeState(new PlayState());
+	gameStateManager.changeState(new ModeSelectState());
 	running = true;
 }
+
 
 void Game::run()
 {
 	initialize();
 
-	sf::Clock clock;
+	Clock clock;
 	while (running && window.isOpen())
 	{
 		float deltaTime = clock.restart().asSeconds();
@@ -40,12 +39,17 @@ void Game::close()
 	window.close();
 }
 
+void Game::changeState(GameState* newState)
+{
+	gameStateManager.changeState(newState);
+}
+
 void Game::processEvents()
 {
-	sf::Event event;
+	Event event;
 	while (window.pollEvent(event))
 	{
-		if (event.type == sf::Event::Closed)
+		if (event.type == Event::Closed)
 		{
 			close();
 		}
@@ -61,7 +65,7 @@ void Game::update(float deltaTime)
 
 void Game::render()
 {
-	window.clear(sf::Color(30, 35, 40));
+	window.clear(Color(30, 35, 40));
 	gameStateManager.draw(*this, window);
 	window.display();
 }
@@ -76,7 +80,7 @@ LevelManager& Game::getLevelManager()
 	return levelManager;
 }
 
-sf::RenderWindow& Game::getWindow()
+RenderWindow& Game::getWindow()
 {
 	return window;
 }
