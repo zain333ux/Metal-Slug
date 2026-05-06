@@ -1,6 +1,7 @@
 #include "Soldier.h"
 
 #include "Constants.h"
+#include "Level.h"
 
 Soldier::Soldier()
 {
@@ -12,11 +13,14 @@ Soldier::Soldier()
 	grounded = false;
 	currentState = Constants::SOLDIER_STATE_IDLE;
 	stateTimer = 0.0f;
+	movementMaxX = Constants::WORLD_WIDTH_LEVEL_3 + 2200.0f;
+	activeLevel = 0;
 	usingSprite = false;
 	spriteScale = 2.0f;
 	frameWidth = Constants::PLAYER_FRAME_SIZE;
 	frameHeight = Constants::PLAYER_FRAME_SIZE;
 	animationRow = 0;
+	animationStartFrame = 0;
 	animationFrameCount = 1;
 	currentAnimationFrame = 0;
 	animationTimer = 0.0f;
@@ -35,11 +39,18 @@ void Soldier::update(float deltaTime)
 {
 	velocityY += Constants::GRAVITY * deltaTime;
 
+	float previousBottom = y + height;
 	Entity::update(deltaTime);
 
-	if (y + height >= Constants::GROUND_Y)
+	float landingY = static_cast<float>(Constants::GROUND_Y);
+	if (activeLevel != 0)
 	{
-		y = static_cast<float>(Constants::GROUND_Y) - height;
+		landingY = activeLevel->getLandingY(x, x + width, previousBottom, y + height);
+	}
+
+	if (y + height >= landingY)
+	{
+		y = landingY - height;
 		velocityY = 0.0f;
 		grounded = true;
 	}
@@ -53,9 +64,9 @@ void Soldier::update(float deltaTime)
 		x = 0.0f;
 	}
 
-	if (x + width > Constants::SCREEN_WIDTH)
+	if (x + width > movementMaxX)
 	{
-		x = static_cast<float>(Constants::SCREEN_WIDTH) - width;
+		x = movementMaxX - width;
 	}
 
 	updateVisualPosition();
@@ -82,7 +93,7 @@ void Soldier::updateAnimation(float deltaTime)
 			currentAnimationFrame = 0;
 		}
 
-		setSpriteFrame(currentAnimationFrame * frameWidth, animationRow * frameHeight, frameWidth, frameHeight);
+		setSpriteFrame((animationStartFrame + currentAnimationFrame) * frameWidth, animationRow * frameHeight, frameWidth, frameHeight);
 	}
 }
 
@@ -263,6 +274,11 @@ void Soldier::setSpriteScale(float scale)
 
 void Soldier::playAnimation(int row, int frameCount, float frameDuration)
 {
+	playAnimation(row, 0, frameCount, frameDuration);
+}
+
+void Soldier::playAnimation(int row, int startFrame, int frameCount, float frameDuration)
+{
 	if (frameCount < 1)
 	{
 		frameCount = 1;
@@ -273,18 +289,37 @@ void Soldier::playAnimation(int row, int frameCount, float frameDuration)
 		frameDuration = 0.15f;
 	}
 
-	if (animationRow == row && animationFrameCount == frameCount)
+	if (startFrame < 0)
+	{
+		startFrame = 0;
+	}
+
+	if (animationRow == row && animationStartFrame == startFrame && animationFrameCount == frameCount)
 	{
 		animationFrameDuration = frameDuration;
 		return;
 	}
 
 	animationRow = row;
+	animationStartFrame = startFrame;
 	animationFrameCount = frameCount;
 	currentAnimationFrame = 0;
 	animationTimer = 0.0f;
 	animationFrameDuration = frameDuration;
-	setSpriteFrame(0, animationRow * frameHeight, frameWidth, frameHeight);
+	setSpriteFrame(animationStartFrame * frameWidth, animationRow * frameHeight, frameWidth, frameHeight);
+}
+
+void Soldier::setMovementMaxX(float maxX)
+{
+	if (maxX > width)
+	{
+		movementMaxX = maxX;
+	}
+}
+
+void Soldier::setActiveLevel(Level* level)
+{
+	activeLevel = level;
 }
 
 int Soldier::getCurrentState() const

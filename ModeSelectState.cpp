@@ -54,7 +54,7 @@ void ModeSelectState::setupScreen()
 	instructions.setPosition(540.0f, 560.0f);
 
 	message.setFont(font);
-	message.setString("Campaign mode is not ready yet.");
+	message.setString("Campaign profile: generated plains.");
 	message.setCharacterSize(24);
 	message.setFillColor(Color(255, 120, 120));
 	message.setPosition(540.0f, 610.0f);
@@ -125,14 +125,14 @@ void ModeSelectState::startSelectedMode(Game& game)
 	if (selectedOption == 0)
 	{
 		game.getEntityManager().clear();
-		game.getLevelManager().loadLevel(new Level());
-		game.changeState(new PlayState());
+		game.changeState(new PlayState(PLAY_MODE_SURVIVAL));
 		return;
 	}
 
 	if (selectedOption == 1)
 	{
-		showingCampaignMessage = true;
+		game.getEntityManager().clear();
+		game.changeState(new PlayState(PLAY_MODE_CAMPAIGN, 0));
 	}
 }
 

@@ -12,12 +12,25 @@ ProjectileWeapon::ProjectileWeapon()
 
 void ProjectileWeapon::fire(EntityManager& entityManager, float startX, float startY, bool facingRight)
 {
+	fire(entityManager, startX, startY, facingRight, false);
+}
+
+void ProjectileWeapon::fire(EntityManager& entityManager, float startX, float startY, bool facingRight, bool upward)
+{
 	if (!canFire())
 	{
 		return;
 	}
 
-	StraightProjectile* projectile = new StraightProjectile(startX, startY, facingRight);
+	StraightProjectile* projectile = new StraightProjectile(startX, startY, facingRight, upward);
 	entityManager.addEntity(projectile);
 	cooldownTimer = cooldown;
+}
+
+void ProjectileWeapon::setCooldown(float newCooldown)
+{
+	if (newCooldown > 0.02f)
+	{
+		cooldown = newCooldown;
+	}
 }

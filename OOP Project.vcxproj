@@ -149,42 +149,62 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Collectible.cpp" />
     <ClCompile Include="DamageableEntity.cpp" />
+    <ClCompile Include="DeveloperMode.cpp" />
+    <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyFactory.cpp" />
+    <ClCompile Include="EnemyTypes.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
+    <ClCompile Include="GrenadeProjectile.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelProfile.cpp" />
     <ClCompile Include="LevelManager.cpp" />
+    <ClCompile Include="MeleeHitbox.cpp" />
     <ClCompile Include="ModeSelectState.cpp" />
     <ClCompile Include="PlayState.cpp" />
     <ClCompile Include="PlayerSoldier.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="ProjectileWeapon.cpp" />
+    <ClCompile Include="RocketProjectile.cpp" />
+    <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Soldier.cpp" />
     <ClCompile Include="StraightProjectile.cpp" />
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Collectible.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="DamageableEntity.h" />
+    <ClInclude Include="DeveloperMode.h" />
+    <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="DynamicArray.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyFactory.h" />
+    <ClInclude Include="EnemyTypes.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameStateManager.h" />
+    <ClInclude Include="GrenadeProjectile.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelProfile.h" />
     <ClInclude Include="LevelManager.h" />
+    <ClInclude Include="MeleeHitbox.h" />
     <ClInclude Include="ModeSelectState.h" />
     <ClInclude Include="PlayState.h" />
     <ClInclude Include="PlayerSoldier.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="ProjectileWeapon.h" />
+    <ClInclude Include="RocketProjectile.h" />
+    <ClInclude Include="ScoreManager.h" />
     <ClInclude Include="Soldier.h" />
     <ClInclude Include="StraightProjectile.h" />
     <ClInclude Include="Weapon.h" />

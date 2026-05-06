@@ -16,5 +16,6 @@ public:
 	void loadLevel(Level* newLevel);
 	void update(float deltaTime);
 	void draw(sf::RenderWindow& window);
+	Level* getCurrentLevel();
 	void clear();
 };

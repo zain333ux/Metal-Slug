@@ -37,6 +37,11 @@ void LevelManager::draw(sf::RenderWindow& window)
 	}
 }
 
+Level* LevelManager::getCurrentLevel()
+{
+	return currentLevel;
+}
+
 void LevelManager::clear()
 {
 	delete currentLevel;
