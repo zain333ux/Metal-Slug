@@ -249,6 +249,11 @@ Projectile* Enemy::createProjectileIfReady()
 	return new EnemyBullet(bulletX, bulletY, facingRight);
 }
 
+Entity* Enemy::createSpawnedEntityIfReady()
+{
+	return 0;
+}
+
 void Enemy::moveLeft()
 {
 	velocityX = -moveSpeed;

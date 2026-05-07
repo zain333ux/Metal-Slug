@@ -5,6 +5,7 @@
 class Level;
 class PlayerSoldier;
 class Projectile;
+class Entity;
 
 class Enemy : public DamageableEntity
 {
@@ -69,6 +70,7 @@ public:
 	void setMovementMaxX(float maxX);
 	void setActiveLevel(Level* level);
 	virtual Projectile* createProjectileIfReady();
+	virtual Entity* createSpawnedEntityIfReady();
 	virtual bool applyProjectileHit(Projectile& projectile);
 	int getScoreValue() const;
 	int getContactDamage() const;

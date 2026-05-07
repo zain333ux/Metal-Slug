@@ -77,6 +77,12 @@ void EntityManager::updateAll(float deltaTime)
 			{
 				addEntity(projectile);
 			}
+
+			Entity* spawnedEntity = enemy->createSpawnedEntityIfReady();
+			if (spawnedEntity != 0)
+			{
+				addEntity(spawnedEntity);
+			}
 		}
 	}
 
