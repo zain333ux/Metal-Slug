@@ -2,6 +2,7 @@
 
 #include "Constants.h"
 #include "EnemyGrenadeProjectile.h"
+#include "EnemyRocketProjectile.h"
 #include "PlayerSoldier.h"
 #include "Projectile.h"
 
@@ -218,14 +219,234 @@ const char* ShieldedSoldier::getEnemyName() const
 
 BazookaSoldier::BazookaSoldier()
 {
-	maxHealth = 25;
+	maxHealth = 2;
 	health = maxHealth;
 	scoreValue = 100;
-	contactDamage = 16;
-	stopDistance = 180.0f;
-	detectionRange = 680.0f;
-	attackRange = 150.0f;
+	contactDamage = 12;
+	moveSpeed = 52.0f;
+	stopDistance = 300.0f;
+	detectionRange = 760.0f;
+	shootingRange = 620.0f;
+	attackRange = 110.0f;
+	pistolEquipped = false;
+	queuedShot = false;
+	bazookaState = 0;
+	bazookaAnimationState = -1;
+	hurtTimer = 0.0f;
+	fireTimer = 0.0f;
+	rocketReleaseTimer = 0.0f;
+	reloadTimer = 1.0f;
+	rocketCooldown = 2.7f;
+	queuedRocket = false;
 	fallbackColor = sf::Color(230, 150, 55);
+	width = 56.0f;
+	height = 96.0f;
+	body.setSize(sf::Vector2f(width, height));
+	setSpriteScale(2.2f);
+
+	if (loadMaskedTexture(idleTexture, "Sprites/Clean/BazookaSoldier_idle.png") &&
+		loadMaskedTexture(runTexture, "Sprites/Clean/BazookaSoldier_run.png") &&
+		loadMaskedTexture(fireTexture, "Sprites/Clean/BazookaSoldier_fire.png"))
+	{
+		usingSprite = true;
+		setBazookaAnimation(0);
+	}
+}
+
+void BazookaSoldier::updateAI()
+{
+	stopMoving();
+
+	if (target == 0 || !target->isActive())
+	{
+		return;
+	}
+
+	if (!grounded && !canMoveInAir)
+	{
+		return;
+	}
+
+	float distanceX = target->getCenterX() - getCenterX();
+	float distanceY = target->getCenterY() - getCenterY();
+	float absoluteDistanceX = std::abs(distanceX);
+	bool canSeePlayer = absoluteDistanceX <= detectionRange && std::abs(distanceY) < 190.0f;
+
+	if (canSeePlayer)
+	{
+		facingRight = distanceX > 0.0f;
+
+		// Heavy artillery: stop first, fire once, then wait through a reload.
+		if (absoluteDistanceX <= shootingRange)
+		{
+			if (reloadTimer <= 0.0f && fireTimer <= 0.0f)
+			{
+				queuedRocket = true;
+				reloadTimer = rocketCooldown;
+				fireTimer = 0.54f;
+				rocketReleaseTimer = 0.20f;
+			}
+			return;
+		}
+
+		if (distanceX > stopDistance)
+		{
+			moveRight();
+		}
+		else if (distanceX < -stopDistance)
+		{
+			moveLeft();
+		}
+		return;
+	}
+
+	if (x <= patrolLeft)
+	{
+		patrolDirection = 1;
+	}
+	else if (x + width >= patrolRight)
+	{
+		patrolDirection = -1;
+	}
+
+	if (patrolDirection > 0)
+	{
+		moveRight();
+	}
+	else
+	{
+		moveLeft();
+	}
+}
+
+Projectile* BazookaSoldier::createProjectileIfReady()
+{
+	if (!queuedRocket)
+	{
+		return 0;
+	}
+	if (rocketReleaseTimer > 0.0f)
+	{
+		return 0;
+	}
+
+	queuedRocket = false;
+
+	float rocketVelocityX = facingRight ? 360.0f : -360.0f;
+	if (target != 0)
+	{
+		float distanceX = target->getCenterX() - getCenterX();
+		rocketVelocityX = distanceX * 0.65f;
+		if (rocketVelocityX > 430.0f)
+		{
+			rocketVelocityX = 430.0f;
+		}
+		if (rocketVelocityX < -430.0f)
+		{
+			rocketVelocityX = -430.0f;
+		}
+		if (rocketVelocityX > 0.0f && rocketVelocityX < 260.0f)
+		{
+			rocketVelocityX = 260.0f;
+		}
+		if (rocketVelocityX < 0.0f && rocketVelocityX > -260.0f)
+		{
+			rocketVelocityX = -260.0f;
+		}
+	}
+
+	float rocketX = facingRight ? x + width + 8.0f : x - 42.0f;
+	float rocketY = y + 30.0f;
+	return new EnemyRocketProjectile(rocketX, rocketY, rocketVelocityX, -640.0f);
+}
+
+bool BazookaSoldier::applyProjectileHit(Projectile& projectile)
+{
+	DamageableEntity::takeDamage(projectile.getDamage());
+	hurtTimer = 0.25f;
+	return true;
+}
+
+void BazookaSoldier::update(float deltaTime)
+{
+	if (hurtTimer > 0.0f)
+	{
+		hurtTimer -= deltaTime;
+	}
+	if (fireTimer > 0.0f)
+	{
+		fireTimer -= deltaTime;
+	}
+	if (rocketReleaseTimer > 0.0f)
+	{
+		rocketReleaseTimer -= deltaTime;
+	}
+	if (reloadTimer > 0.0f)
+	{
+		reloadTimer -= deltaTime;
+	}
+
+	Enemy::update(deltaTime);
+	updateBazookaAnimation();
+}
+
+void BazookaSoldier::updateBazookaAnimation()
+{
+	// Simple integer state: 0 idle, 1 run, 2 fire.
+	if (fireTimer > 0.0f)
+	{
+		bazookaState = 2;
+	}
+	else if (velocityX != 0.0f)
+	{
+		bazookaState = 1;
+	}
+	else
+	{
+		bazookaState = 0;
+	}
+
+	setBazookaAnimation(bazookaState);
+
+	if (hurtTimer > 0.0f)
+	{
+		body.setFillColor(sf::Color(255, 80, 80));
+		sprite.setColor(sf::Color(255, 120, 120));
+	}
+	else
+	{
+		body.setFillColor(fallbackColor);
+		sprite.setColor(sf::Color::White);
+	}
+}
+
+void BazookaSoldier::setBazookaAnimation(int newState)
+{
+	if (bazookaAnimationState == newState)
+	{
+		return;
+	}
+
+	bazookaAnimationState = newState;
+
+	if (newState == 1)
+	{
+		sprite.setTexture(runTexture, true);
+		setSpriteFrame(0, 0, 45, 42);
+		playAnimation(0, 0, 11, 0.11f);
+	}
+	else if (newState == 2)
+	{
+		sprite.setTexture(fireTexture, true);
+		setSpriteFrame(0, 0, 42, 44);
+		playAnimation(0, 0, 3, 0.18f);
+	}
+	else
+	{
+		sprite.setTexture(idleTexture, true);
+		setSpriteFrame(0, 0, 42, 45);
+		playAnimation(0, 0, 6, 0.15f);
+	}
 }
 
 const char* BazookaSoldier::getEnemyName() const

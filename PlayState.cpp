@@ -121,10 +121,16 @@ void PlayState::spawnSurvivalWave(Game& game)
 	float base = static_cast<float>(currentLevel - 1) * 160.0f;
 	if (currentLevel == 1)
 	{
-		spawnEnemy(game, ENEMY_SHIELDED, 700.0f, 500.0f);
-		spawnEnemy(game, ENEMY_SHIELDED, 940.0f, 500.0f);
-		spawnEnemy(game, ENEMY_GRENADE, 1260.0f, 500.0f);
-		spawnEnemyAt(game, ENEMY_GRENADE, 1760.0f, 615.0f - 96.0f);
+		spawnEnemy(game, ENEMY_REBEL, 520.0f, 500.0f);
+		spawnEnemy(game, ENEMY_SHIELDED, 840.0f, 500.0f);
+		spawnEnemyAt(game, ENEMY_BAZOOKA, 1120.0f, 650.0f - 96.0f);
+		spawnEnemy(game, ENEMY_GRENADE, 1360.0f, 500.0f);
+		spawnEnemy(game, ENEMY_BAZOOKA, 1740.0f, 500.0f);
+		spawnEnemyAt(game, ENEMY_GRENADE, 1900.0f, 615.0f - 96.0f);
+		spawnEnemy(game, ENEMY_ZOMBIE, 2280.0f, 500.0f);
+		spawnEnemy(game, ENEMY_MUMMY, 2760.0f, 500.0f);
+		spawnEnemy(game, ENEMY_MARTIAN, 3260.0f, 360.0f);
+		return;
 	}
 	spawnEnemy(game, ENEMY_REBEL, 520.0f + base, 500.0f);
 	spawnEnemy(game, ENEMY_REBEL, 1160.0f + base, 500.0f);

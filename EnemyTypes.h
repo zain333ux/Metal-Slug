@@ -36,8 +36,28 @@ public:
 
 class BazookaSoldier : public Enemy
 {
+private:
+	int bazookaState;
+	int bazookaAnimationState;
+	float hurtTimer;
+	float fireTimer;
+	float rocketReleaseTimer;
+	float reloadTimer;
+	float rocketCooldown;
+	bool queuedRocket;
+	sf::Texture idleTexture;
+	sf::Texture runTexture;
+	sf::Texture fireTexture;
+
+	void updateAI();
+	void updateBazookaAnimation();
+	void setBazookaAnimation(int newState);
+
 public:
 	BazookaSoldier();
+	void update(float deltaTime);
+	Projectile* createProjectileIfReady();
+	bool applyProjectileHit(Projectile& projectile);
 	const char* getEnemyName() const;
 };
 
