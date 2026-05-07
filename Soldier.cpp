@@ -33,6 +33,7 @@ Soldier::Soldier()
 	body.setOutlineColor(sf::Color::Black);
 	body.setOutlineThickness(2.0f);
 	body.setPosition(x, y);
+	spriteFacesLeft = false;
 }
 
 void Soldier::update(float deltaTime)
@@ -103,7 +104,13 @@ void Soldier::updateVisualPosition()
 
 	if (usingSprite)
 	{
-		if (facingRight)
+		bool drawFlipped = !facingRight;
+		if (spriteFacesLeft)
+		{
+			drawFlipped = facingRight;
+		}
+
+		if (!drawFlipped)
 		{
 			sprite.setScale(spriteScale, spriteScale);
 		}
@@ -269,6 +276,12 @@ void Soldier::setSpriteScale(float scale)
 
 	spriteScale = scale;
 	sprite.setScale(spriteScale, spriteScale);
+	updateVisualPosition();
+}
+
+void Soldier::setSpriteFacesLeft(bool facesLeft)
+{
+	spriteFacesLeft = facesLeft;
 	updateVisualPosition();
 }
 

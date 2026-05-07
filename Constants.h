@@ -29,7 +29,7 @@ public:
 	static constexpr float ENEMY_STOP_DISTANCE = 95.0f;
 	static constexpr float PLAYER_BULLET_SPEED = 850.0f;
 	static constexpr float ENEMY_BULLET_SPEED = 260.0f;
-	static constexpr float PLAYER_FIRE_COOLDOWN = 0.22f;
+	static constexpr float PLAYER_FIRE_COOLDOWN = 0.55f;
 	static constexpr float MELEE_COOLDOWN = 0.5f;
 	static constexpr float GRENADE_COOLDOWN = 0.8f;
 	static constexpr float ROCKET_COOLDOWN = 1.15f;

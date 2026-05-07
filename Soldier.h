@@ -18,6 +18,7 @@ protected:
 	sf::RectangleShape body;
 	sf::Texture texture;
 	bool usingSprite;
+	bool spriteFacesLeft;
 	float spriteScale;
 	int frameWidth;
 	int frameHeight;
@@ -46,6 +47,7 @@ public:
 	bool loadSpriteSheet(const char* fileName);
 	void setSpriteFrame(int left, int top, int frameWidth, int frameHeight);
 	void setSpriteScale(float scale);
+	void setSpriteFacesLeft(bool facesLeft);
 	void playAnimation(int row, int frameCount, float frameDuration);
 	void playAnimation(int row, int startFrame, int frameCount, float frameDuration);
 	void setMovementMaxX(float maxX);

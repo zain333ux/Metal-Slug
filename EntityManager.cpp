@@ -29,6 +29,11 @@ void EntityManager::addEntity(Entity* entity)
 		{
 			soldier->setActiveLevel(activeLevel);
 		}
+		Enemy* enemy = dynamic_cast<Enemy*>(entity);
+		if (enemy != 0)
+		{
+			enemy->setActiveLevel(activeLevel);
+		}
 		entities.pushBack(entity);
 	}
 }
@@ -42,6 +47,11 @@ void EntityManager::setActiveLevel(Level* level)
 		if (soldier != 0)
 		{
 			soldier->setActiveLevel(activeLevel);
+		}
+		Enemy* enemy = dynamic_cast<Enemy*>(entities.get(i));
+		if (enemy != 0)
+		{
+			enemy->setActiveLevel(activeLevel);
 		}
 	}
 }
@@ -118,8 +128,8 @@ void EntityManager::checkProjectileEnemyCollisions()
 						float distance = std::sqrt(dx * dx + dy * dy);
 						if (distance <= projectile->getBlastRadius())
 						{
-							nearbyEnemy->takeDamage(projectile->getDamage());
-							if (nearbyEnemy->isDead())
+							bool damageApplied = nearbyEnemy->applyProjectileHit(*projectile);
+							if (damageApplied && nearbyEnemy->isDead())
 							{
 								killedByThisProjectile += 1;
 								pendingScore += nearbyEnemy->getScoreValue();
@@ -129,8 +139,8 @@ void EntityManager::checkProjectileEnemyCollisions()
 				}
 				else
 				{
-					enemy->takeDamage(projectile->getDamage());
-					if (enemy->isDead())
+					bool damageApplied = enemy->applyProjectileHit(*projectile);
+					if (damageApplied && enemy->isDead())
 					{
 						killedByThisProjectile += 1;
 						pendingScore += enemy->getScoreValue();

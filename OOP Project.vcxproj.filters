@@ -27,6 +27,9 @@
     <ClCompile Include="EnemyBullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyGrenadeProjectile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -111,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EnemyBullet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyGrenadeProjectile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DamageableEntity.h">

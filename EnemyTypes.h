@@ -11,9 +11,26 @@ public:
 
 class ShieldedSoldier : public Enemy
 {
+private:
+	int shieldState;
+	int shieldAnimationState;
+	float hurtTimer;
+	float shootTimer;
+	float shotReleaseTimer;
+	sf::Texture idleTexture;
+	sf::Texture runTexture;
+	sf::Texture fireTexture;
+
+	bool isHitFromFront(const Projectile& projectile) const;
+	bool isHitFromAbove(const Projectile& projectile) const;
+	void setShieldAnimation(int newState);
+	void updateShieldAnimation();
+
 public:
 	ShieldedSoldier();
-	void takeDamage(int damage);
+	void update(float deltaTime);
+	Projectile* createProjectileIfReady();
+	bool applyProjectileHit(Projectile& projectile);
 	const char* getEnemyName() const;
 };
 
@@ -26,8 +43,28 @@ public:
 
 class GrenadeSoldier : public Enemy
 {
+private:
+	int grenadeState;
+	int grenadeAnimationState;
+	float hurtTimer;
+	float fireTimer;
+	float throwReleaseTimer;
+	float grenadeTimer;
+	float grenadeCooldown;
+	bool queuedGrenade;
+	sf::Texture idleTexture;
+	sf::Texture runTexture;
+	sf::Texture fireTexture;
+
+	void updateAI();
+	void updateGrenadeAnimation();
+	void setGrenadeAnimation(int newState);
+
 public:
 	GrenadeSoldier();
+	void update(float deltaTime);
+	Projectile* createProjectileIfReady();
+	bool applyProjectileHit(Projectile& projectile);
 	const char* getEnemyName() const;
 };
 

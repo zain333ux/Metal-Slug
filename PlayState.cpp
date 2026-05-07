@@ -110,18 +110,31 @@ void PlayState::spawnEnemy(Game& game, EnemyKind kind, float x, float y)
 	game.getEntityManager().addEntity(enemy);
 }
 
+void PlayState::spawnEnemyAt(Game& game, EnemyKind kind, float x, float y)
+{
+	Enemy* enemy = EnemyFactory::createEnemy(kind, x, y, player);
+	game.getEntityManager().addEntity(enemy);
+}
+
 void PlayState::spawnSurvivalWave(Game& game)
 {
 	float base = static_cast<float>(currentLevel - 1) * 160.0f;
-	spawnEnemy(game, ENEMY_REBEL, 850.0f + base, 500.0f);
-	spawnEnemy(game, ENEMY_REBEL, 940.0f + base, 500.0f);
-	spawnEnemy(game, ENEMY_REBEL, 1030.0f + base, 500.0f);
-	spawnEnemy(game, ENEMY_SHIELDED, 1220.0f + base, 500.0f);
-	spawnEnemy(game, ENEMY_BAZOOKA, 1580.0f + base, 500.0f);
-	spawnEnemy(game, ENEMY_GRENADE, 1980.0f + base, 500.0f);
-	spawnEnemy(game, ENEMY_ZOMBIE, 2380.0f + base, 500.0f);
-	spawnEnemy(game, ENEMY_MUMMY, 2780.0f + base, 500.0f);
-	spawnEnemy(game, ENEMY_MARTIAN, 3180.0f + base, 360.0f);
+	if (currentLevel == 1)
+	{
+		spawnEnemy(game, ENEMY_SHIELDED, 700.0f, 500.0f);
+		spawnEnemy(game, ENEMY_SHIELDED, 940.0f, 500.0f);
+		spawnEnemy(game, ENEMY_GRENADE, 1260.0f, 500.0f);
+		spawnEnemyAt(game, ENEMY_GRENADE, 1760.0f, 615.0f - 96.0f);
+	}
+	spawnEnemy(game, ENEMY_REBEL, 520.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_REBEL, 1160.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_REBEL, 1500.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_SHIELDED, 2180.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_BAZOOKA, 2500.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_GRENADE, 2800.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_ZOMBIE, 3080.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_MUMMY, 3320.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_MARTIAN, 3480.0f + base, 360.0f);
 	if (currentLevel >= 2)
 	{
 		spawnEnemy(game, ENEMY_REBEL, 3600.0f, 500.0f);
