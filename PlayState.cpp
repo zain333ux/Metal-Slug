@@ -96,6 +96,7 @@ void PlayState::loadCurrentLevel(Game& game)
 	{
 		game.getEntityManager().setActiveLevel(loadedLevel);
 		player->setMovementMaxX(loadedLevel->getWorldWidth());
+		player->setPosition(120.0f, loadedLevel->getGroundYAt(120.0f) - player->getHeight());
 	}
 
 	spawnVehicle(game);
@@ -130,10 +131,10 @@ void PlayState::spawnSurvivalWave(Game& game)
 	{
 		spawnEnemy(game, ENEMY_REBEL, 520.0f, 500.0f);
 		spawnEnemy(game, ENEMY_SHIELDED, 840.0f, 500.0f);
-		spawnEnemyAt(game, ENEMY_BAZOOKA, 1120.0f, 650.0f - 96.0f);
+		spawnEnemy(game, ENEMY_BAZOOKA, 1120.0f, 500.0f);
 		spawnEnemy(game, ENEMY_GRENADE, 1360.0f, 500.0f);
 		spawnEnemy(game, ENEMY_BAZOOKA, 1740.0f, 500.0f);
-		spawnEnemyAt(game, ENEMY_GRENADE, 1900.0f, 615.0f - 96.0f);
+		spawnEnemy(game, ENEMY_GRENADE, 1900.0f, 500.0f);
 		spawnEnemy(game, ENEMY_ZOMBIE, 2280.0f, 500.0f);
 		spawnEnemy(game, ENEMY_MUMMY, 2760.0f, 500.0f);
 		spawnEnemy(game, ENEMY_MARTIAN, 3260.0f, 360.0f);
@@ -407,10 +408,12 @@ void PlayState::update(Game& game, float deltaTime)
 
 	updateCampaignSpawning(game, deltaTime);
 
-	if (!waitingForContinue && mode != PLAY_MODE_CAMPAIGN && game.getEntityManager().countActiveEnemies() == 0)
+	if (!waitingForContinue && mode != PLAY_MODE_CAMPAIGN)
 	{
 		Level* level = game.getLevelManager().getCurrentLevel();
-		if (level != 0 && player != 0 && player->getX() >= level->getRightBoundary() - 220.0f)
+		if (level != 0 && player != 0 &&
+			player->getX() >= level->getRightBoundary() - 220.0f &&
+			game.getEntityManager().countActiveEnemies() == 0)
 		{
 			completeLevel(game);
 		}
@@ -445,6 +448,8 @@ void PlayState::updateCamera(Game& game)
 
 	float centerX = player->getCenterX();
 	float halfWidth = static_cast<float>(Constants::SCREEN_WIDTH) / 2.0f;
+	float centerY = player->getCenterY();
+	float halfHeight = static_cast<float>(Constants::SCREEN_HEIGHT) / 2.0f;
 	if (centerX < halfWidth)
 	{
 		centerX = halfWidth;
@@ -453,9 +458,17 @@ void PlayState::updateCamera(Game& game)
 	{
 		centerX = level->getWorldWidth() - halfWidth;
 	}
+	if (centerY < halfHeight)
+	{
+		centerY = halfHeight;
+	}
+	if (centerY > level->getWorldHeight() - halfHeight)
+	{
+		centerY = level->getWorldHeight() - halfHeight;
+	}
 
 	worldView.setSize(static_cast<float>(Constants::SCREEN_WIDTH), static_cast<float>(Constants::SCREEN_HEIGHT));
-	worldView.setCenter(centerX, static_cast<float>(Constants::SCREEN_HEIGHT) / 2.0f);
+	worldView.setCenter(centerX, centerY);
 }
 
 void PlayState::updateHud(Game& game)
@@ -488,6 +501,16 @@ void PlayState::updateHud(Game& game)
 	{
 		text += "  Kills " + std::to_string(campaignKills);
 		text += "  Enemies " + std::to_string(game.getEntityManager().countActiveEnemies()) + "/10";
+	}
+	else
+	{
+		int enemiesLeft = game.getEntityManager().countActiveEnemies();
+		text += "  Enemies " + std::to_string(enemiesLeft);
+		Level* level = game.getLevelManager().getCurrentLevel();
+		if (level != 0 && player != 0 && player->getX() >= level->getRightBoundary() - 220.0f && enemiesLeft > 0)
+		{
+			text += "  Clear Enemies";
+		}
 	}
 	if (DeveloperMode::isEnabled())
 	{

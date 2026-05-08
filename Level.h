@@ -11,15 +11,33 @@ protected:
 	sf::Texture backgroundTexture;
 	sf::Sprite backgroundSprite;
 	bool backgroundLoaded;
+	bool fullBiomeBackground;
+	sf::IntRect backgroundTextureRect;
+	sf::Image collisionMaskImage;
+	bool collisionMaskLoaded;
+	DynamicArray<float> groundProfile;
+	int groundProfileSpacing;
 	sf::Texture grassTexture;
 	sf::Texture dirtTexture;
 	sf::Texture stoneTexture;
 	bool blocksLoaded;
 	float worldWidth;
+	float worldHeight;
 	int levelNumber;
 	bool campaignGenerated;
 	DynamicArray<sf::FloatRect> platforms;
 
+	bool loadBackground();
+	bool loadFullBiomeBackground(const char* fileName, const char* collisionMaskFileName);
+	bool loadCollisionMask(const char* fileName);
+	void setupFullBiomeRect(int contentTop, int contentHeight);
+	void findImageContentY(const sf::Image& image, int& contentTop, int& contentHeight) const;
+	void buildGroundProfileFromMask();
+	bool isGroundMaskPixel(sf::Color pixel) const;
+	int getSourceXFromWorldX(float worldX) const;
+	float getWorldYFromSourceY(int sourceY) const;
+	float getMaskedGroundYAt(float x) const;
+	float getMaskedLandingY(float left, float right, float previousBottom, float currentBottom) const;
 	void drawTileRow(sf::RenderWindow& window, sf::Texture& texture, int y);
 	void drawPlatform(sf::RenderWindow& window, const sf::FloatRect& platform);
 	void drawGeneratedTerrain(sf::RenderWindow& window);
@@ -36,6 +54,7 @@ public:
 
 	bool isLoaded() const;
 	float getWorldWidth() const;
+	float getWorldHeight() const;
 	float getRightBoundary() const;
 	int getLevelNumber() const;
 	float getLandingY(float left, float right, float previousBottom, float currentBottom) const;

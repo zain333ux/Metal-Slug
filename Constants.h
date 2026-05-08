@@ -36,5 +36,7 @@ public:
 	static constexpr float WORLD_WIDTH_LEVEL_1 = 3600.0f;
 	static constexpr float WORLD_WIDTH_LEVEL_2 = 4400.0f;
 	static constexpr float WORLD_WIDTH_LEVEL_3 = 5200.0f;
+	static constexpr float WORLD_HEIGHT = 1800.0f;
+	static constexpr float FULL_BIOME_WORLD_WIDTH = WORLD_WIDTH_LEVEL_1 + WORLD_WIDTH_LEVEL_2 + WORLD_WIDTH_LEVEL_3;
 	static constexpr float BOSS_WORLD_WIDTH = 2600.0f;
 };

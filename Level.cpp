@@ -8,14 +8,19 @@ Level::Level(int newLevelNumber, float newWorldWidth, bool newCampaignGenerated)
 {
 	loaded = false;
 	backgroundLoaded = false;
+	fullBiomeBackground = false;
+	collisionMaskLoaded = false;
 	blocksLoaded = false;
 	levelNumber = newLevelNumber;
 	campaignGenerated = newCampaignGenerated;
 	worldWidth = newWorldWidth;
+	worldHeight = static_cast<float>(Constants::SCREEN_HEIGHT);
 	if (worldWidth <= 0.0f)
 	{
 		worldWidth = Constants::WORLD_WIDTH_LEVEL_1;
 	}
+	backgroundTextureRect = sf::IntRect(0, 0, 0, 0);
+	groundProfileSpacing = 4;
 }
 
 Level::~Level()
@@ -24,11 +29,7 @@ Level::~Level()
 
 void Level::load()
 {
-	if (backgroundTexture.loadFromFile("Sprites/Clean/background_level1.png"))
-	{
-		backgroundSprite.setTexture(backgroundTexture);
-		backgroundLoaded = true;
-	}
+	loadBackground();
 
 	if (grassTexture.loadFromFile("Sprites/blocks/grass_block_side.png") &&
 		dirtTexture.loadFromFile("Sprites/blocks/dirt.png") &&
@@ -37,12 +38,403 @@ void Level::load()
 		blocksLoaded = true;
 	}
 
-	if (!campaignGenerated)
+	if (!campaignGenerated && !fullBiomeBackground)
 	{
 		buildSurvivalPlatforms();
 	}
 
 	loaded = true;
+}
+
+bool Level::loadBackground()
+{
+	if (!campaignGenerated && levelNumber >= 1 && levelNumber <= 3 &&
+		loadFullBiomeBackground("Sprites/Clean/3biomes.png", "Sprites/Clean/3biomes_collison.png"))
+	{
+		return true;
+	}
+
+	if (!campaignGenerated && levelNumber >= 1 && levelNumber <= 3 &&
+		loadFullBiomeBackground("Sprites/Clean/full_biome-terrain.png", "Sprites/Clean/full_biome-collision.png"))
+	{
+		return true;
+	}
+
+	if (backgroundTexture.loadFromFile("Sprites/Clean/background_level1.png"))
+	{
+		sf::Vector2u textureSize = backgroundTexture.getSize();
+		backgroundTextureRect = sf::IntRect(0, 0, static_cast<int>(textureSize.x), static_cast<int>(textureSize.y));
+		backgroundSprite.setTexture(backgroundTexture);
+		backgroundSprite.setTextureRect(backgroundTextureRect);
+		backgroundLoaded = true;
+		return true;
+	}
+
+	return false;
+}
+
+bool Level::loadFullBiomeBackground(const char* fileName, const char* collisionMaskFileName)
+{
+	sf::Image image;
+	if (!image.loadFromFile(fileName))
+	{
+		return false;
+	}
+
+	int contentTop = 0;
+	int contentHeight = static_cast<int>(image.getSize().y);
+	findImageContentY(image, contentTop, contentHeight);
+	if (!backgroundTexture.loadFromImage(image))
+	{
+		return false;
+	}
+
+	fullBiomeBackground = true;
+	worldHeight = Constants::WORLD_HEIGHT;
+	setupFullBiomeRect(contentTop, contentHeight);
+	backgroundSprite.setTexture(backgroundTexture);
+	backgroundSprite.setTextureRect(backgroundTextureRect);
+	backgroundLoaded = true;
+	loadCollisionMask(collisionMaskFileName);
+	return true;
+}
+
+bool Level::loadCollisionMask(const char* fileName)
+{
+	if (!collisionMaskImage.loadFromFile(fileName))
+	{
+		collisionMaskLoaded = false;
+		return false;
+	}
+
+	sf::Vector2u maskSize = collisionMaskImage.getSize();
+	sf::Vector2u backgroundSize = backgroundTexture.getSize();
+	if (maskSize.x != backgroundSize.x || maskSize.y != backgroundSize.y)
+	{
+		collisionMaskLoaded = false;
+		return false;
+	}
+
+	collisionMaskLoaded = true;
+	buildGroundProfileFromMask();
+	return groundProfile.getSize() > 0;
+}
+
+void Level::setupFullBiomeRect(int contentTop, int contentHeight)
+{
+	sf::Vector2u textureSize = backgroundTexture.getSize();
+	int sourceWidth = static_cast<int>(textureSize.x);
+	int sourceHeight = static_cast<int>(textureSize.y);
+	if (sourceWidth <= 0 || sourceHeight <= 0)
+	{
+		backgroundTextureRect = sf::IntRect(0, 0, 0, 0);
+		return;
+	}
+
+	float sectionStart = 0.0f;
+	float sectionWidth = Constants::WORLD_WIDTH_LEVEL_1;
+	if (levelNumber == 2)
+	{
+		sectionStart = Constants::WORLD_WIDTH_LEVEL_1;
+		sectionWidth = Constants::WORLD_WIDTH_LEVEL_2;
+	}
+	else if (levelNumber == 3)
+	{
+		sectionStart = Constants::WORLD_WIDTH_LEVEL_1 + Constants::WORLD_WIDTH_LEVEL_2;
+		sectionWidth = Constants::WORLD_WIDTH_LEVEL_3;
+	}
+
+	int left = static_cast<int>(static_cast<float>(sourceWidth) * sectionStart / Constants::FULL_BIOME_WORLD_WIDTH + 0.5f);
+	int width = static_cast<int>(static_cast<float>(sourceWidth) * sectionWidth / Constants::FULL_BIOME_WORLD_WIDTH + 0.5f);
+	if (left < 0)
+	{
+		left = 0;
+	}
+	if (width < 1)
+	{
+		width = sourceWidth;
+	}
+	if (left + width > sourceWidth)
+	{
+		width = sourceWidth - left;
+	}
+
+	if (contentTop < 0)
+	{
+		contentTop = 0;
+	}
+	if (contentHeight < 1)
+	{
+		contentHeight = sourceHeight;
+	}
+	if (contentTop + contentHeight > sourceHeight)
+	{
+		contentHeight = sourceHeight - contentTop;
+	}
+
+	backgroundTextureRect = sf::IntRect(left, contentTop, width, contentHeight);
+}
+
+void Level::findImageContentY(const sf::Image& image, int& contentTop, int& contentHeight) const
+{
+	sf::Vector2u imageSize = image.getSize();
+	int minY = static_cast<int>(imageSize.y);
+	int maxY = -1;
+
+	for (unsigned int y = 0; y < imageSize.y; y += 2)
+	{
+		for (unsigned int x = 0; x < imageSize.x; x += 8)
+		{
+			sf::Color pixel = image.getPixel(x, y);
+			bool almostWhite = pixel.r > 245 && pixel.g > 245 && pixel.b > 245;
+			bool almostBlack = pixel.r < 8 && pixel.g < 8 && pixel.b < 8;
+			bool emptyPixel = pixel.a == 0 || almostWhite || almostBlack;
+			if (!emptyPixel)
+			{
+				if (static_cast<int>(y) < minY)
+				{
+					minY = static_cast<int>(y);
+				}
+				if (static_cast<int>(y) > maxY)
+				{
+					maxY = static_cast<int>(y);
+				}
+			}
+		}
+	}
+
+	if (maxY < minY)
+	{
+		contentTop = 0;
+		contentHeight = static_cast<int>(imageSize.y);
+		return;
+	}
+
+	contentTop = minY;
+	contentHeight = maxY - minY + 1;
+}
+
+void Level::buildGroundProfileFromMask()
+{
+	groundProfile.clear();
+
+	if (!collisionMaskLoaded || backgroundTextureRect.width <= 0 || backgroundTextureRect.height <= 0)
+	{
+		return;
+	}
+
+	int sampleCount = static_cast<int>(worldWidth / static_cast<float>(groundProfileSpacing)) + 2;
+	float previousGroundY = static_cast<float>(Constants::GROUND_Y);
+	int startY = backgroundTextureRect.top;
+	int endY = backgroundTextureRect.top + backgroundTextureRect.height;
+	int maskHeight = static_cast<int>(collisionMaskImage.getSize().y);
+	if (endY > maskHeight)
+	{
+		endY = maskHeight;
+	}
+
+	for (int sample = 0; sample < sampleCount; sample += 1)
+	{
+		float worldX = static_cast<float>(sample * groundProfileSpacing);
+		if (worldX > worldWidth)
+		{
+			worldX = worldWidth;
+		}
+
+		int sourceX = getSourceXFromWorldX(worldX);
+		float groundY = previousGroundY;
+		bool foundGround = false;
+		for (int sourceY = endY - 1; sourceY >= startY; sourceY -= 1)
+		{
+			if (isGroundMaskPixel(collisionMaskImage.getPixel(static_cast<unsigned int>(sourceX), static_cast<unsigned int>(sourceY))))
+			{
+				groundY = getWorldYFromSourceY(sourceY);
+				foundGround = true;
+				break;
+			}
+		}
+
+		if (foundGround)
+		{
+			previousGroundY = groundY;
+		}
+		groundProfile.pushBack(groundY);
+	}
+}
+
+bool Level::isGroundMaskPixel(sf::Color pixel) const
+{
+	return pixel.a > 0 && pixel.g > 180 && pixel.r < 120 && pixel.b < 120;
+}
+
+int Level::getSourceXFromWorldX(float worldX) const
+{
+	if (worldX < 0.0f)
+	{
+		worldX = 0.0f;
+	}
+	if (worldX > worldWidth)
+	{
+		worldX = worldWidth;
+	}
+
+	int sourceX = backgroundTextureRect.left;
+	if (worldWidth > 0.0f && backgroundTextureRect.width > 0)
+	{
+		sourceX += static_cast<int>(worldX * static_cast<float>(backgroundTextureRect.width) / worldWidth);
+	}
+
+	int maxX = backgroundTextureRect.left + backgroundTextureRect.width - 1;
+	if (sourceX > maxX)
+	{
+		sourceX = maxX;
+	}
+	if (sourceX < backgroundTextureRect.left)
+	{
+		sourceX = backgroundTextureRect.left;
+	}
+
+	return sourceX;
+}
+
+float Level::getWorldYFromSourceY(int sourceY) const
+{
+	if (backgroundTextureRect.height <= 0)
+	{
+		return static_cast<float>(Constants::GROUND_Y);
+	}
+
+	float relativeY = static_cast<float>(sourceY - backgroundTextureRect.top) / static_cast<float>(backgroundTextureRect.height);
+	if (relativeY < 0.0f)
+	{
+		relativeY = 0.0f;
+	}
+	if (relativeY > 1.0f)
+	{
+		relativeY = 1.0f;
+	}
+
+	return relativeY * worldHeight;
+}
+
+float Level::getMaskedGroundYAt(float x) const
+{
+	if (!collisionMaskLoaded || groundProfile.getSize() == 0)
+	{
+		return static_cast<float>(Constants::GROUND_Y);
+	}
+
+	if (x < 0.0f)
+	{
+		x = 0.0f;
+	}
+	if (x > worldWidth)
+	{
+		x = worldWidth;
+	}
+
+	float samplePosition = x / static_cast<float>(groundProfileSpacing);
+	int leftIndex = static_cast<int>(samplePosition);
+	int rightIndex = leftIndex + 1;
+	if (leftIndex < 0)
+	{
+		leftIndex = 0;
+	}
+	if (rightIndex >= groundProfile.getSize())
+	{
+		rightIndex = groundProfile.getSize() - 1;
+	}
+
+	float blend = samplePosition - static_cast<float>(leftIndex);
+	float leftY = groundProfile.get(leftIndex);
+	float rightY = groundProfile.get(rightIndex);
+	return leftY + (rightY - leftY) * blend;
+}
+
+float Level::getMaskedLandingY(float left, float right, float previousBottom, float currentBottom) const
+{
+	if (!collisionMaskLoaded || backgroundTextureRect.width <= 0 || backgroundTextureRect.height <= 0)
+	{
+		return getMaskedGroundYAt((left + right) * 0.5f);
+	}
+
+	float centerX = (left + right) * 0.5f;
+	float landingY = getMaskedGroundYAt(centerX);
+	if (currentBottom < previousBottom)
+	{
+		return landingY;
+	}
+
+	float scanTop = previousBottom - 10.0f;
+	float scanBottom = currentBottom + 8.0f;
+	if (scanTop > scanBottom)
+	{
+		float temp = scanTop;
+		scanTop = scanBottom;
+		scanBottom = temp;
+	}
+
+	if (scanTop < 0.0f)
+	{
+		scanTop = 0.0f;
+	}
+	if (scanBottom > worldHeight)
+	{
+		scanBottom = worldHeight;
+	}
+
+	float sampleXs[3];
+	sampleXs[0] = left + 6.0f;
+	sampleXs[1] = centerX;
+	sampleXs[2] = right - 6.0f;
+
+	bool foundSurface = false;
+	float bestSurfaceY = landingY;
+	for (int i = 0; i < 3; i += 1)
+	{
+		int sourceX = getSourceXFromWorldX(sampleXs[i]);
+		for (float worldY = scanTop; worldY <= scanBottom; worldY += 2.0f)
+		{
+			float relativeY = worldY / worldHeight;
+			if (relativeY < 0.0f)
+			{
+				relativeY = 0.0f;
+			}
+			if (relativeY > 1.0f)
+			{
+				relativeY = 1.0f;
+			}
+
+			int sourceY = backgroundTextureRect.top + static_cast<int>(relativeY * static_cast<float>(backgroundTextureRect.height));
+			int maxY = backgroundTextureRect.top + backgroundTextureRect.height - 1;
+			if (sourceY > maxY)
+			{
+				sourceY = maxY;
+			}
+			if (sourceY < backgroundTextureRect.top)
+			{
+				sourceY = backgroundTextureRect.top;
+			}
+
+			if (isGroundMaskPixel(collisionMaskImage.getPixel(static_cast<unsigned int>(sourceX), static_cast<unsigned int>(sourceY))))
+			{
+				float surfaceY = getWorldYFromSourceY(sourceY);
+				if (!foundSurface || surfaceY < bestSurfaceY)
+				{
+					bestSurfaceY = surfaceY;
+				}
+				foundSurface = true;
+				break;
+			}
+		}
+	}
+
+	if (foundSurface)
+	{
+		return bestSurfaceY;
+	}
+
+	return landingY;
 }
 
 void Level::update(float deltaTime)
@@ -54,11 +446,15 @@ void Level::draw(sf::RenderWindow& window)
 {
 	if (backgroundLoaded)
 	{
-		backgroundSprite.setScale(worldWidth / static_cast<float>(backgroundTexture.getSize().x), 1.0f);
+		if (backgroundTextureRect.width > 0 && backgroundTextureRect.height > 0)
+		{
+			backgroundSprite.setScale(worldWidth / static_cast<float>(backgroundTextureRect.width),
+				worldHeight / static_cast<float>(backgroundTextureRect.height));
+		}
 		window.draw(backgroundSprite);
 	}
 
-	if (blocksLoaded)
+	if (blocksLoaded && !fullBiomeBackground)
 	{
 		if (campaignGenerated)
 		{
@@ -76,7 +472,7 @@ void Level::draw(sf::RenderWindow& window)
 			drawPlatform(window, platforms.get(i));
 		}
 	}
-	else
+	else if (!fullBiomeBackground)
 	{
 		sf::RectangleShape ground;
 		ground.setPosition(0.0f, static_cast<float>(Constants::GROUND_Y));
@@ -229,6 +625,11 @@ float Level::getWorldWidth() const
 	return worldWidth;
 }
 
+float Level::getWorldHeight() const
+{
+	return worldHeight;
+}
+
 float Level::getRightBoundary() const
 {
 	return worldWidth - 120.0f;
@@ -241,6 +642,11 @@ int Level::getLevelNumber() const
 
 float Level::getLandingY(float left, float right, float previousBottom, float currentBottom) const
 {
+	if (collisionMaskLoaded)
+	{
+		return getMaskedLandingY(left, right, previousBottom, currentBottom);
+	}
+
 	float landingY = getMainGroundYAt((left + right) * 0.5f);
 	for (int i = 0; i < platforms.getSize(); i += 1)
 	{
@@ -273,6 +679,11 @@ float Level::getGroundYAt(float x) const
 
 float Level::getMainGroundYAt(float x) const
 {
+	if (collisionMaskLoaded)
+	{
+		return getMaskedGroundYAt(x);
+	}
+
 	if (campaignGenerated)
 	{
 		return getGeneratedSurfaceY(x);
