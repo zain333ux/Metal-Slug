@@ -152,7 +152,7 @@ void EntityManager::checkProjectileEnemyCollisions()
 						pendingScore += enemy->getScoreValue();
 					}
 				}
-				projectile->deactivate();
+				projectile->onCollision();
 				break;
 			}
 		}
@@ -196,7 +196,7 @@ void EntityManager::checkProjectilePlayerCollisions()
 			if (projectile->getBounds().intersects(player->getBounds()))
 			{
 				player->takeDamage(projectile->getDamage());
-				projectile->deactivate();
+				projectile->onCollision();
 				break;
 			}
 		}

@@ -101,6 +101,13 @@ void PlayState::loadCurrentLevel(Game& game)
 void PlayState::spawnEnemy(Game& game, EnemyKind kind, float x, float y)
 {
 	Enemy* enemy = EnemyFactory::createEnemy(kind, x, y, player);
+	bool bossEnemy = kind == ENEMY_BOSS_1 || kind == ENEMY_BOSS_2 || kind == ENEMY_BOSS_3 || kind == ENEMY_ULTIMATE_BOSS;
+	if (!bossEnemy && !enemy->hasSpriteVisual())
+	{
+		delete enemy;
+		return;
+	}
+
 	Level* level = game.getLevelManager().getCurrentLevel();
 	bool flyingEnemy = kind == ENEMY_MARTIAN || kind == ENEMY_BOSS_2;
 	if (level != 0 && !flyingEnemy)
@@ -113,6 +120,13 @@ void PlayState::spawnEnemy(Game& game, EnemyKind kind, float x, float y)
 void PlayState::spawnEnemyAt(Game& game, EnemyKind kind, float x, float y)
 {
 	Enemy* enemy = EnemyFactory::createEnemy(kind, x, y, player);
+	bool bossEnemy = kind == ENEMY_BOSS_1 || kind == ENEMY_BOSS_2 || kind == ENEMY_BOSS_3 || kind == ENEMY_ULTIMATE_BOSS;
+	if (!bossEnemy && !enemy->hasSpriteVisual())
+	{
+		delete enemy;
+		return;
+	}
+
 	game.getEntityManager().addEntity(enemy);
 }
 
@@ -127,8 +141,8 @@ void PlayState::spawnSurvivalWave(Game& game)
 		spawnEnemy(game, ENEMY_GRENADE, 1360.0f, 500.0f);
 		spawnEnemy(game, ENEMY_BAZOOKA, 1740.0f, 500.0f);
 		spawnEnemyAt(game, ENEMY_GRENADE, 1900.0f, 615.0f - 96.0f);
-		spawnEnemy(game, ENEMY_ZOMBIE, 2280.0f, 500.0f);
-		spawnEnemy(game, ENEMY_MUMMY, 2760.0f, 500.0f);
+		spawnEnemy(game, ENEMY_SHIELDED, 2280.0f, 500.0f);
+		spawnEnemy(game, ENEMY_GRENADE, 2760.0f, 500.0f);
 		spawnEnemy(game, ENEMY_MARTIAN, 3260.0f, 360.0f);
 		return;
 	}
@@ -138,8 +152,8 @@ void PlayState::spawnSurvivalWave(Game& game)
 	spawnEnemy(game, ENEMY_SHIELDED, 2180.0f + base, 500.0f);
 	spawnEnemy(game, ENEMY_BAZOOKA, 2500.0f + base, 500.0f);
 	spawnEnemy(game, ENEMY_GRENADE, 2800.0f + base, 500.0f);
-	spawnEnemy(game, ENEMY_ZOMBIE, 3080.0f + base, 500.0f);
-	spawnEnemy(game, ENEMY_MUMMY, 3320.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_SHIELDED, 3080.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_BAZOOKA, 3320.0f + base, 500.0f);
 	spawnEnemy(game, ENEMY_MARTIAN, 3480.0f + base, 360.0f);
 	if (currentLevel >= 2)
 	{

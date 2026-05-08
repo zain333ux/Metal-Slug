@@ -79,4 +79,5 @@ public:
 	virtual const char* getEnemyName() const;
 	bool isFacingRight() const;
 	bool isGrounded() const;
+	bool hasSpriteVisual() const;
 };

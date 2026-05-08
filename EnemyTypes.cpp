@@ -11,6 +11,25 @@
 
 #include <cmath>
 
+static const sf::IntRect REBEL_IDLE_FRAMES[] =
+{
+	sf::IntRect(0, 0, 43, 42), sf::IntRect(43, 0, 43, 42), sf::IntRect(86, 0, 43, 42), sf::IntRect(129, 0, 44, 42)
+};
+
+static const sf::IntRect REBEL_RUN_FRAMES[] =
+{
+	sf::IntRect(0, 0, 39, 42), sf::IntRect(39, 0, 40, 42), sf::IntRect(79, 0, 43, 42), sf::IntRect(122, 0, 45, 42),
+	sf::IntRect(167, 0, 40, 42), sf::IntRect(207, 0, 39, 42), sf::IntRect(246, 0, 38, 42), sf::IntRect(284, 0, 40, 42),
+	sf::IntRect(324, 0, 43, 42), sf::IntRect(367, 0, 41, 42), sf::IntRect(408, 0, 41, 42), sf::IntRect(449, 0, 39, 42)
+};
+
+static const sf::IntRect REBEL_FIRE_FRAMES[] =
+{
+	sf::IntRect(0, 0, 47, 51), sf::IntRect(47, 0, 51, 51), sf::IntRect(98, 0, 50, 51), sf::IntRect(148, 0, 45, 51),
+	sf::IntRect(193, 0, 45, 51), sf::IntRect(238, 0, 43, 51), sf::IntRect(281, 0, 46, 51), sf::IntRect(327, 0, 50, 51),
+	sf::IntRect(377, 0, 49, 51), sf::IntRect(426, 0, 46, 51)
+};
+
 static const sf::IntRect MARTIAN_POD_MOVE_FRAMES[] =
 {
 	sf::IntRect(0, 0, 48, 42), sf::IntRect(48, 0, 48, 42), sf::IntRect(96, 0, 48, 42), sf::IntRect(144, 0, 48, 42),
@@ -101,7 +120,168 @@ RebelSoldier::RebelSoldier()
 	pistolCooldown = 1.35f;
 	pistolTimer = 0.6f;
 	pistolEquipped = true;
+	rebelState = 0;
+	rebelAnimationState = -1;
+	hurtTimer = 0.0f;
+	shootTimer = 0.0f;
+	shotReleaseTimer = 0.0f;
+	queuedRebelShot = false;
+	currentFrames = 0;
+	customFrameCount = 0;
+	customFrameIndex = 0;
+	customFrameTimer = 0.0f;
+	customFrameDuration = 0.12f;
 	fallbackColor = sf::Color(210, 70, 70);
+	width = 52.0f;
+	height = 96.0f;
+	body.setSize(sf::Vector2f(width, height));
+	setSpriteScale(2.25f);
+	usingSprite = false;
+
+	if (loadMaskedTexture(idleTexture, "Sprites/Clean/RebelSoldier_idle.png") &&
+		loadMaskedTexture(runTexture, "Sprites/Clean/RebelSoldier_run.png") &&
+		loadMaskedTexture(fireTexture, "Sprites/Clean/RebelSoldier_fire.png"))
+	{
+		usingSprite = true;
+		setRebelAnimation(0);
+	}
+}
+
+void RebelSoldier::update(float deltaTime)
+{
+	if (hurtTimer > 0.0f)
+	{
+		hurtTimer -= deltaTime;
+	}
+	if (shootTimer > 0.0f)
+	{
+		shootTimer -= deltaTime;
+	}
+	if (shotReleaseTimer > 0.0f)
+	{
+		shotReleaseTimer -= deltaTime;
+	}
+
+	Enemy::update(deltaTime);
+	updateRebelAnimation(deltaTime);
+}
+
+Projectile* RebelSoldier::createProjectileIfReady()
+{
+	if (queuedShot && !queuedRebelShot && shootTimer <= 0.0f && shotReleaseTimer <= 0.0f)
+	{
+		queuedRebelShot = true;
+		shootTimer = 0.50f;
+		shotReleaseTimer = 0.24f;
+		rebelState = 2;
+		return 0;
+	}
+
+	if (!queuedRebelShot || shotReleaseTimer > 0.0f)
+	{
+		return 0;
+	}
+
+	queuedRebelShot = false;
+	queuedShot = false;
+	float bulletX = facingRight ? x + width : x - 18.0f;
+	float bulletY = y + 42.0f;
+	return new EnemyBullet(bulletX, bulletY, facingRight);
+}
+
+bool RebelSoldier::applyProjectileHit(Projectile& projectile)
+{
+	DamageableEntity::takeDamage(projectile.getDamage());
+	hurtTimer = 0.25f;
+	return true;
+}
+
+void RebelSoldier::updateRebelAnimation(float deltaTime)
+{
+	if (shootTimer > 0.0f)
+	{
+		rebelState = 2;
+	}
+	else if (velocityX != 0.0f)
+	{
+		rebelState = 1;
+	}
+	else
+	{
+		rebelState = 0;
+	}
+
+	setRebelAnimation(rebelState);
+	updateCustomAnimation(deltaTime);
+
+	if (hurtTimer > 0.0f)
+	{
+		sprite.setColor(sf::Color(255, 120, 120));
+		body.setFillColor(sf::Color(255, 80, 80));
+	}
+	else
+	{
+		sprite.setColor(sf::Color::White);
+		body.setFillColor(fallbackColor);
+	}
+}
+
+void RebelSoldier::setRebelAnimation(int newState)
+{
+	if (rebelAnimationState == newState)
+	{
+		return;
+	}
+
+	rebelAnimationState = newState;
+	if (newState == 1)
+	{
+		setCustomAnimation(runTexture, REBEL_RUN_FRAMES, 12, 0.08f);
+	}
+	else if (newState == 2)
+	{
+		setCustomAnimation(fireTexture, REBEL_FIRE_FRAMES, 10, 0.05f);
+	}
+	else
+	{
+		setCustomAnimation(idleTexture, REBEL_IDLE_FRAMES, 4, 0.14f);
+	}
+}
+
+void RebelSoldier::setCustomAnimation(sf::Texture& newTexture, const sf::IntRect* frames, int frameCount, float frameDuration)
+{
+	currentFrames = frames;
+	customFrameCount = frameCount;
+	customFrameIndex = 0;
+	customFrameTimer = 0.0f;
+	customFrameDuration = frameDuration;
+	sprite.setTexture(newTexture, true);
+	sprite.setTextureRect(currentFrames[0]);
+	updateVisualPosition();
+}
+
+void RebelSoldier::updateCustomAnimation(float deltaTime)
+{
+	if (!usingSprite || currentFrames == 0 || customFrameCount <= 1)
+	{
+		return;
+	}
+
+	customFrameTimer += deltaTime;
+	if (customFrameTimer < customFrameDuration)
+	{
+		return;
+	}
+
+	customFrameTimer = 0.0f;
+	customFrameIndex += 1;
+	if (customFrameIndex >= customFrameCount)
+	{
+		customFrameIndex = 0;
+	}
+
+	sprite.setTextureRect(currentFrames[customFrameIndex]);
+	updateVisualPosition();
 }
 
 const char* RebelSoldier::getEnemyName() const

@@ -19,6 +19,7 @@ public:
 
 	virtual void update(float deltaTime);
 	virtual void draw(sf::RenderWindow& window);
+	virtual void onCollision();
 
 	int getDamage() const;
 	bool isExplosive() const;

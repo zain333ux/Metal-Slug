@@ -39,6 +39,11 @@ void Projectile::draw(sf::RenderWindow& window)
 	}
 }
 
+void Projectile::onCollision()
+{
+	deactivate();
+}
+
 int Projectile::getDamage() const
 {
 	return damage;

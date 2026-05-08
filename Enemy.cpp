@@ -53,10 +53,6 @@ Enemy::Enemy()
 	body.setOutlineThickness(2.0f);
 	body.setFillColor(sf::Color(210, 70, 70));
 	setSpriteScale(2.1f);
-	if (loadSpriteSheet("Sprites/Clean/enemy_rebel_sheet.png"))
-	{
-		setSpriteFrame(0, 0, 96, 96);
-	}
 }
 
 void Enemy::setSpawnPosition(float newX, float newY)
@@ -448,4 +444,9 @@ void Enemy::restartContactDamageCooldown()
 const char* Enemy::getEnemyName() const
 {
 	return "Rebel Soldier";
+}
+
+bool Enemy::hasSpriteVisual() const
+{
+	return usingSprite;
 }

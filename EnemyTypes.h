@@ -4,8 +4,32 @@
 
 class RebelSoldier : public Enemy
 {
+private:
+	int rebelState;
+	int rebelAnimationState;
+	float hurtTimer;
+	float shootTimer;
+	float shotReleaseTimer;
+	bool queuedRebelShot;
+	const sf::IntRect* currentFrames;
+	int customFrameCount;
+	int customFrameIndex;
+	float customFrameTimer;
+	float customFrameDuration;
+	sf::Texture idleTexture;
+	sf::Texture runTexture;
+	sf::Texture fireTexture;
+
+	void updateRebelAnimation(float deltaTime);
+	void setRebelAnimation(int newState);
+	void setCustomAnimation(sf::Texture& newTexture, const sf::IntRect* frames, int frameCount, float frameDuration);
+	void updateCustomAnimation(float deltaTime);
+
 public:
 	RebelSoldier();
+	void update(float deltaTime);
+	Projectile* createProjectileIfReady();
+	bool applyProjectileHit(Projectile& projectile);
 	const char* getEnemyName() const;
 };
 
