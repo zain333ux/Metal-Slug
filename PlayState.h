@@ -5,6 +5,7 @@
 #include "ScoreManager.h"
 
 class PlayerSoldier;
+class Vehicle;
 
 enum PlayMode
 {
@@ -27,6 +28,8 @@ private:
 	int campaignKills;
 	ScoreManager scoreManager;
 	PlayerSoldier* player;
+	Vehicle* vehicle;
+	bool previousVehicleKey;
 	sf::Font hudFont;
 	sf::Text hudText;
 	sf::Text centerText;
@@ -42,6 +45,9 @@ private:
 	void spawnCampaignWave(Game& game);
 	void updateCampaignSpawning(Game& game, float deltaTime);
 	void spawnPickups(Game& game);
+	void spawnVehicle(Game& game);
+	void handleVehicleInteraction(Game& game);
+	void syncPlayerWithVehicle();
 	void updateCamera(Game& game);
 	void updateHud(Game& game);
 	void completeLevel(Game& game);

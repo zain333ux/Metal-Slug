@@ -7,6 +7,7 @@
 
 class PlayerSoldier;
 class Level;
+class Vehicle;
 
 class EntityManager
 {
@@ -16,7 +17,9 @@ private:
 	Level* activeLevel;
 
 	void checkProjectileEnemyCollisions();
+	void checkProjectileVehicleCollisions();
 	void checkProjectilePlayerCollisions();
+	void checkEnemyVehicleCollisions();
 	void checkEnemyPlayerCollisions();
 	void checkPlayerCollectibleCollisions();
 
@@ -31,6 +34,7 @@ public:
 	int collectPendingScore();
 	int countActiveEnemies() const;
 	PlayerSoldier* getPlayer() const;
+	Vehicle* getVehicle() const;
 	void removeEnemiesBehind(float minimumX);
 	void removeInactive();
 	void clear();

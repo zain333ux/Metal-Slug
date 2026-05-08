@@ -34,3 +34,8 @@ void ProjectileWeapon::setCooldown(float newCooldown)
 		cooldown = newCooldown;
 	}
 }
+
+void ProjectileWeapon::restartCooldown()
+{
+	cooldownTimer = cooldown;
+}

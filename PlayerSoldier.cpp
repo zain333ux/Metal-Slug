@@ -29,6 +29,7 @@ PlayerSoldier::PlayerSoldier()
 	previousMeleeKey = false;
 	previousGrenadeKey = false;
 	previousRocketKey = false;
+	ridingVehicle = false;
 	setPosition(120.0f, 500.0f);
 	setSpriteScale(2.2f);
 	if (loadSpriteSheet("Sprites/Clean/player_marco_sheet.png"))
@@ -46,7 +47,7 @@ void PlayerSoldier::takeDamage(int damage)
 		return;
 	}
 
-	if (damage <= 0 || isDead() || damageTimer > 0.0f)
+	if (damage <= 0 || isDead() || ridingVehicle || damageTimer > 0.0f)
 	{
 		return;
 	}
@@ -73,6 +74,7 @@ void PlayerSoldier::respawn()
 	fireAnimationTimer = 0.0f;
 	aimingUp = false;
 	damageTimer = 0.0f;
+	setRidingVehicle(false);
 	playAnimation(Constants::PLAYER_ANIM_IDLE, 4, 0.18f);
 }
 
@@ -135,6 +137,12 @@ void PlayerSoldier::handleInput()
 		return;
 	}
 
+	if (ridingVehicle)
+	{
+		stopMoving();
+		return;
+	}
+
 	stopMoving();
 	aimingUp = sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
 
@@ -184,6 +192,13 @@ void PlayerSoldier::update(float deltaTime)
 	{
 		health = maxHealth;
 		refillDemoInventory();
+	}
+
+	if (ridingVehicle)
+	{
+		stopMoving();
+		setVelocity(0.0f, 0.0f);
+		return;
 	}
 
 	handleInput();
@@ -236,7 +251,7 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 {
 	weapon.update(deltaTime);
 
-	if (isDead())
+	if (isDead() || ridingVehicle)
 	{
 		return;
 	}
@@ -332,6 +347,65 @@ void PlayerSoldier::refillDemoInventory()
 		grenades[i] = 99;
 		rockets[i] = 99;
 	}
+}
+
+void PlayerSoldier::setRidingVehicle(bool riding)
+{
+	ridingVehicle = riding;
+	visible = !riding;
+
+	if (ridingVehicle)
+	{
+		stopMoving();
+		aimingUp = false;
+		firing = false;
+		fireAnimationTimer = 0.0f;
+	}
+}
+
+void PlayerSoldier::handleVehicleDestruction()
+{
+	if (DeveloperMode::isEnabled() || survivesVehicleDestruction())
+	{
+		return;
+	}
+
+	health = 0;
+	if (lives[currentCharacter] > 0)
+	{
+		lives[currentCharacter] -= 1;
+	}
+	damageTimer = 0.8f;
+}
+
+bool PlayerSoldier::isRidingVehicle() const
+{
+	return ridingVehicle;
+}
+
+float PlayerSoldier::getVehicleFireCooldownMultiplier() const
+{
+	if (currentCharacter == 1)
+	{
+		return 0.75f;
+	}
+
+	return 1.0f;
+}
+
+float PlayerSoldier::getVehicleDurabilityMultiplier() const
+{
+	if (currentCharacter == 1)
+	{
+		return 1.2f;
+	}
+
+	return 1.0f;
+}
+
+bool PlayerSoldier::survivesVehicleDestruction() const
+{
+	return currentCharacter == 1;
 }
 
 const char* PlayerSoldier::getCharacterName() const

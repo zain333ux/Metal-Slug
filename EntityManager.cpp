@@ -6,6 +6,7 @@
 #include "Projectile.h"
 #include "ScoreManager.h"
 #include "Soldier.h"
+#include "Vehicle.h"
 
 #include <cmath>
 
@@ -34,6 +35,11 @@ void EntityManager::addEntity(Entity* entity)
 		{
 			enemy->setActiveLevel(activeLevel);
 		}
+		Vehicle* vehicle = dynamic_cast<Vehicle*>(entity);
+		if (vehicle != 0)
+		{
+			vehicle->setActiveLevel(activeLevel);
+		}
 		entities.pushBack(entity);
 	}
 }
@@ -52,6 +58,11 @@ void EntityManager::setActiveLevel(Level* level)
 		if (enemy != 0)
 		{
 			enemy->setActiveLevel(activeLevel);
+		}
+		Vehicle* vehicle = dynamic_cast<Vehicle*>(entities.get(i));
+		if (vehicle != 0)
+		{
+			vehicle->setActiveLevel(activeLevel);
 		}
 	}
 }
@@ -81,7 +92,9 @@ void EntityManager::updateAll(float deltaTime)
 	}
 
 	checkProjectileEnemyCollisions();
+	checkProjectileVehicleCollisions();
 	checkProjectilePlayerCollisions();
+	checkEnemyVehicleCollisions();
 	checkEnemyPlayerCollisions();
 	checkPlayerCollectibleCollisions();
 	removeInactive();
@@ -169,6 +182,34 @@ void EntityManager::checkProjectileEnemyCollisions()
 	}
 }
 
+void EntityManager::checkProjectileVehicleCollisions()
+{
+	for (int i = 0; i < entities.getSize(); i += 1)
+	{
+		Projectile* projectile = dynamic_cast<Projectile*>(entities.get(i));
+		if (projectile == 0 || !projectile->isActive() || projectile->isPlayerOwned())
+		{
+			continue;
+		}
+
+		for (int j = 0; j < entities.getSize(); j += 1)
+		{
+			Vehicle* vehicle = dynamic_cast<Vehicle*>(entities.get(j));
+			if (vehicle == 0 || !vehicle->isActive())
+			{
+				continue;
+			}
+
+			if (projectile->getBounds().intersects(vehicle->getBounds()))
+			{
+				vehicle->takeDamage(projectile->getDamage());
+				projectile->deactivate();
+				break;
+			}
+		}
+	}
+}
+
 void EntityManager::checkProjectilePlayerCollisions()
 {
 	for (int i = 0; i < entities.getSize(); i += 1)
@@ -182,7 +223,7 @@ void EntityManager::checkProjectilePlayerCollisions()
 		for (int j = 0; j < entities.getSize(); j += 1)
 		{
 			PlayerSoldier* player = dynamic_cast<PlayerSoldier*>(entities.get(j));
-			if (player == 0 || !player->isActive() || player->isDead())
+			if (player == 0 || !player->isActive() || player->isDead() || player->isRidingVehicle())
 			{
 				continue;
 			}
@@ -192,6 +233,33 @@ void EntityManager::checkProjectilePlayerCollisions()
 				player->takeDamage(projectile->getDamage());
 				projectile->deactivate();
 				break;
+			}
+		}
+	}
+}
+
+void EntityManager::checkEnemyVehicleCollisions()
+{
+	for (int i = 0; i < entities.getSize(); i += 1)
+	{
+		Enemy* enemy = dynamic_cast<Enemy*>(entities.get(i));
+		if (enemy == 0 || !enemy->isActive())
+		{
+			continue;
+		}
+
+		for (int j = 0; j < entities.getSize(); j += 1)
+		{
+			Vehicle* vehicle = dynamic_cast<Vehicle*>(entities.get(j));
+			if (vehicle == 0 || !vehicle->isActive())
+			{
+				continue;
+			}
+
+			if (enemy->getBounds().intersects(vehicle->getBounds()) && enemy->canDealContactDamage())
+			{
+				vehicle->takeDamage(enemy->getContactDamage());
+				enemy->restartContactDamageCooldown();
 			}
 		}
 	}
@@ -210,7 +278,7 @@ void EntityManager::checkEnemyPlayerCollisions()
 		for (int j = 0; j < entities.getSize(); j += 1)
 		{
 			PlayerSoldier* player = dynamic_cast<PlayerSoldier*>(entities.get(j));
-			if (player == 0 || !player->isActive() || player->isDead())
+			if (player == 0 || !player->isActive() || player->isDead() || player->isRidingVehicle())
 			{
 				continue;
 			}
@@ -297,6 +365,20 @@ PlayerSoldier* EntityManager::getPlayer() const
 	return 0;
 }
 
+Vehicle* EntityManager::getVehicle() const
+{
+	for (int i = 0; i < entities.getSize(); i += 1)
+	{
+		Vehicle* vehicle = dynamic_cast<Vehicle*>(entities.get(i));
+		if (vehicle != 0 && vehicle->isActive())
+		{
+			return vehicle;
+		}
+	}
+
+	return 0;
+}
+
 void EntityManager::removeEnemiesBehind(float minimumX)
 {
 	for (int i = 0; i < entities.getSize(); i += 1)
@@ -315,6 +397,16 @@ void EntityManager::removeInactive()
 	{
 		if (entities.get(i) == 0 || !entities.get(i)->isActive())
 		{
+			Vehicle* vehicle = dynamic_cast<Vehicle*>(entities.get(i));
+			if (vehicle != 0 && vehicle->isOccupied())
+			{
+				PlayerSoldier* player = getPlayer();
+				if (player != 0)
+				{
+					vehicle->ejectPlayer(*player);
+				}
+			}
+
 			delete entities.get(i);
 			entities.removeAt(i);
 			i -= 1;

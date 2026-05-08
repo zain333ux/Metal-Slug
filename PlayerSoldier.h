@@ -24,6 +24,7 @@ private:
 	bool previousMeleeKey;
 	bool previousGrenadeKey;
 	bool previousRocketKey;
+	bool ridingVehicle;
 
 	void handleInput();
 	void updatePlayerAnimation(float deltaTime);
@@ -38,6 +39,12 @@ public:
 	void handleWeaponInput(EntityManager& entityManager, float deltaTime);
 	void switchCharacter();
 	void refillDemoInventory();
+	void setRidingVehicle(bool riding);
+	void handleVehicleDestruction();
+	bool isRidingVehicle() const;
+	float getVehicleFireCooldownMultiplier() const;
+	float getVehicleDurabilityMultiplier() const;
+	bool survivesVehicleDestruction() const;
 	const char* getCharacterName() const;
 	int getLives() const;
 	int getGrenades() const;

@@ -10,6 +10,7 @@
 #include "PlayerSoldier.h"
 #include "DeveloperMode.h"
 #include "ModeSelectState.h"
+#include "Vehicle.h"
 
 #include <string>
 
@@ -26,6 +27,8 @@ PlayState::PlayState(PlayMode newMode, int newCampaignProfileOption)
 	campaignSpawnTimer = 0.0f;
 	campaignKills = 0;
 	player = 0;
+	vehicle = 0;
+	previousVehicleKey = false;
 }
 
 void PlayState::initialize(Game& game)
@@ -54,6 +57,9 @@ void PlayState::configureHud()
 void PlayState::loadCurrentLevel(Game& game)
 {
 	game.getEntityManager().clear();
+	player = 0;
+	vehicle = 0;
+	previousVehicleKey = false;
 
 	player = new PlayerSoldier();
 	game.getEntityManager().addEntity(player);
@@ -92,6 +98,7 @@ void PlayState::loadCurrentLevel(Game& game)
 		player->setMovementMaxX(loadedLevel->getWorldWidth());
 	}
 
+	spawnVehicle(game);
 	spawnPickups(game);
 	levelComplete = false;
 	waitingForContinue = false;
@@ -211,6 +218,10 @@ void PlayState::updateCampaignSpawning(Game& game, float deltaTime)
 	{
 		level->extendIfNeeded(player->getX());
 		player->setMovementMaxX(level->getWorldWidth());
+		if (vehicle != 0)
+		{
+			vehicle->setMovementMaxX(level->getWorldWidth());
+		}
 	}
 
 	game.getEntityManager().removeEnemiesBehind(player->getX() - 1300.0f);
@@ -254,6 +265,72 @@ void PlayState::spawnPickups(Game& game)
 	game.getEntityManager().addEntity(new Collectible(COLLECTIBLE_FOOD, foodX, foodY));
 }
 
+void PlayState::spawnVehicle(Game& game)
+{
+	Level* level = game.getLevelManager().getCurrentLevel();
+	float vehicleX = 330.0f;
+	float vehicleY = static_cast<float>(Constants::GROUND_Y) - 96.0f;
+
+	if (level != 0)
+	{
+		vehicleY = level->getMainGroundYAt(vehicleX) - 96.0f;
+	}
+
+	vehicle = new Vehicle(vehicleX, vehicleY);
+	if (level != 0)
+	{
+		vehicle->setMovementMaxX(level->getWorldWidth());
+	}
+	game.getEntityManager().addEntity(vehicle);
+}
+
+void PlayState::handleVehicleInteraction(Game& game)
+{
+	vehicle = game.getEntityManager().getVehicle();
+
+	if (player == 0 || !player->isActive() || player->isDead())
+	{
+		previousVehicleKey = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
+		return;
+	}
+
+	bool vehicleKey = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
+	if (vehicleKey && !previousVehicleKey)
+	{
+		if (player->isRidingVehicle())
+		{
+			if (vehicle != 0)
+			{
+				vehicle->dismount(*player);
+			}
+			else
+			{
+				player->setRidingVehicle(false);
+			}
+		}
+		else if (vehicle != 0 && vehicle->canMount(*player))
+		{
+			vehicle->mount(*player);
+		}
+	}
+
+	previousVehicleKey = vehicleKey;
+}
+
+void PlayState::syncPlayerWithVehicle()
+{
+	if (player == 0 || vehicle == 0)
+	{
+		return;
+	}
+
+	if (player->isRidingVehicle() && vehicle->isOccupied())
+	{
+		player->setVelocity(0.0f, 0.0f);
+		player->setPosition(vehicle->getSeatX(), vehicle->getSeatY());
+	}
+}
+
 void PlayState::updateWindowTitle(Game& game)
 {
 	game.getWindow().setTitle("Metal Slug OOP - Score: " + std::to_string(scoreManager.getScore()));
@@ -289,12 +366,25 @@ void PlayState::update(Game& game, float deltaTime)
 		return;
 	}
 
+	vehicle = game.getEntityManager().getVehicle();
+	handleVehicleInteraction(game);
+	syncPlayerWithVehicle();
+
 	game.getLevelManager().update(deltaTime);
 	if (player != 0 && player->isActive())
 	{
-		player->handleWeaponInput(game.getEntityManager(), deltaTime);
+		if (player->isRidingVehicle() && vehicle != 0)
+		{
+			vehicle->handleWeaponInput(game.getEntityManager(), deltaTime);
+		}
+		else
+		{
+			player->handleWeaponInput(game.getEntityManager(), deltaTime);
+		}
 	}
 	game.getEntityManager().updateAll(deltaTime);
+	vehicle = game.getEntityManager().getVehicle();
+	syncPlayerWithVehicle();
 
 	if (player != 0 && player->isDead() && !DeveloperMode::isEnabled())
 	{
@@ -382,6 +472,18 @@ void PlayState::updateHud(Game& game)
 		text += " G " + std::to_string(player->getGrenades());
 		text += " R " + std::to_string(player->getRockets());
 	}
+	if (vehicle != 0)
+	{
+		if (vehicle->isOccupied())
+		{
+			text += "  Vehicle HP " + std::to_string(vehicle->getHealth());
+			text += "/" + std::to_string(vehicle->getMaxHealth());
+		}
+		else if (player != 0 && vehicle->canMount(*player))
+		{
+			text += "  Press E Vehicle";
+		}
+	}
 	if (mode == PLAY_MODE_CAMPAIGN)
 	{
 		text += "  Kills " + std::to_string(campaignKills);
@@ -391,7 +493,7 @@ void PlayState::updateHud(Game& game)
 	{
 		text += "  DEV MODE";
 	}
-	text += "\nJ Shoot  K Knife  G Grenade  H Rocket  Z Switch  F1x3 Dev";
+	text += "\nJ Shoot  K Knife  G Grenade  H Rocket  Z Switch  E Vehicle  F1x3 Dev";
 	hudText.setString(text);
 }
 
