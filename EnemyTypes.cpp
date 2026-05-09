@@ -62,7 +62,7 @@ static const sf::IntRect MARTIAN_IDLE_FRAMES[] =
 	sf::IntRect(0, 0, 52, 43), sf::IntRect(52, 0, 52, 43), sf::IntRect(104, 0, 52, 43), sf::IntRect(156, 0, 52, 43),
 	sf::IntRect(208, 0, 52, 43), sf::IntRect(260, 0, 52, 43), sf::IntRect(312, 0, 52, 43), sf::IntRect(364, 0, 52, 43),
 	sf::IntRect(416, 0, 52, 43), sf::IntRect(468, 0, 52, 43), sf::IntRect(520, 0, 52, 43), sf::IntRect(572, 0, 52, 43),
-	sf::IntRect(624, 0, 52, 43), sf::IntRect(676, 0, 52, 43), sf::IntRect(728, 0, 52, 43), sf::IntRect(780, 0, 52, 43)
+	sf::IntRect(624, 0, 48, 43), sf::IntRect(676, 0, 52, 43), sf::IntRect(728, 0, 52, 43), sf::IntRect(780, 0, 52, 43)
 };
 
 static const sf::IntRect MARTIAN_WALK_FRAMES[] =

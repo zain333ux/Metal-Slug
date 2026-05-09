@@ -46,6 +46,30 @@ private:
 	sf::Texture marcoShootUpTexture;
 	sf::Sprite marcoTorsoSprite;
 	sf::Sprite marcoLegsSprite;
+
+	bool eriSpritesLoaded;
+	int eriTorsoState;
+	int eriLegState;
+	const sf::IntRect* eriTorsoFrames;
+	const sf::IntRect* eriLegFrames;
+	int eriTorsoFrameCount;
+	int eriLegFrameCount;
+	int eriTorsoFrame;
+	int eriLegFrame;
+	float eriTorsoTimer;
+	float eriLegTimer;
+	float eriTorsoFrameDuration;
+	float eriLegFrameDuration;
+	sf::Texture eriIdleTorsoTexture;
+	sf::Texture eriIdleLegsTexture;
+	sf::Texture eriRunTorsoTexture;
+	sf::Texture eriRunLegsTexture;
+	sf::Texture eriFireTexture;
+	sf::Texture eriFaceUpTexture;
+	sf::Texture eriShootUpTexture;
+	sf::Sprite eriTorsoSprite;
+	sf::Sprite eriLegsSprite;
+
 	bool ridingVehicle;
 
 	void handleInput();
@@ -57,6 +81,12 @@ private:
 	void setMarcoLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
 	void updateMarcoLayeredAnimation(float deltaTime);
 	void updateMarcoSpritePositions();
+
+	void loadEriSprites();
+	void setEriTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void setEriLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void updateEriLayeredAnimation(float deltaTime);
+	void updateEriSpritePositions();
 
 public:
 	PlayerSoldier();
