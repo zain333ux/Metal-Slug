@@ -88,6 +88,12 @@ void EntityManager::updateAll(float deltaTime)
 			{
 				addEntity(projectile);
 			}
+
+			Entity* spawnedEntity = enemy->createSpawnedEntityIfReady();
+			if (spawnedEntity != 0)
+			{
+				addEntity(spawnedEntity);
+			}
 		}
 	}
 
@@ -159,7 +165,7 @@ void EntityManager::checkProjectileEnemyCollisions()
 						pendingScore += enemy->getScoreValue();
 					}
 				}
-				projectile->deactivate();
+				projectile->onCollision();
 				break;
 			}
 		}
@@ -231,7 +237,7 @@ void EntityManager::checkProjectilePlayerCollisions()
 			if (projectile->getBounds().intersects(player->getBounds()))
 			{
 				player->takeDamage(projectile->getDamage());
-				projectile->deactivate();
+				projectile->onCollision();
 				break;
 			}
 		}

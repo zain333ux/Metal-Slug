@@ -53,10 +53,6 @@ Enemy::Enemy()
 	body.setOutlineThickness(2.0f);
 	body.setFillColor(sf::Color(210, 70, 70));
 	setSpriteScale(2.1f);
-	if (loadSpriteSheet("Sprites/Clean/enemy_rebel_sheet.png"))
-	{
-		setSpriteFrame(0, 0, 96, 96);
-	}
 }
 
 void Enemy::setSpawnPosition(float newX, float newY)
@@ -247,6 +243,11 @@ Projectile* Enemy::createProjectileIfReady()
 	float bulletX = facingRight ? x + width : x - 18.0f;
 	float bulletY = y + 42.0f;
 	return new EnemyBullet(bulletX, bulletY, facingRight);
+}
+
+Entity* Enemy::createSpawnedEntityIfReady()
+{
+	return 0;
 }
 
 void Enemy::moveLeft()
@@ -443,4 +444,9 @@ void Enemy::restartContactDamageCooldown()
 const char* Enemy::getEnemyName() const
 {
 	return "Rebel Soldier";
+}
+
+bool Enemy::hasSpriteVisual() const
+{
+	return usingSprite;
 }
