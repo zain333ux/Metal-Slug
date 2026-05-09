@@ -1,35 +1,110 @@
 #include "EnemyTypes.h"
 
 #include "Constants.h"
+#include "EnemyDownwardBullet.h"
 #include "EnemyGrenadeProjectile.h"
 #include "EnemyRocketProjectile.h"
+#include "EnemyBullet.h"
+#include "Level.h"
 #include "PlayerSoldier.h"
 #include "Projectile.h"
 
 #include <cmath>
 
-namespace
+static const sf::IntRect REBEL_IDLE_FRAMES[] =
 {
-	bool loadBlackMaskedTexture(sf::Texture& texture, const char* fileName, unsigned int paddedWidth, unsigned int paddedHeight)
-	{
-		sf::Image image;
-		if (!image.loadFromFile(fileName))
-		{
-			return false;
-		}
+	sf::IntRect(0, 0, 43, 42), sf::IntRect(43, 0, 43, 42), sf::IntRect(86, 0, 43, 42), sf::IntRect(129, 0, 44, 42)
+};
 
-		image.createMaskFromColor(sf::Color::Black);
-		if (paddedWidth > image.getSize().x || paddedHeight > image.getSize().y)
-		{
-			sf::Image paddedImage;
-			paddedImage.create(paddedWidth, paddedHeight, sf::Color::Transparent);
-			paddedImage.copy(image, 0, 0);
-			return texture.loadFromImage(paddedImage);
-		}
+static const sf::IntRect REBEL_RUN_FRAMES[] =
+{
+	sf::IntRect(0, 0, 39, 42), sf::IntRect(39, 0, 40, 42), sf::IntRect(79, 0, 43, 42), sf::IntRect(122, 0, 45, 42),
+	sf::IntRect(167, 0, 40, 42), sf::IntRect(207, 0, 39, 42), sf::IntRect(246, 0, 38, 42), sf::IntRect(284, 0, 40, 42),
+	sf::IntRect(324, 0, 43, 42), sf::IntRect(367, 0, 41, 42), sf::IntRect(408, 0, 41, 42), sf::IntRect(449, 0, 39, 42)
+};
 
-		return texture.loadFromImage(image);
-	}
-}
+static const sf::IntRect REBEL_FIRE_FRAMES[] =
+{
+	sf::IntRect(0, 0, 47, 51), sf::IntRect(47, 0, 51, 51), sf::IntRect(98, 0, 50, 51), sf::IntRect(148, 0, 45, 51),
+	sf::IntRect(193, 0, 45, 51), sf::IntRect(238, 0, 43, 51), sf::IntRect(281, 0, 46, 51), sf::IntRect(327, 0, 50, 51),
+	sf::IntRect(377, 0, 49, 51), sf::IntRect(426, 0, 46, 51)
+};
+
+static const sf::IntRect MARTIAN_POD_MOVE_FRAMES[] =
+{
+	sf::IntRect(0, 0, 48, 42), sf::IntRect(48, 0, 48, 42), sf::IntRect(96, 0, 48, 42), sf::IntRect(144, 0, 48, 42),
+	sf::IntRect(192, 0, 48, 42), sf::IntRect(240, 0, 48, 42), sf::IntRect(288, 0, 48, 42), sf::IntRect(336, 0, 50, 42),
+	sf::IntRect(0, 43, 48, 42), sf::IntRect(48, 43, 48, 42), sf::IntRect(96, 43, 48, 42), sf::IntRect(144, 43, 48, 42),
+	sf::IntRect(192, 43, 48, 42), sf::IntRect(240, 43, 48, 42), sf::IntRect(288, 43, 48, 42), sf::IntRect(336, 43, 50, 42)
+};
+
+static const sf::IntRect MARTIAN_POD_DEATH_FRAMES[] =
+{
+	sf::IntRect(0, 0, 52, 62), sf::IntRect(52, 0, 52, 62), sf::IntRect(104, 0, 60, 62),
+	sf::IntRect(164, 0, 62, 62), sf::IntRect(226, 0, 69, 62), sf::IntRect(295, 0, 91, 62),
+	sf::IntRect(0, 62, 70, 62), sf::IntRect(70, 62, 58, 62), sf::IntRect(128, 62, 59, 62),
+	sf::IntRect(187, 62, 50, 62), sf::IntRect(237, 62, 48, 62), sf::IntRect(285, 62, 48, 62),
+	sf::IntRect(333, 62, 53, 62),
+	sf::IntRect(0, 124, 51, 63), sf::IntRect(51, 124, 46, 63), sf::IntRect(97, 124, 46, 63),
+	sf::IntRect(143, 124, 45, 63), sf::IntRect(188, 124, 40, 63), sf::IntRect(228, 124, 40, 63),
+	sf::IntRect(268, 124, 42, 63), sf::IntRect(310, 124, 76, 63)
+};
+
+static const sf::IntRect MARTIAN_POD_ATTACK_FRAMES[] =
+{
+	sf::IntRect(308, 55, 44, 88), sf::IntRect(368, 55, 36, 88), sf::IntRect(420, 55, 28, 88),
+	sf::IntRect(452, 43, 64, 112), sf::IntRect(528, 35, 88, 128), sf::IntRect(628, 27, 104, 144),
+	sf::IntRect(744, 23, 112, 152), sf::IntRect(868, 23, 88, 152)
+};
+
+static const sf::IntRect MARTIAN_IDLE_FRAMES[] =
+{
+	sf::IntRect(0, 0, 52, 43), sf::IntRect(52, 0, 52, 43), sf::IntRect(104, 0, 52, 43), sf::IntRect(156, 0, 52, 43),
+	sf::IntRect(208, 0, 52, 43), sf::IntRect(260, 0, 52, 43), sf::IntRect(312, 0, 52, 43), sf::IntRect(364, 0, 52, 43),
+	sf::IntRect(416, 0, 52, 43), sf::IntRect(468, 0, 52, 43), sf::IntRect(520, 0, 52, 43), sf::IntRect(572, 0, 52, 43),
+	sf::IntRect(624, 0, 52, 43), sf::IntRect(676, 0, 52, 43), sf::IntRect(728, 0, 52, 43), sf::IntRect(780, 0, 52, 43)
+};
+
+static const sf::IntRect MARTIAN_WALK_FRAMES[] =
+{
+	sf::IntRect(0, 0, 51, 43), sf::IntRect(51, 0, 51, 43), sf::IntRect(102, 0, 51, 43), sf::IntRect(153, 0, 51, 43),
+	sf::IntRect(204, 0, 51, 43), sf::IntRect(255, 0, 51, 43), sf::IntRect(306, 0, 51, 43), sf::IntRect(357, 0, 51, 43),
+	sf::IntRect(408, 0, 51, 43), sf::IntRect(459, 0, 51, 43), sf::IntRect(510, 0, 51, 43), sf::IntRect(561, 0, 51, 43),
+	sf::IntRect(612, 0, 51, 43), sf::IntRect(663, 0, 51, 43), sf::IntRect(714, 0, 51, 43), sf::IntRect(765, 0, 51, 43)
+};
+
+static const sf::IntRect MARTIAN_FIRE_FRAMES[] =
+{
+	sf::IntRect(0, 0, 71, 43), sf::IntRect(71, 0, 71, 43), sf::IntRect(142, 0, 71, 43), sf::IntRect(213, 0, 71, 43),
+	sf::IntRect(284, 0, 71, 43), sf::IntRect(355, 0, 71, 43), sf::IntRect(426, 0, 71, 43), sf::IntRect(497, 0, 71, 43),
+	sf::IntRect(568, 0, 71, 43), sf::IntRect(639, 0, 71, 43), sf::IntRect(710, 0, 71, 43), sf::IntRect(781, 0, 71, 43),
+	sf::IntRect(852, 0, 71, 43), sf::IntRect(923, 0, 71, 43), sf::IntRect(994, 0, 71, 43), sf::IntRect(1065, 0, 71, 43),
+	sf::IntRect(1136, 0, 71, 43), sf::IntRect(1207, 0, 71, 43)
+};
+
+static const sf::IntRect MARTIAN_TELEPORT_FRAMES[] =
+{
+	sf::IntRect(0, 0, 66, 65), sf::IntRect(66, 0, 66, 65), sf::IntRect(132, 0, 66, 65), sf::IntRect(198, 0, 66, 65),
+	sf::IntRect(264, 0, 66, 65), sf::IntRect(330, 0, 66, 65), sf::IntRect(396, 0, 66, 65), sf::IntRect(462, 0, 66, 65),
+	sf::IntRect(528, 0, 66, 65), sf::IntRect(594, 0, 66, 65), sf::IntRect(660, 0, 66, 65), sf::IntRect(726, 0, 66, 65),
+	sf::IntRect(792, 0, 66, 65), sf::IntRect(0, 66, 66, 65), sf::IntRect(66, 66, 66, 65)
+};
+
+static const sf::IntRect MARTIAN_DEATH_FRAMES[] =
+{
+	sf::IntRect(0, 0, 54, 43), sf::IntRect(54, 0, 54, 43), sf::IntRect(108, 0, 54, 43), sf::IntRect(162, 0, 54, 43),
+	sf::IntRect(216, 0, 54, 43), sf::IntRect(270, 0, 54, 43), sf::IntRect(324, 0, 54, 43), sf::IntRect(378, 0, 54, 43),
+	sf::IntRect(432, 0, 54, 43), sf::IntRect(486, 0, 54, 43), sf::IntRect(540, 0, 54, 43), sf::IntRect(594, 0, 54, 43),
+	sf::IntRect(648, 0, 54, 43), sf::IntRect(702, 0, 54, 43), sf::IntRect(756, 0, 54, 43), sf::IntRect(810, 0, 48, 43),
+	sf::IntRect(0, 43, 54, 43), sf::IntRect(54, 43, 54, 43), sf::IntRect(108, 43, 54, 43), sf::IntRect(162, 43, 54, 43),
+	sf::IntRect(216, 43, 54, 43), sf::IntRect(270, 43, 54, 43), sf::IntRect(324, 43, 54, 43), sf::IntRect(378, 43, 54, 43),
+	sf::IntRect(432, 43, 54, 43), sf::IntRect(486, 43, 54, 43), sf::IntRect(540, 43, 54, 43), sf::IntRect(594, 43, 54, 43),
+	sf::IntRect(648, 43, 54, 43), sf::IntRect(702, 43, 54, 43), sf::IntRect(756, 43, 54, 43), sf::IntRect(810, 43, 48, 43),
+	sf::IntRect(0, 86, 54, 43), sf::IntRect(54, 86, 54, 43), sf::IntRect(108, 86, 54, 43), sf::IntRect(162, 86, 54, 43),
+	sf::IntRect(216, 86, 54, 43), sf::IntRect(270, 86, 54, 43), sf::IntRect(324, 86, 54, 43), sf::IntRect(378, 86, 54, 43),
+	sf::IntRect(432, 86, 54, 43), sf::IntRect(486, 86, 54, 43), sf::IntRect(540, 86, 54, 43), sf::IntRect(594, 86, 54, 43),
+	sf::IntRect(648, 86, 54, 43), sf::IntRect(702, 86, 54, 43), sf::IntRect(756, 86, 54, 43), sf::IntRect(810, 86, 48, 43)
+};
 
 RebelSoldier::RebelSoldier()
 {
@@ -45,26 +120,42 @@ RebelSoldier::RebelSoldier()
 	pistolCooldown = 1.35f;
 	pistolTimer = 0.6f;
 	pistolEquipped = true;
-	fallbackColor = sf::Color(210, 70, 70);
+	rebelState = 0;
 	rebelAnimationState = -1;
-	fireTimer = 0.0f;
+	hurtTimer = 0.0f;
+	shootTimer = 0.0f;
 	shotReleaseTimer = 0.0f;
+	queuedRebelShot = false;
+	currentFrames = 0;
+	customFrameCount = 0;
+	customFrameIndex = 0;
+	customFrameTimer = 0.0f;
+	customFrameDuration = 0.12f;
+	fallbackColor = sf::Color(210, 70, 70);
+	width = 52.0f;
+	height = 96.0f;
+	body.setSize(sf::Vector2f(width, height));
+	setSpriteScale(2.25f);
+	usingSprite = false;
 
-	if (loadBlackMaskedTexture(idleTexture, "Sprites/Clean/RebelSoldier_idle.png", 717, 164) &&
-		loadBlackMaskedTexture(runTexture, "Sprites/Clean/RebelSoldier_run.png", 1956, 178) &&
-		loadBlackMaskedTexture(fireTexture, "Sprites/Clean/RebelSoldier_fire.png", 1472, 152))
+	if (loadMaskedTexture(idleTexture, "Sprites/Clean/RebelSoldier_idle.png") &&
+		loadMaskedTexture(runTexture, "Sprites/Clean/RebelSoldier_run.png") &&
+		loadMaskedTexture(fireTexture, "Sprites/Clean/RebelSoldier_fire.png"))
 	{
 		usingSprite = true;
-		setSpriteScale(0.60f);
 		setRebelAnimation(0);
 	}
 }
 
 void RebelSoldier::update(float deltaTime)
 {
-	if (fireTimer > 0.0f)
+	if (hurtTimer > 0.0f)
 	{
-		fireTimer -= deltaTime;
+		hurtTimer -= deltaTime;
+	}
+	if (shootTimer > 0.0f)
+	{
+		shootTimer -= deltaTime;
 	}
 	if (shotReleaseTimer > 0.0f)
 	{
@@ -72,72 +163,125 @@ void RebelSoldier::update(float deltaTime)
 	}
 
 	Enemy::update(deltaTime);
-	updateRebelAnimation();
+	updateRebelAnimation(deltaTime);
 }
 
 Projectile* RebelSoldier::createProjectileIfReady()
 {
-	if (queuedShot && fireTimer <= 0.0f && shotReleaseTimer <= 0.0f)
+	if (queuedShot && !queuedRebelShot && shootTimer <= 0.0f && shotReleaseTimer <= 0.0f)
 	{
-		fireTimer = 0.55f;
-		shotReleaseTimer = 0.18f;
+		queuedRebelShot = true;
+		shootTimer = 0.50f;
+		shotReleaseTimer = 0.24f;
+		rebelState = 2;
 		return 0;
 	}
 
-	if (queuedShot && shotReleaseTimer > 0.0f)
+	if (!queuedRebelShot || shotReleaseTimer > 0.0f)
 	{
 		return 0;
 	}
 
-	return Enemy::createProjectileIfReady();
+	queuedRebelShot = false;
+	queuedShot = false;
+	float bulletX = facingRight ? x + width : x - 18.0f;
+	float bulletY = y + 42.0f;
+	return new EnemyBullet(bulletX, bulletY, facingRight);
+}
+
+bool RebelSoldier::applyProjectileHit(Projectile& projectile)
+{
+	DamageableEntity::takeDamage(projectile.getDamage());
+	hurtTimer = 0.25f;
+	return true;
+}
+
+void RebelSoldier::updateRebelAnimation(float deltaTime)
+{
+	if (shootTimer > 0.0f)
+	{
+		rebelState = 2;
+	}
+	else if (velocityX != 0.0f)
+	{
+		rebelState = 1;
+	}
+	else
+	{
+		rebelState = 0;
+	}
+
+	setRebelAnimation(rebelState);
+	updateCustomAnimation(deltaTime);
+
+	if (hurtTimer > 0.0f)
+	{
+		sprite.setColor(sf::Color(255, 120, 120));
+		body.setFillColor(sf::Color(255, 80, 80));
+	}
+	else
+	{
+		sprite.setColor(sf::Color::White);
+		body.setFillColor(fallbackColor);
+	}
 }
 
 void RebelSoldier::setRebelAnimation(int newState)
 {
-	if (!usingSprite || rebelAnimationState == newState)
+	if (rebelAnimationState == newState)
 	{
 		return;
 	}
 
 	rebelAnimationState = newState;
-	animationRow = -1;
-	animationStartFrame = -1;
-
-	if (newState == 2)
+	if (newState == 1)
 	{
-		sprite.setTexture(fireTexture, true);
-		setSpriteFrame(0, 0, 184, 152);
-		playAnimation(0, 0, 8, 0.07f);
+		setCustomAnimation(runTexture, REBEL_RUN_FRAMES, 12, 0.08f);
 	}
-	else if (newState == 1)
+	else if (newState == 2)
 	{
-		sprite.setTexture(runTexture, true);
-		setSpriteFrame(0, 0, 163, 178);
-		playAnimation(0, 0, 12, 0.07f);
+		setCustomAnimation(fireTexture, REBEL_FIRE_FRAMES, 10, 0.05f);
 	}
 	else
 	{
-		sprite.setTexture(idleTexture, true);
-		setSpriteFrame(0, 0, 179, 164);
-		playAnimation(0, 0, 4, 0.14f);
+		setCustomAnimation(idleTexture, REBEL_IDLE_FRAMES, 4, 0.14f);
 	}
 }
 
-void RebelSoldier::updateRebelAnimation()
+void RebelSoldier::setCustomAnimation(sf::Texture& newTexture, const sf::IntRect* frames, int frameCount, float frameDuration)
 {
-	if (fireTimer > 0.0f)
+	currentFrames = frames;
+	customFrameCount = frameCount;
+	customFrameIndex = 0;
+	customFrameTimer = 0.0f;
+	customFrameDuration = frameDuration;
+	sprite.setTexture(newTexture, true);
+	sprite.setTextureRect(currentFrames[0]);
+	updateVisualPosition();
+}
+
+void RebelSoldier::updateCustomAnimation(float deltaTime)
+{
+	if (!usingSprite || currentFrames == 0 || customFrameCount <= 1)
 	{
-		setRebelAnimation(2);
 		return;
 	}
 
-	if (grounded && std::abs(velocityX) > 5.0f)
+	customFrameTimer += deltaTime;
+	if (customFrameTimer < customFrameDuration)
 	{
-		setRebelAnimation(1);
 		return;
 	}
 
-	setRebelAnimation(0);
+	customFrameTimer = 0.0f;
+	customFrameIndex += 1;
+	if (customFrameIndex >= customFrameCount)
+	{
+		customFrameIndex = 0;
+	}
+
+	sprite.setTextureRect(currentFrames[customFrameIndex]);
+	updateVisualPosition();
 }
 
 const char* RebelSoldier::getEnemyName() const
@@ -470,8 +614,8 @@ Projectile* BazookaSoldier::createProjectileIfReady()
 		}
 	}
 
-	float rocketX = facingRight ? x + width + 8.0f : x - 42.0f;
-	float rocketY = y + 30.0f;
+	float rocketX = facingRight ? x + width + 34.0f : x - 66.0f;
+	float rocketY = y + 36.0f;
 	return new EnemyRocketProjectile(rocketX, rocketY, rocketVelocityX, -640.0f);
 }
 
@@ -707,8 +851,8 @@ Projectile* GrenadeSoldier::createProjectileIfReady()
 		}
 	}
 
-	float grenadeX = facingRight ? x + width - 8.0f : x - 10.0f;
-	float grenadeY = y + 34.0f;
+	float grenadeX = facingRight ? x + width + 18.0f : x - 48.0f;
+	float grenadeY = y + 36.0f;
 	return new EnemyGrenadeProjectile(grenadeX, grenadeY, throwVelocityX, -570.0f);
 }
 
@@ -840,84 +984,778 @@ const char* MummyEnemy::getEnemyName() const
 	return "Mummy";
 }
 
-MartianEnemy::MartianEnemy()
+MartianInfantry::MartianInfantry(float startX, float startY)
 {
-	maxHealth = 35;
+	maxHealth = 20;
 	health = maxHealth;
 	scoreValue = 200;
-	moveSpeed = 145.0f;
-	contactDamage = 20;
-	stopDistance = 120.0f;
-	detectionRange = 780.0f;
-	attackRange = 105.0f;
-	fallbackColor = sf::Color(190, 90, 230);
-	canMoveInAir = false;
+	contactDamage = 0;
+	moveSpeed = 82.0f;
+	stopDistance = 170.0f;
+	detectionRange = 620.0f;
+	shootingRange = 390.0f;
+	pistolCooldown = 1.35f;
+	pistolTimer = 0.5f;
+	pistolEquipped = false;
+	queuedShot = false;
+	queuedShotReady = false;
+	teleporting = true;
+	dying = false;
+	martianState = 4;
 	martianAnimationState = -1;
-	width = 52.0f;
-	height = 86.0f;
+	hurtTimer = 0.0f;
+	fireTimer = 0.0f;
+	shotReleaseTimer = 0.0f;
+	pistolReloadTimer = 0.6f;
+	currentFrames = 0;
+	customFrameCount = 0;
+	customFrameIndex = 0;
+	customAnimationLoop = true;
+	customAnimationFinished = false;
+	customFrameTimer = 0.0f;
+	customFrameDuration = 0.12f;
+	fallbackColor = sf::Color(170, 220, 130);
+	width = 44.0f;
+	height = 84.0f;
 	body.setSize(sf::Vector2f(width, height));
-	setSpriteScale(2.0f);
-	setPosition(900.0f, 500.0f);
-	usingSprite = false;
+	setSpriteScale(2.05f);
+	setPosition(startX, startY);
 
 	if (loadMaskedTexture(idleTexture, "Sprites/Clean/Martian_idle.png") &&
-		loadMaskedTexture(walkTexture, "Sprites/Clean/Martian_walk.png"))
+		loadMaskedTexture(walkTexture, "Sprites/Clean/Martian_walk.png") &&
+		loadMaskedTexture(fireTexture, "Sprites/Clean/Martian_fire.png") &&
+		loadMaskedTexture(deathTexture, "Sprites/Clean/Martian_death.png") &&
+		loadMaskedTexture(teleportTexture, "Sprites/Clean/Martian_teleport.png"))
 	{
 		usingSprite = true;
-		setMartianAnimation(0);
+		setMartianAnimation(4);
 	}
 }
 
-void MartianEnemy::updateAI()
+void MartianInfantry::updateAI()
 {
-	Enemy::updateAI();
+	stopMoving();
+
+	if (teleporting || dying || target == 0 || !target->isActive())
+	{
+		return;
+	}
+
+	if (!grounded)
+	{
+		return;
+	}
+
+	float distanceX = target->getCenterX() - getCenterX();
+	float absoluteDistanceX = std::abs(distanceX);
+	facingRight = distanceX > 0.0f;
+
+	if (absoluteDistanceX <= shootingRange)
+	{
+		if (pistolReloadTimer <= 0.0f && fireTimer <= 0.0f)
+		{
+			queuedShotReady = true;
+			pistolReloadTimer = pistolCooldown;
+			fireTimer = 0.72f;
+			shotReleaseTimer = 0.34f;
+		}
+		return;
+	}
+
+	if (distanceX > stopDistance)
+	{
+		moveRight();
+	}
+	else if (distanceX < -stopDistance)
+	{
+		moveLeft();
+	}
 }
 
-void MartianEnemy::update(float deltaTime)
+void MartianInfantry::update(float deltaTime)
 {
-	Enemy::update(deltaTime);
-	updateMartianAnimation();
+	if (hurtTimer > 0.0f)
+	{
+		hurtTimer -= deltaTime;
+	}
+	if (fireTimer > 0.0f)
+	{
+		fireTimer -= deltaTime;
+	}
+	if (shotReleaseTimer > 0.0f)
+	{
+		shotReleaseTimer -= deltaTime;
+	}
+	if (pistolReloadTimer > 0.0f)
+	{
+		pistolReloadTimer -= deltaTime;
+	}
+
+	if (dying)
+	{
+		stopMoving();
+		updateCustomAnimation(deltaTime);
+		if (customAnimationFinished)
+		{
+			deactivate();
+		}
+		return;
+	}
+
+	updateAI();
+	velocityY += Constants::GRAVITY * deltaTime;
+	float previousBottom = y + height;
+	Entity::update(deltaTime);
+
+	float landingY = static_cast<float>(Constants::GROUND_Y);
+	if (activeLevel != 0)
+	{
+		landingY = activeLevel->getLandingY(x, x + width, previousBottom, y + height);
+	}
+
+	if (y + height >= landingY - 8.0f && velocityY >= 0.0f)
+	{
+		y = landingY - height;
+		velocityY = 0.0f;
+		grounded = true;
+	}
+	else if (y + height >= landingY)
+	{
+		y = landingY - height;
+		if (velocityY > 0.0f)
+		{
+			velocityY = 0.0f;
+		}
+		grounded = true;
+	}
+	else
+	{
+		grounded = false;
+	}
+
+	if (teleporting && customAnimationFinished)
+	{
+		finishTeleport();
+	}
+
+	if (!teleporting)
+	{
+		if (fireTimer > 0.0f)
+		{
+			setMartianAnimation(2);
+		}
+		else if (velocityX != 0.0f)
+		{
+			setMartianAnimation(1);
+		}
+		else
+		{
+			setMartianAnimation(0);
+		}
+	}
+
+	updateVisualPosition();
+	updateCustomAnimation(deltaTime);
+
+	if (hurtTimer > 0.0f)
+	{
+		sprite.setColor(sf::Color(255, 120, 120));
+		body.setFillColor(sf::Color(255, 80, 80));
+	}
+	else
+	{
+		sprite.setColor(sf::Color::White);
+		body.setFillColor(fallbackColor);
+	}
 }
 
-void MartianEnemy::setMartianAnimation(int newState)
+Projectile* MartianInfantry::createProjectileIfReady()
 {
-	if (!usingSprite || martianAnimationState == newState)
+	if (!queuedShotReady || shotReleaseTimer > 0.0f || teleporting || dying)
+	{
+		return 0;
+	}
+
+	queuedShotReady = false;
+	float bulletX = facingRight ? x + width : x - 18.0f;
+	float bulletY = y + 35.0f;
+	return new EnemyBullet(bulletX, bulletY, facingRight);
+}
+
+bool MartianInfantry::applyProjectileHit(Projectile& projectile)
+{
+	if (dying || teleporting || health <= 0)
+	{
+		return false;
+	}
+
+	health -= projectile.getDamage();
+	hurtTimer = 0.25f;
+	if (health <= 0)
+	{
+		health = 0;
+		dying = true;
+		contactDamage = 0;
+		stopMoving();
+		setMartianAnimation(3);
+	}
+
+	return true;
+}
+
+void MartianInfantry::finishTeleport()
+{
+	teleporting = false;
+	contactDamage = 8;
+	setMartianAnimation(0);
+}
+
+void MartianInfantry::setMartianAnimation(int newState)
+{
+	if (martianAnimationState == newState)
 	{
 		return;
 	}
 
 	martianAnimationState = newState;
-	animationRow = -1;
-	animationStartFrame = -1;
-
 	if (newState == 1)
 	{
-		sprite.setTexture(walkTexture, true);
-		setSpriteFrame(0, 0, 51, 43);
-		playAnimation(0, 16, 0.08f);
+		setCustomAnimation(walkTexture, MARTIAN_WALK_FRAMES, 16, true, 0.08f);
+	}
+	else if (newState == 2)
+	{
+		setCustomAnimation(fireTexture, MARTIAN_FIRE_FRAMES, 18, false, 0.04f);
+	}
+	else if (newState == 3)
+	{
+		setCustomAnimation(deathTexture, MARTIAN_DEATH_FRAMES, 48, false, 0.045f);
+	}
+	else if (newState == 4)
+	{
+		setCustomAnimation(teleportTexture, MARTIAN_TELEPORT_FRAMES, 15, false, 0.07f);
 	}
 	else
 	{
-		sprite.setTexture(idleTexture, true);
-		setSpriteFrame(0, 0, 52, 43);
-		playAnimation(0, 16, 0.12f);
+		setCustomAnimation(idleTexture, MARTIAN_IDLE_FRAMES, 16, true, 0.12f);
 	}
 }
 
-void MartianEnemy::updateMartianAnimation()
+void MartianInfantry::setCustomAnimation(sf::Texture& newTexture, const sf::IntRect* frames, int frameCount, bool loop, float frameDuration)
 {
-	if (grounded && std::abs(velocityX) > 5.0f)
+	currentFrames = frames;
+	customFrameCount = frameCount;
+	customAnimationLoop = loop;
+	customFrameDuration = frameDuration;
+	customFrameIndex = 0;
+	customFrameTimer = 0.0f;
+	customAnimationFinished = false;
+	sprite.setTexture(newTexture, true);
+	sprite.setTextureRect(currentFrames[0]);
+	updateVisualPosition();
+}
+
+void MartianInfantry::updateCustomAnimation(float deltaTime)
+{
+	if (!usingSprite || currentFrames == 0 || customFrameCount <= 1 || customAnimationFinished)
 	{
-		setMartianAnimation(1);
 		return;
 	}
 
-	setMartianAnimation(0);
+	customFrameTimer += deltaTime;
+	if (customFrameTimer < customFrameDuration)
+	{
+		return;
+	}
+
+	customFrameTimer = 0.0f;
+	if (customFrameIndex + 1 >= customFrameCount)
+	{
+		if (customAnimationLoop)
+		{
+			customFrameIndex = 0;
+		}
+		else
+		{
+			customFrameIndex = customFrameCount - 1;
+			sprite.setTextureRect(currentFrames[customFrameIndex]);
+			updateVisualPosition();
+			customAnimationFinished = true;
+			return;
+		}
+	}
+	else
+	{
+		customFrameIndex += 1;
+	}
+
+	sprite.setTextureRect(currentFrames[customFrameIndex]);
+	updateVisualPosition();
 }
 
-const char* MartianEnemy::getEnemyName() const
+const char* MartianInfantry::getEnemyName() const
 {
-	return "Martian";
+	return "Martian Infantry";
+}
+
+MartianPod::MartianPod()
+{
+	maxHealth = 30;
+	health = maxHealth;
+	scoreValue = 0;
+	contactDamage = 0;
+	moveSpeed = 105.0f;
+	detectionRange = 620.0f;
+	canMoveInAir = true;
+	podState = 0;
+	podAnimationState = -1;
+	hoverTimer = 0.0f;
+	hoverBaseY = 330.0f;
+	hurtTimer = 0.0f;
+	attackTimer = 0.0f;
+	bulletReleaseTimer = 0.0f;
+	attackCooldownTimer = 1.0f;
+	spawnDelayTimer = 1.0f;
+	attackReleased = false;
+	dying = false;
+	readyToSpawnInfantry = false;
+	bulletsToFire = 0;
+	currentFrames = 0;
+	customFrameCount = 0;
+	customFrameIndex = 0;
+	customAnimationLoop = true;
+	customAnimationFinished = false;
+	customFrameTimer = 0.0f;
+	customFrameDuration = 0.1f;
+	attackFrameIndex = 0;
+	attackFrameTimer = 0.0f;
+	fallbackColor = sf::Color(190, 90, 230);
+	width = 88.0f;
+	height = 70.0f;
+	body.setSize(sf::Vector2f(width, height));
+	body.setOutlineThickness(0.0f);
+	body.setFillColor(sf::Color::Transparent);
+	setSpriteScale(1.9f);
+	setPosition(900.0f, hoverBaseY);
+	patrolLeft = 760.0f;
+	patrolRight = 1180.0f;
+
+	if (loadPodTexture(movementTexture, "Sprites/Clean/MartianPod_movement.png") &&
+		loadPodTexture(attackTexture, "Sprites/Clean/MartianPod_Bullet.png") &&
+		loadPodTexture(deathTexture, "Sprites/Clean/MartianPod_death.png"))
+	{
+		usingSprite = true;
+		attackSprite.setTexture(attackTexture);
+		attackSprite.setScale(0.70f, 0.70f);
+		setPodAnimation(0);
+	}
+}
+
+bool MartianPod::loadPodTexture(sf::Texture& targetTexture, const char* fileName)
+{
+	sf::Image image;
+	if (!image.loadFromFile(fileName))
+	{
+		return false;
+	}
+
+	image.createMaskFromColor(sf::Color(255, 0, 255));
+	image.createMaskFromColor(sf::Color::White);
+	return targetTexture.loadFromImage(image);
+}
+
+void MartianPod::setSpawnPosition(float newX, float newY)
+{
+	setPosition(newX, newY);
+	hoverBaseY = newY;
+	hoverTimer = 0.0f;
+	patrolLeft = newX - 240.0f;
+	patrolRight = newX + 240.0f;
+	if (patrolLeft < 0.0f)
+	{
+		patrolLeft = 0.0f;
+	}
+}
+void MartianPod::updateAI()
+{
+	if (dying)
+	{
+		return;
+	}
+
+	float distanceX = 0.0f;
+	float distanceY = 0.0f;
+	bool canSeePlayer = false;
+	if (target != 0 && target->isActive())
+	{
+		distanceX = target->getCenterX() - getCenterX();
+		distanceY = target->getCenterY() - getCenterY();
+		canSeePlayer = std::abs(distanceX) <= detectionRange && distanceY > -40.0f && distanceY < 520.0f;
+	}
+
+	if (attackTimer <= 0.0f && canSeePlayer && attackCooldownTimer <= 0.0f)
+	{
+		attackTimer = 0.72f;
+		bulletReleaseTimer = 0.42f;
+		attackCooldownTimer = 1.8f;
+		attackReleased = false;
+		bulletsToFire = 0;
+		attackFrameIndex = 0;
+		attackFrameTimer = 0.0f;
+		stopMoving();
+		setPodAnimation(1);
+		return;
+	}
+
+	if (attackTimer > 0.0f)
+	{
+		stopMoving();
+		return;
+	}
+
+	if (canSeePlayer && std::abs(distanceX) > 70.0f)
+	{
+		if (distanceX > 0.0f)
+		{
+			moveRight();
+		}
+		else
+		{
+			moveLeft();
+		}
+		return;
+	}
+
+	if (x <= patrolLeft)
+	{
+		patrolDirection = 1;
+	}
+	else if (x + width >= patrolRight)
+	{
+		patrolDirection = -1;
+	}
+
+	if (patrolDirection > 0)
+	{
+		moveRight();
+	}
+	else
+	{
+		moveLeft();
+	}
+}
+
+void MartianPod::update(float deltaTime)
+{
+	if (hurtTimer > 0.0f)
+	{
+		hurtTimer -= deltaTime;
+	}
+	if (attackCooldownTimer > 0.0f)
+	{
+		attackCooldownTimer -= deltaTime;
+	}
+
+	if (dying)
+	{
+		stopMoving();
+		updateCustomAnimation(deltaTime);
+		if (customAnimationFinished)
+		{
+			visible = false;
+			spawnDelayTimer -= deltaTime;
+			if (spawnDelayTimer <= 0.0f)
+			{
+				readyToSpawnInfantry = true;
+			}
+		}
+		return;
+	}
+
+	updateAI();
+	updateAttack(deltaTime);
+	updateMovement(deltaTime);
+	updateCustomAnimation(deltaTime);
+	updateAttackAnimation(deltaTime);
+
+	if (hurtTimer > 0.0f)
+	{
+		sprite.setColor(sf::Color(255, 120, 120));
+		body.setFillColor(sf::Color(255, 80, 80));
+	}
+	else
+	{
+		sprite.setColor(sf::Color::White);
+		body.setFillColor(fallbackColor);
+	}
+}
+
+void MartianPod::updateMovement(float deltaTime)
+{
+	if (hoverTimer <= 0.0f)
+	{
+		float groundY = static_cast<float>(Constants::GROUND_Y);
+		if (activeLevel != 0)
+		{
+			groundY = activeLevel->getGroundYAt(getCenterX());
+		}
+		hoverBaseY = groundY - 400.0f;
+	}
+	hoverTimer += deltaTime;
+	Entity::update(deltaTime);
+	y = hoverBaseY + std::sin(hoverTimer * 3.0f) * 8.0f;
+
+	if (x <= 0.0f)
+	{
+		x = 0.0f;
+	}
+	if (x + width > movementMaxX)
+	{
+		x = movementMaxX - width;
+	}
+
+	updateVisualPosition();
+}
+
+void MartianPod::updateAttack(float deltaTime)
+{
+	if (attackTimer <= 0.0f)
+	{
+		if (podAnimationState != 0)
+		{
+			setPodAnimation(0);
+		}
+		return;
+	}
+
+	attackTimer -= deltaTime;
+	if (bulletReleaseTimer > 0.0f)
+	{
+		bulletReleaseTimer -= deltaTime;
+	}
+
+	// Bullets appear on the final charge frames instead of at the start of the animation.
+	if (!attackReleased && bulletReleaseTimer <= 0.0f)
+	{
+		attackReleased = true;
+		bulletsToFire = 3;
+	}
+
+	if (attackTimer <= 0.0f)
+	{
+		setPodAnimation(0);
+	}
+}
+
+Projectile* MartianPod::createProjectileIfReady()
+{
+	if (bulletsToFire <= 0 || dying)
+	{
+		return 0;
+	}
+
+	bulletsToFire -= 1;
+	float offset = static_cast<float>(bulletsToFire - 1) * 18.0f;
+	return new EnemyDownwardBullet(getCenterX() + offset - 5.0f, y + height - 4.0f, activeLevel);
+}
+
+Entity* MartianPod::createSpawnedEntityIfReady()
+{
+	if (!readyToSpawnInfantry)
+	{
+		return 0;
+	}
+
+	readyToSpawnInfantry = false;
+	float spawnX = findTeleportX();
+	float groundY = static_cast<float>(Constants::GROUND_Y);
+	if (activeLevel != 0)
+	{
+		groundY = activeLevel->getGroundYAt(spawnX);
+	}
+
+	MartianInfantry* infantry = new MartianInfantry(spawnX, groundY - 84.0f);
+	infantry->setTarget(target);
+	deactivate();
+	return infantry;
+}
+
+bool MartianPod::applyProjectileHit(Projectile& projectile)
+{
+	if (dying || health <= 0)
+	{
+		return false;
+	}
+
+	health -= projectile.getDamage();
+	hurtTimer = 0.25f;
+	if (health <= 0)
+	{
+		health = 0;
+		startDeathAnimation();
+	}
+
+	return true;
+}
+
+void MartianPod::startDeathAnimation()
+{
+	dying = true;
+	contactDamage = 0;
+	bulletsToFire = 0;
+	attackTimer = 0.0f;
+	stopMoving();
+	setPodAnimation(2);
+}
+
+void MartianPod::draw(sf::RenderWindow& window)
+{
+	if (!visible)
+	{
+		return;
+	}
+
+	if (!dying && attackTimer > 0.0f && !attackReleased)
+	{
+		window.draw(attackSprite);
+	}
+
+	if (usingSprite)
+	{
+		window.draw(sprite);
+	}
+	else
+	{
+		window.draw(body);
+	}
+}
+
+void MartianPod::setPodAnimation(int newState)
+{
+	if (podAnimationState == newState)
+	{
+		return;
+	}
+
+	podAnimationState = newState;
+	if (newState == 2)
+	{
+		setCustomAnimation(deathTexture, MARTIAN_POD_DEATH_FRAMES, 21, false, 0.055f);
+	}
+	else
+	{
+		setCustomAnimation(movementTexture, MARTIAN_POD_MOVE_FRAMES, 16, true, 0.09f);
+	}
+}
+
+void MartianPod::setCustomAnimation(sf::Texture& newTexture, const sf::IntRect* frames, int frameCount, bool loop, float frameDuration)
+{
+	currentFrames = frames;
+	customFrameCount = frameCount;
+	customAnimationLoop = loop;
+	customFrameDuration = frameDuration;
+	customFrameIndex = 0;
+	customFrameTimer = 0.0f;
+	customAnimationFinished = false;
+	sprite.setTexture(newTexture, true);
+	sprite.setTextureRect(currentFrames[0]);
+	updateVisualPosition();
+}
+
+void MartianPod::updateCustomAnimation(float deltaTime)
+{
+	if (!usingSprite || currentFrames == 0 || customFrameCount <= 1 || customAnimationFinished)
+	{
+		return;
+	}
+
+	customFrameTimer += deltaTime;
+	if (customFrameTimer < customFrameDuration)
+	{
+		return;
+	}
+
+	customFrameTimer = 0.0f;
+	if (customFrameIndex + 1 >= customFrameCount)
+	{
+		if (customAnimationLoop)
+		{
+			customFrameIndex = 0;
+		}
+		else
+		{
+			customFrameIndex = customFrameCount - 1;
+			sprite.setTextureRect(currentFrames[customFrameIndex]);
+			updateVisualPosition();
+			customAnimationFinished = true;
+			return;
+		}
+	}
+	else
+	{
+		customFrameIndex += 1;
+	}
+
+	sprite.setTextureRect(currentFrames[customFrameIndex]);
+	updateVisualPosition();
+}
+
+void MartianPod::updateAttackAnimation(float deltaTime)
+{
+	if (attackTimer <= 0.0f)
+	{
+		return;
+	}
+
+	if (attackReleased)
+	{
+		return;
+	}
+
+	attackFrameTimer += deltaTime;
+	if (attackFrameTimer >= 0.06f)
+	{
+		attackFrameTimer = 0.0f;
+		attackFrameIndex += 1;
+		if (attackFrameIndex >= 8)
+		{
+			attackFrameIndex = 7;
+		}
+	}
+
+	attackSprite.setTextureRect(MARTIAN_POD_ATTACK_FRAMES[attackFrameIndex]);
+	sf::FloatRect bounds = attackSprite.getGlobalBounds();
+	attackSprite.setPosition(getCenterX() - bounds.width / 2.0f, y + height - 4.0f);
+}
+
+float MartianPod::findTeleportX() const
+{
+	float spawnX = x;
+	if (target != 0 && target->isActive())
+	{
+		if (target->getCenterX() < getCenterX())
+		{
+			spawnX = target->getX() + 160.0f;
+		}
+		else
+		{
+			spawnX = target->getX() - 160.0f;
+		}
+	}
+
+	if (spawnX < 120.0f)
+	{
+		spawnX = 120.0f;
+	}
+	if (spawnX > movementMaxX - 120.0f)
+	{
+		spawnX = movementMaxX - 120.0f;
+	}
+	return spawnX;
+}
+
+const char* MartianPod::getEnemyName() const
+{
+	return "Martian Pod";
 }
 
 BossEnemy::BossEnemy(int bossPhase)

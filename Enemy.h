@@ -5,6 +5,7 @@
 class Level;
 class PlayerSoldier;
 class Projectile;
+class Entity;
 
 class Enemy : public DamageableEntity
 {
@@ -63,13 +64,14 @@ protected:
 public:
 	Enemy();
 
-	void setSpawnPosition(float newX, float newY);
+	virtual void setSpawnPosition(float newX, float newY);
 	void setTarget(PlayerSoldier* newTarget);
 	void update(float deltaTime);
 	virtual void draw(sf::RenderWindow& window) override;
 	void setMovementMaxX(float maxX);
 	void setActiveLevel(Level* level);
 	virtual Projectile* createProjectileIfReady();
+	virtual Entity* createSpawnedEntityIfReady();
 	virtual bool applyProjectileHit(Projectile& projectile);
 	int getScoreValue() const;
 	int getContactDamage() const;
@@ -78,4 +80,5 @@ public:
 	virtual const char* getEnemyName() const;
 	bool isFacingRight() const;
 	bool isGrounded() const;
+	bool hasSpriteVisual() const;
 };

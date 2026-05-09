@@ -89,6 +89,7 @@
     <ClCompile Include="DeveloperMode.cpp" />
     <ClCompile Include="BallisticProjectile.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
+    <ClCompile Include="EnemyDownwardBullet.cpp" />
     <ClCompile Include="EnemyGrenadeProjectile.cpp" />
     <ClCompile Include="EnemyRocketProjectile.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -135,6 +136,7 @@
     <ClInclude Include="DeveloperMode.h" />
     <ClInclude Include="BallisticProjectile.h" />
     <ClInclude Include="EnemyBullet.h" />
+    <ClInclude Include="EnemyDownwardBullet.h" />
     <ClInclude Include="EnemyGrenadeProjectile.h" />
     <ClInclude Include="EnemyRocketProjectile.h" />
     <ClInclude Include="DynamicArray.h" />

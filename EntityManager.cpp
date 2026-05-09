@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "EnemyVehicle.h"
 #include "Collectible.h"
+#include "Level.h"
 #include "PlayerSoldier.h"
 #include "Projectile.h"
 #include "ScoreManager.h"
@@ -44,6 +45,11 @@ void EntityManager::addEntity(Entity* entity)
 		{
 			vehicle->setActiveLevel(activeLevel);
 		}
+		Projectile* projectile = dynamic_cast<Projectile*>(entity);
+		if (projectile != 0)
+		{
+			projectile->setActiveLevel(activeLevel);
+		}
 		entities.pushBack(entity);
 	}
 }
@@ -68,6 +74,11 @@ void EntityManager::setActiveLevel(Level* level)
 		{
 			vehicle->setActiveLevel(activeLevel);
 		}
+		Projectile* projectile = dynamic_cast<Projectile*>(entities.get(i));
+		if (projectile != 0)
+		{
+			projectile->setActiveLevel(activeLevel);
+		}
 	}
 }
 
@@ -91,6 +102,12 @@ void EntityManager::updateAll(float deltaTime)
 			if (projectile != 0)
 			{
 				addEntity(projectile);
+			}
+
+			Entity* spawnedEntity = enemy->createSpawnedEntityIfReady();
+			if (spawnedEntity != 0)
+			{
+				addEntity(spawnedEntity);
 			}
 		}
 	}
@@ -169,7 +186,7 @@ void EntityManager::checkProjectileEnemyCollisions()
 				}
 				if (!projectile->deferProjectileDeactivateAfterEnemyHit())
 				{
-					projectile->deactivate();
+					projectile->onCollision();
 				}
 				break;
 			}
@@ -242,7 +259,7 @@ void EntityManager::checkProjectilePlayerCollisions()
 			if (projectile->getBounds().intersects(player->getBounds()))
 			{
 				player->takeDamage(projectile->getDamage());
-				projectile->deactivate();
+				projectile->onCollision();
 				break;
 			}
 		}

@@ -24,12 +24,40 @@ private:
 	bool previousMeleeKey;
 	bool previousGrenadeKey;
 	bool previousRocketKey;
+	bool marcoSpritesLoaded;
+	int marcoTorsoState;
+	int marcoLegState;
+	const sf::IntRect* marcoTorsoFrames;
+	const sf::IntRect* marcoLegFrames;
+	int marcoTorsoFrameCount;
+	int marcoLegFrameCount;
+	int marcoTorsoFrame;
+	int marcoLegFrame;
+	float marcoTorsoTimer;
+	float marcoLegTimer;
+	float marcoTorsoFrameDuration;
+	float marcoLegFrameDuration;
+	sf::Texture marcoIdleTorsoTexture;
+	sf::Texture marcoIdleLegsTexture;
+	sf::Texture marcoRunTorsoTexture;
+	sf::Texture marcoRunLegsTexture;
+	sf::Texture marcoFireTexture;
+	sf::Texture marcoFaceUpTexture;
+	sf::Texture marcoShootUpTexture;
+	sf::Sprite marcoTorsoSprite;
+	sf::Sprite marcoLegsSprite;
 	bool ridingVehicle;
 	bool pilotHiddenWhileInsideVehicle;
 
 	void handleInput();
 	void updatePlayerAnimation(float deltaTime);
 	void applyCharacterStats();
+	bool loadMaskedTexture(sf::Texture& targetTexture, const char* fileName);
+	void loadMarcoSprites();
+	void setMarcoTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void setMarcoLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void updateMarcoLayeredAnimation(float deltaTime);
+	void updateMarcoSpritePositions();
 
 public:
 	PlayerSoldier();

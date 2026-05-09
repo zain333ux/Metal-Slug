@@ -32,7 +32,7 @@ Enemy* EnemyFactory::createEnemy(EnemyKind kind, float x, float y, PlayerSoldier
 	}
 	else if (kind == ENEMY_MARTIAN)
 	{
-		enemy = new MartianEnemy();
+		enemy = new MartianPod();
 	}
 	else if (kind == ENEMY_FLYING_TARA)
 	{

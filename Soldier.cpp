@@ -69,10 +69,19 @@ void Soldier::update(float deltaTime)
 	inWater = activeLevel != 0 &&
 		activeLevel->isWaterInBounds(x + 4.0f, x + width - 4.0f, y + height * 0.45f, y + height + 10.0f);
 
-	if (y + height >= landingY)
+	if (y + height >= landingY - 8.0f && velocityY >= 0.0f)
 	{
 		y = landingY - height;
 		velocityY = 0.0f;
+		grounded = true;
+	}
+	else if (y + height >= landingY)
+	{
+		y = landingY - height;
+		if (velocityY > 0.0f)
+		{
+			velocityY = 0.0f;
+		}
 		grounded = true;
 	}
 	else

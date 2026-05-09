@@ -1,4 +1,7 @@
 #include "Projectile.h"
+#include "Constants.h"
+
+#include "Level.h"
 
 Projectile::Projectile()
 {
@@ -11,6 +14,7 @@ Projectile::Projectile()
 	firedWhileAirborne = false;
 	playerOwned = true;
 	blastRadius = 0.0f;
+	activeLevel = 0;
 
 	body.setSize(sf::Vector2f(width, height));
 	body.setFillColor(sf::Color(255, 230, 90));
@@ -37,6 +41,11 @@ void Projectile::draw(sf::RenderWindow& window)
 	{
 		window.draw(body);
 	}
+}
+
+void Projectile::onCollision()
+{
+	deactivate();
 }
 
 int Projectile::getDamage() const
@@ -87,4 +96,19 @@ bool Projectile::deferProjectileDeactivateAfterEnemyHit()
 bool Projectile::shouldIgnorePlayerProjectileVsEnemyChecks() const
 {
 	return false;
+}
+
+void Projectile::setActiveLevel(Level* level)
+{
+	activeLevel = level;
+}
+
+float Projectile::getGroundY() const
+{
+	if (activeLevel != 0)
+	{
+		return activeLevel->getMainGroundYAt(x + width / 2.0f);
+	}
+
+	return static_cast<float>(Constants::GROUND_Y);
 }
