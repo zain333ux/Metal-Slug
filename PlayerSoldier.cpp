@@ -9,6 +9,60 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
+static const sf::IntRect MARCO_IDLE_TORSO_FRAMES[] =
+{
+	sf::IntRect(5, 4, 29, 29), sf::IntRect(39, 4, 29, 29), sf::IntRect(73, 4, 30, 28), sf::IntRect(108, 4, 29, 27)
+};
+
+static const sf::IntRect MARCO_IDLE_LEG_FRAMES[] =
+{
+	sf::IntRect(3, 7, 21, 16)
+};
+
+static const sf::IntRect MARCO_RUN_TORSO_FRAMES[] =
+{
+	sf::IntRect(7, 3, 32, 28), sf::IntRect(44, 3, 30, 29), sf::IntRect(79, 3, 28, 28), sf::IntRect(112, 3, 27, 27),
+	sf::IntRect(144, 3, 29, 28), sf::IntRect(178, 3, 30, 28), sf::IntRect(213, 3, 32, 29), sf::IntRect(251, 3, 32, 29),
+	sf::IntRect(288, 3, 32, 28), sf::IntRect(325, 3, 31, 27), sf::IntRect(361, 3, 31, 28), sf::IntRect(397, 3, 31, 28)
+};
+
+static const sf::IntRect MARCO_RUN_LEG_FRAMES[] =
+{
+	sf::IntRect(3, 5, 21, 20), sf::IntRect(29, 5, 28, 20), sf::IntRect(62, 5, 31, 16), sf::IntRect(98, 5, 19, 20),
+	sf::IntRect(122, 5, 15, 20), sf::IntRect(142, 5, 16, 20), sf::IntRect(163, 5, 21, 20), sf::IntRect(189, 5, 26, 20),
+	sf::IntRect(220, 5, 31, 16), sf::IntRect(256, 5, 20, 20), sf::IntRect(281, 5, 15, 20), sf::IntRect(301, 5, 18, 20)
+};
+
+static const sf::IntRect MARCO_FIRE_FRAMES[] =
+{
+	sf::IntRect(3, 3, 50, 23), sf::IntRect(58, 3, 51, 23), sf::IntRect(114, 3, 52, 23)
+};
+
+static const sf::IntRect MARCO_FACE_UP_FRAMES[] =
+{
+	sf::IntRect(0, 0, 34, 32), sf::IntRect(34, 0, 34, 32), sf::IntRect(68, 0, 34, 32), sf::IntRect(102, 0, 34, 32)
+};
+
+static const sf::IntRect MARCO_SHOOT_UP_FRAMES[] =
+{
+	sf::IntRect(0, 0, 27, 72), sf::IntRect(27, 0, 27, 72), sf::IntRect(54, 0, 27, 72), sf::IntRect(81, 0, 27, 72)
+};
+
+static const float MARCO_IDLE_TORSO_ORIGIN_X[] = { 10.0f, 10.0f, 10.0f, 10.0f };
+static const float MARCO_IDLE_TORSO_ORIGIN_Y[] = { 25.0f, 25.0f, 25.0f, 25.0f };
+static const float MARCO_RUN_TORSO_ORIGIN_X[] = { 12.0f, 11.0f, 10.0f, 9.5f, 10.5f, 11.0f, 12.0f, 12.0f, 12.0f, 11.5f, 11.5f, 11.5f };
+static const float MARCO_RUN_TORSO_ORIGIN_Y[] = { 27.0f, 28.0f, 27.0f, 26.0f, 27.0f, 27.0f, 28.0f, 28.0f, 27.0f, 26.0f, 27.0f, 27.0f };
+static const float MARCO_FIRE_ORIGIN_X[] = { 11.0f, 11.0f, 11.0f };
+static const float MARCO_FIRE_ORIGIN_Y[] = { 24.0f, 24.0f, 24.0f };
+static const float MARCO_FACE_UP_ORIGIN_X[] = { 13.0f, 13.0f, 13.0f, 13.0f };
+static const float MARCO_FACE_UP_ORIGIN_Y[] = { 30.0f, 30.0f, 30.0f, 30.0f };
+static const float MARCO_SHOOT_UP_ORIGIN_X[] = { 13.5f, 13.5f, 13.5f, 13.5f };
+static const float MARCO_SHOOT_UP_ORIGIN_Y[] = { 70.0f, 70.0f, 70.0f, 70.0f };
+static const float MARCO_IDLE_LEG_ORIGIN_X[] = { 10.0f };
+static const float MARCO_IDLE_LEG_ORIGIN_Y[] = { 15.0f };
+static const float MARCO_RUN_LEG_ORIGIN_X[] = { 10.5f, 14.0f, 15.5f, 9.5f, 7.5f, 8.0f, 10.5f, 13.0f, 15.5f, 10.0f, 7.5f, 9.0f };
+static const float MARCO_RUN_LEG_ORIGIN_Y[] = { 19.0f, 19.0f, 15.0f, 19.0f, 19.0f, 19.0f, 19.0f, 19.0f, 15.0f, 19.0f, 19.0f, 19.0f };
+
 PlayerSoldier::PlayerSoldier()
 {
 	firing = false;
@@ -29,14 +83,52 @@ PlayerSoldier::PlayerSoldier()
 	previousMeleeKey = false;
 	previousGrenadeKey = false;
 	previousRocketKey = false;
+	marcoSpritesLoaded = false;
+	marcoTorsoState = -1;
+	marcoLegState = -1;
+	marcoTorsoFrames = 0;
+	marcoLegFrames = 0;
+	marcoTorsoFrameCount = 1;
+	marcoLegFrameCount = 1;
+	marcoTorsoFrame = 0;
+	marcoLegFrame = 0;
+	marcoTorsoTimer = 0.0f;
+	marcoLegTimer = 0.0f;
+	marcoTorsoFrameDuration = 0.12f;
+	marcoLegFrameDuration = 0.09f;
 	setPosition(120.0f, 500.0f);
 	setSpriteScale(2.2f);
-	if (loadSpriteSheet("Sprites/Clean/player_marco_sheet.png"))
-	{
-		setSpriteFrame(0, 0, 96, 96);
-		playAnimation(Constants::PLAYER_ANIM_IDLE, 4, 0.18f);
-	}
+	loadMarcoSprites();
 	applyCharacterStats();
+}
+
+bool PlayerSoldier::loadMaskedTexture(sf::Texture& targetTexture, const char* fileName)
+{
+	sf::Image image;
+	if (!image.loadFromFile(fileName))
+	{
+		return false;
+	}
+
+	image.createMaskFromColor(sf::Color::White);
+	return targetTexture.loadFromImage(image);
+}
+
+void PlayerSoldier::loadMarcoSprites()
+{
+	if (loadMaskedTexture(marcoIdleTorsoTexture, "Sprites/Clean/Marco_idle_torso.png") &&
+		loadMaskedTexture(marcoIdleLegsTexture, "Sprites/Clean/Marco_idle_legs.png") &&
+		loadMaskedTexture(marcoRunTorsoTexture, "Sprites/Clean/Marco_run_torso.png") &&
+		loadMaskedTexture(marcoRunLegsTexture, "Sprites/Clean/Marco_run_legs.png") &&
+		loadMaskedTexture(marcoFireTexture, "Sprites/Clean/Marco_fire.png") &&
+		loadMaskedTexture(marcoFaceUpTexture, "Sprites/Clean/Marco_faceUp.png") &&
+		loadMaskedTexture(marcoShootUpTexture, "Sprites/Clean/Marco_shootUp.png"))
+	{
+		marcoSpritesLoaded = true;
+		usingSprite = false;
+		setMarcoTorsoAnimation(0, MARCO_IDLE_TORSO_FRAMES, 4, 0.16f, marcoIdleTorsoTexture);
+		setMarcoLegAnimation(0, MARCO_IDLE_LEG_FRAMES, 1, 0.16f, marcoIdleLegsTexture);
+	}
 }
 
 void PlayerSoldier::takeDamage(int damage)
@@ -73,7 +165,8 @@ void PlayerSoldier::respawn()
 	fireAnimationTimer = 0.0f;
 	aimingUp = false;
 	damageTimer = 0.0f;
-	playAnimation(Constants::PLAYER_ANIM_IDLE, 4, 0.18f);
+	marcoTorsoState = -1;
+	marcoLegState = -1;
 }
 
 void PlayerSoldier::applyCharacterStats()
@@ -198,14 +291,9 @@ void PlayerSoldier::update(float deltaTime)
 
 void PlayerSoldier::updatePlayerAnimation(float deltaTime)
 {
-	if (aimingUp && currentState != Constants::SOLDIER_STATE_JUMPING && currentState != Constants::SOLDIER_STATE_FALLING)
+	if (marcoSpritesLoaded)
 	{
-		if (fireAnimationTimer > 0.0f)
-		{
-			fireAnimationTimer -= deltaTime;
-		}
-		firing = false;
-		playAnimation(Constants::PLAYER_ANIM_IDLE, 4, 0.18f);
+		updateMarcoLayeredAnimation(deltaTime);
 		return;
 	}
 
@@ -246,10 +334,7 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 		if (weapon.canFire())
 		{
 			firing = true;
-			if (!aimingUp)
-			{
-				fireAnimationTimer = 0.24f;
-			}
+			fireAnimationTimer = 0.24f;
 		}
 
 		if (!aimingUp && (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A)))
@@ -364,4 +449,221 @@ int PlayerSoldier::getGrenades() const
 int PlayerSoldier::getRockets() const
 {
 	return rockets[currentCharacter];
+}
+
+void PlayerSoldier::setMarcoTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+{
+	if (marcoTorsoState == newState)
+	{
+		return;
+	}
+
+	marcoTorsoState = newState;
+	marcoTorsoFrames = frames;
+	marcoTorsoFrameCount = frameCount;
+	marcoTorsoFrame = 0;
+	marcoTorsoTimer = 0.0f;
+	marcoTorsoFrameDuration = frameDuration;
+	marcoTorsoSprite.setTexture(texture, true);
+	marcoTorsoSprite.setTextureRect(marcoTorsoFrames[0]);
+	updateMarcoSpritePositions();
+}
+
+void PlayerSoldier::setMarcoLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+{
+	if (marcoLegState == newState)
+	{
+		return;
+	}
+
+	marcoLegState = newState;
+	marcoLegFrames = frames;
+	marcoLegFrameCount = frameCount;
+	marcoLegFrame = 0;
+	marcoLegTimer = 0.0f;
+	marcoLegFrameDuration = frameDuration;
+	marcoLegsSprite.setTexture(texture, true);
+	marcoLegsSprite.setTextureRect(marcoLegFrames[0]);
+	updateMarcoSpritePositions();
+}
+
+void PlayerSoldier::updateMarcoLayeredAnimation(float deltaTime)
+{
+	bool running = currentState == Constants::SOLDIER_STATE_RUNNING;
+	bool airborne = currentState == Constants::SOLDIER_STATE_JUMPING || currentState == Constants::SOLDIER_STATE_FALLING;
+
+	if (fireAnimationTimer > 0.0f)
+	{
+		fireAnimationTimer -= deltaTime;
+	}
+	else
+	{
+		firing = false;
+	}
+
+	if (running && !airborne)
+	{
+		setMarcoLegAnimation(1, MARCO_RUN_LEG_FRAMES, 12, 0.075f, marcoRunLegsTexture);
+	}
+	else
+	{
+		setMarcoLegAnimation(0, MARCO_IDLE_LEG_FRAMES, 1, 0.16f, marcoIdleLegsTexture);
+	}
+
+	if (aimingUp && fireAnimationTimer > 0.0f)
+	{
+		setMarcoTorsoAnimation(4, MARCO_SHOOT_UP_FRAMES, 4, 0.08f, marcoShootUpTexture);
+	}
+	else if (aimingUp)
+	{
+		setMarcoTorsoAnimation(3, MARCO_FACE_UP_FRAMES, 4, 0.12f, marcoFaceUpTexture);
+	}
+	else if (fireAnimationTimer > 0.0f)
+	{
+		setMarcoTorsoAnimation(2, MARCO_FIRE_FRAMES, 3, 0.08f, marcoFireTexture);
+	}
+	else if (running && !airborne)
+	{
+		setMarcoTorsoAnimation(1, MARCO_RUN_TORSO_FRAMES, 12, 0.075f, marcoRunTorsoTexture);
+	}
+	else
+	{
+		setMarcoTorsoAnimation(0, MARCO_IDLE_TORSO_FRAMES, 4, 0.16f, marcoIdleTorsoTexture);
+	}
+
+	bool syncRunFrames = marcoTorsoState == 1 && marcoLegState == 1;
+
+	if (!syncRunFrames)
+	{
+		marcoTorsoTimer += deltaTime;
+		if (marcoTorsoFrameCount > 1 && marcoTorsoTimer >= marcoTorsoFrameDuration)
+		{
+			marcoTorsoTimer = 0.0f;
+			marcoTorsoFrame += 1;
+			if (marcoTorsoFrame >= marcoTorsoFrameCount)
+			{
+				marcoTorsoFrame = 0;
+			}
+			marcoTorsoSprite.setTextureRect(marcoTorsoFrames[marcoTorsoFrame]);
+		}
+	}
+
+	marcoLegTimer += deltaTime;
+	if (marcoLegFrameCount > 1 && marcoLegTimer >= marcoLegFrameDuration)
+	{
+		marcoLegTimer = 0.0f;
+		marcoLegFrame += 1;
+		if (marcoLegFrame >= marcoLegFrameCount)
+		{
+			marcoLegFrame = 0;
+		}
+		marcoLegsSprite.setTextureRect(marcoLegFrames[marcoLegFrame]);
+	}
+
+	if (syncRunFrames)
+	{
+		marcoTorsoFrame = marcoLegFrame;
+		marcoTorsoSprite.setTextureRect(marcoTorsoFrames[marcoTorsoFrame]);
+	}
+
+	updateMarcoSpritePositions();
+}
+
+void PlayerSoldier::updateMarcoSpritePositions()
+{
+	if (!marcoSpritesLoaded)
+	{
+		return;
+	}
+
+	float scale = 2.45f;
+	bool drawFlipped = !facingRight;
+	if (drawFlipped)
+	{
+		marcoLegsSprite.setScale(-scale, scale);
+		marcoTorsoSprite.setScale(-scale, scale);
+	}
+	else
+	{
+		marcoLegsSprite.setScale(scale, scale);
+		marcoTorsoSprite.setScale(scale, scale);
+	}
+
+	float centerX = x + width / 2.0f;
+	float legOriginX = MARCO_IDLE_LEG_ORIGIN_X[0];
+	float legOriginY = MARCO_IDLE_LEG_ORIGIN_Y[0];
+	if (marcoLegState == 1)
+	{
+		legOriginX = MARCO_RUN_LEG_ORIGIN_X[marcoLegFrame];
+		legOriginY = MARCO_RUN_LEG_ORIGIN_Y[marcoLegFrame];
+	}
+
+	float torsoOriginX = MARCO_IDLE_TORSO_ORIGIN_X[marcoTorsoFrame];
+	float torsoOriginY = MARCO_IDLE_TORSO_ORIGIN_Y[marcoTorsoFrame];
+	if (marcoTorsoState == 1)
+	{
+		torsoOriginX = MARCO_RUN_TORSO_ORIGIN_X[marcoTorsoFrame];
+		torsoOriginY = MARCO_RUN_TORSO_ORIGIN_Y[marcoTorsoFrame];
+	}
+	else if (marcoTorsoState == 2)
+	{
+		torsoOriginX = MARCO_FIRE_ORIGIN_X[marcoTorsoFrame];
+		torsoOriginY = MARCO_FIRE_ORIGIN_Y[marcoTorsoFrame];
+	}
+	else if (marcoTorsoState == 3)
+	{
+		torsoOriginX = MARCO_FACE_UP_ORIGIN_X[marcoTorsoFrame];
+		torsoOriginY = MARCO_FACE_UP_ORIGIN_Y[marcoTorsoFrame];
+	}
+	else if (marcoTorsoState == 4)
+	{
+		torsoOriginX = MARCO_SHOOT_UP_ORIGIN_X[marcoTorsoFrame];
+		torsoOriginY = MARCO_SHOOT_UP_ORIGIN_Y[marcoTorsoFrame];
+	}
+
+	marcoLegsSprite.setOrigin(legOriginX, legOriginY);
+	marcoTorsoSprite.setOrigin(torsoOriginX, torsoOriginY);
+
+	float legAnchorY = y + height;
+	float torsoOffsetY = 12.0f;
+	marcoLegsSprite.setPosition(centerX, legAnchorY);
+	marcoTorsoSprite.setPosition(centerX, legAnchorY - torsoOffsetY * scale);
+}
+
+void PlayerSoldier::draw(sf::RenderWindow& window)
+{
+	if (!visible)
+	{
+		return;
+	}
+
+	if (marcoSpritesLoaded)
+	{
+		window.draw(marcoLegsSprite);
+		window.draw(marcoTorsoSprite);
+
+		if (maxHealth > 0)
+		{
+			float healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
+			if (healthRatio < 0.0f)
+			{
+				healthRatio = 0.0f;
+			}
+
+			sf::RectangleShape healthBack;
+			healthBack.setPosition(x, y - 12.0f);
+			healthBack.setSize(sf::Vector2f(width, 6.0f));
+			healthBack.setFillColor(sf::Color(80, 20, 20));
+			window.draw(healthBack);
+
+			sf::RectangleShape healthFront;
+			healthFront.setPosition(x, y - 12.0f);
+			healthFront.setSize(sf::Vector2f(width * healthRatio, 6.0f));
+			healthFront.setFillColor(sf::Color(60, 220, 90));
+			window.draw(healthFront);
+		}
+		return;
+	}
+
+	Soldier::draw(window);
 }

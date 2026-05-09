@@ -24,10 +24,38 @@ private:
 	bool previousMeleeKey;
 	bool previousGrenadeKey;
 	bool previousRocketKey;
+	bool marcoSpritesLoaded;
+	int marcoTorsoState;
+	int marcoLegState;
+	const sf::IntRect* marcoTorsoFrames;
+	const sf::IntRect* marcoLegFrames;
+	int marcoTorsoFrameCount;
+	int marcoLegFrameCount;
+	int marcoTorsoFrame;
+	int marcoLegFrame;
+	float marcoTorsoTimer;
+	float marcoLegTimer;
+	float marcoTorsoFrameDuration;
+	float marcoLegFrameDuration;
+	sf::Texture marcoIdleTorsoTexture;
+	sf::Texture marcoIdleLegsTexture;
+	sf::Texture marcoRunTorsoTexture;
+	sf::Texture marcoRunLegsTexture;
+	sf::Texture marcoFireTexture;
+	sf::Texture marcoFaceUpTexture;
+	sf::Texture marcoShootUpTexture;
+	sf::Sprite marcoTorsoSprite;
+	sf::Sprite marcoLegsSprite;
 
 	void handleInput();
 	void updatePlayerAnimation(float deltaTime);
 	void applyCharacterStats();
+	bool loadMaskedTexture(sf::Texture& targetTexture, const char* fileName);
+	void loadMarcoSprites();
+	void setMarcoTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void setMarcoLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void updateMarcoLayeredAnimation(float deltaTime);
+	void updateMarcoSpritePositions();
 
 public:
 	PlayerSoldier();
@@ -35,6 +63,7 @@ public:
 	void takeDamage(int damage);
 	void respawn();
 	void update(float deltaTime);
+	void draw(sf::RenderWindow& window);
 	void handleWeaponInput(EntityManager& entityManager, float deltaTime);
 	void switchCharacter();
 	void refillDemoInventory();
