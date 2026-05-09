@@ -63,6 +63,61 @@ static const float MARCO_IDLE_LEG_ORIGIN_Y[] = { 15.0f };
 static const float MARCO_RUN_LEG_ORIGIN_X[] = { 10.5f, 14.0f, 15.5f, 9.5f, 7.5f, 8.0f, 10.5f, 13.0f, 15.5f, 10.0f, 7.5f, 9.0f };
 static const float MARCO_RUN_LEG_ORIGIN_Y[] = { 19.0f, 19.0f, 15.0f, 19.0f, 19.0f, 19.0f, 19.0f, 19.0f, 15.0f, 19.0f, 19.0f, 19.0f };
 
+// Tarma Animation Constants
+static const sf::IntRect TARMA_IDLE_TORSO_FRAMES[] =
+{
+	sf::IntRect(4, 4, 32, 26), sf::IntRect(40, 4, 32, 26), sf::IntRect(76, 4, 32, 26), sf::IntRect(112, 4, 32, 26)
+};
+
+static const sf::IntRect TARMA_IDLE_LEG_FRAMES[] =
+{
+	sf::IntRect(3, 2, 22, 18)
+};
+
+static const sf::IntRect TARMA_RUN_TORSO_FRAMES[] =
+{
+	sf::IntRect(1,   3, 32, 28), sf::IntRect(43,  2, 30, 29), sf::IntRect(82,  2, 28, 28), sf::IntRect(119, 2, 27, 27),
+	sf::IntRect(154, 2, 29, 28), sf::IntRect(192, 2, 30, 28), sf::IntRect(232, 3, 32, 28), sf::IntRect(273, 2, 32, 29),
+	sf::IntRect(313, 2, 32, 28), sf::IntRect(353, 3, 31, 27), sf::IntRect(392, 3, 31, 28), sf::IntRect(430, 3, 31, 28)
+};
+
+static const sf::IntRect TARMA_RUN_LEG_FRAMES[] =
+{
+	sf::IntRect(4,   3, 21, 20), sf::IntRect(40,  3, 28, 20), sf::IntRect(78,  3, 31, 16), sf::IntRect(120, 3, 19, 20),
+	sf::IntRect(157, 3, 15, 20), sf::IntRect(194, 3, 16, 20), sf::IntRect(232, 3, 21, 20), sf::IntRect(268, 3, 26, 20),
+	sf::IntRect(310, 3, 31, 16), sf::IntRect(353, 3, 20, 20), sf::IntRect(394, 3, 15, 20), sf::IntRect(430, 3, 18, 20)
+};
+
+static const sf::IntRect TARMA_FIRE_FRAMES[] =
+{
+	sf::IntRect(4, 3, 50, 23), sf::IntRect(60, 3, 51, 23), sf::IntRect(116, 3, 52, 23)
+};
+
+static const sf::IntRect TARMA_FACE_UP_FRAMES[] =
+{
+	sf::IntRect(0, 0, 33, 31), sf::IntRect(33, 0, 33, 31), sf::IntRect(66, 0, 33, 31), sf::IntRect(99, 0, 33, 31)
+};
+
+static const sf::IntRect TARMA_SHOOT_UP_FRAMES[] =
+{
+	sf::IntRect(0, 0, 29, 69), sf::IntRect(29, 0, 29, 69), sf::IntRect(58, 0, 29, 69), sf::IntRect(87, 0, 29, 69)
+};
+
+static const float TARMA_IDLE_TORSO_ORIGIN_X[] = { 7.0f, 6.0f, 6.0f, 7.0f };
+static const float TARMA_IDLE_TORSO_ORIGIN_Y[] = { 22.5f, 22.5f, 22.5f, 22.5f };
+static const float TARMA_RUN_TORSO_ORIGIN_X[] = { 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f };
+static const float TARMA_RUN_TORSO_ORIGIN_Y[] = { 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f };
+static const float TARMA_FIRE_ORIGIN_X[] = { 9.0f, 9.0f, 9.0f };
+static const float TARMA_FIRE_ORIGIN_Y[] = { 22.5f, 22.5f, 22.5f };
+static const float TARMA_FACE_UP_ORIGIN_X[] = { 11.0f, 12.0f, 13.0f, 14.0f };
+static const float TARMA_FACE_UP_ORIGIN_Y[] = { 29.0f, 29.0f, 29.0f, 29.0f };
+static const float TARMA_SHOOT_UP_ORIGIN_X[] = { 14.5f, 14.5f, 14.5f, 14.5f };
+static const float TARMA_SHOOT_UP_ORIGIN_Y[] = { 67.0f, 67.0f, 67.0f, 67.0f };
+static const float TARMA_IDLE_LEG_ORIGIN_X[] = { 10.0f };
+static const float TARMA_IDLE_LEG_ORIGIN_Y[] = { 15.0f };
+static const float TARMA_RUN_LEG_ORIGIN_X[] = { 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f };
+static const float TARMA_RUN_LEG_ORIGIN_Y[] = { 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f };
+
 // Eri Animation Constants
 static const sf::IntRect ERI_IDLE_TORSO_FRAMES[] =
 {
@@ -166,11 +221,26 @@ PlayerSoldier::PlayerSoldier()
 	eriTorsoFrameDuration = 0.12f;
 	eriLegFrameDuration = 0.09f;
 
+	tarmaSpritesLoaded = false;
+	tarmaTorsoState = -1;
+	tarmaLegState = -1;
+	tarmaTorsoFrames = 0;
+	tarmaLegFrames = 0;
+	tarmaTorsoFrameCount = 1;
+	tarmaLegFrameCount = 1;
+	tarmaTorsoFrame = 0;
+	tarmaLegFrame = 0;
+	tarmaTorsoTimer = 0.0f;
+	tarmaLegTimer = 0.0f;
+	tarmaTorsoFrameDuration = 0.12f;
+	tarmaLegFrameDuration = 0.09f;
+
 	ridingVehicle = false;
 	setPosition(120.0f, 500.0f);
 	setSpriteScale(2.2f);
 	loadMarcoSprites();
 	loadEriSprites();
+	loadTarmaSprites();
 	applyCharacterStats();
 }
 
@@ -220,6 +290,23 @@ void PlayerSoldier::loadEriSprites()
 	}
 }
 
+void PlayerSoldier::loadTarmaSprites()
+{
+	if (loadMaskedTexture(tarmaIdleTorsoTexture, "Sprites/Clean/Tarma_idle_torso.png") &&
+		loadMaskedTexture(tarmaIdleLegsTexture, "Sprites/Clean/Tarma_idle_legs.png") &&
+		loadMaskedTexture(tarmaRunTorsoTexture, "Sprites/Clean/Tarma_run_torso.png") &&
+		loadMaskedTexture(tarmaRunLegsTexture, "Sprites/Clean/Tarma_run_legs.png") &&
+		loadMaskedTexture(tarmaFireTexture, "Sprites/Clean/Tarma_fire.png") &&
+		loadMaskedTexture(tarmaFaceUpTexture, "Sprites/Clean/Tarma_faceUp.png") &&
+		loadMaskedTexture(tarmaShootUpTexture, "Sprites/Clean/Tarma_shootUp.png"))
+	{
+		tarmaSpritesLoaded = true;
+		usingSprite = false;
+		setTarmaTorsoAnimation(0, TARMA_IDLE_TORSO_FRAMES, 4, 0.16f, tarmaIdleTorsoTexture);
+		setTarmaLegAnimation(0, TARMA_IDLE_LEG_FRAMES, 1, 0.16f, tarmaIdleLegsTexture);
+	}
+}
+
 void PlayerSoldier::takeDamage(int damage)
 {
 	if (DeveloperMode::isEnabled())
@@ -258,6 +345,8 @@ void PlayerSoldier::respawn()
 	marcoLegState = -1;
 	eriTorsoState = -1;
 	eriLegState = -1;
+	tarmaTorsoState = -1;
+	tarmaLegState = -1;
 	setRidingVehicle(false);
 	playAnimation(Constants::PLAYER_ANIM_IDLE, 4, 0.18f);
 }
@@ -405,6 +494,11 @@ void PlayerSoldier::updatePlayerAnimation(float deltaTime)
 	else if (currentCharacter == 2 && eriSpritesLoaded)
 	{
 		updateEriLayeredAnimation(deltaTime);
+		return;
+	}
+	else if (currentCharacter == 1 && tarmaSpritesLoaded)
+	{
+		updateTarmaLayeredAnimation(deltaTime);
 		return;
 	}
 
@@ -979,6 +1073,185 @@ void PlayerSoldier::updateEriSpritePositions()
 	eriTorsoSprite.setPosition(centerX, legAnchorY - torsoOffsetY * scale);
 }
 
+void PlayerSoldier::setTarmaTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+{
+	if (tarmaTorsoState == newState)
+	{
+		return;
+	}
+
+	tarmaTorsoState = newState;
+	tarmaTorsoFrames = frames;
+	tarmaTorsoFrameCount = frameCount;
+	tarmaTorsoFrame = 0;
+	tarmaTorsoTimer = 0.0f;
+	tarmaTorsoFrameDuration = frameDuration;
+	tarmaTorsoSprite.setTexture(texture, true);
+	tarmaTorsoSprite.setTextureRect(tarmaTorsoFrames[0]);
+	updateTarmaSpritePositions();
+}
+
+void PlayerSoldier::setTarmaLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+{
+	if (tarmaLegState == newState)
+	{
+		return;
+	}
+
+	tarmaLegState = newState;
+	tarmaLegFrames = frames;
+	tarmaLegFrameCount = frameCount;
+	tarmaLegFrame = 0;
+	tarmaLegTimer = 0.0f;
+	tarmaLegFrameDuration = frameDuration;
+	tarmaLegsSprite.setTexture(texture, true);
+	tarmaLegsSprite.setTextureRect(tarmaLegFrames[0]);
+	updateTarmaSpritePositions();
+}
+
+void PlayerSoldier::updateTarmaLayeredAnimation(float deltaTime)
+{
+	bool running = currentState == Constants::SOLDIER_STATE_RUNNING;
+	bool airborne = currentState == Constants::SOLDIER_STATE_JUMPING || currentState == Constants::SOLDIER_STATE_FALLING;
+
+	if (fireAnimationTimer > 0.0f)
+	{
+		fireAnimationTimer -= deltaTime;
+	}
+	else
+	{
+		firing = false;
+	}
+
+	if (running && !airborne)
+	{
+		setTarmaLegAnimation(1, TARMA_RUN_LEG_FRAMES, 12, 0.075f, tarmaRunLegsTexture);
+	}
+	else
+	{
+		setTarmaLegAnimation(0, TARMA_IDLE_LEG_FRAMES, 1, 0.16f, tarmaIdleLegsTexture);
+	}
+
+	if (aimingUp && fireAnimationTimer > 0.0f)
+	{
+		setTarmaTorsoAnimation(4, TARMA_SHOOT_UP_FRAMES, 4, 0.08f, tarmaShootUpTexture);
+	}
+	else if (aimingUp)
+	{
+		setTarmaTorsoAnimation(3, TARMA_FACE_UP_FRAMES, 4, 0.12f, tarmaFaceUpTexture);
+	}
+	else if (fireAnimationTimer > 0.0f)
+	{
+		setTarmaTorsoAnimation(2, TARMA_FIRE_FRAMES, 3, 0.08f, tarmaFireTexture);
+	}
+	else if (running && !airborne)
+	{
+		setTarmaTorsoAnimation(1, TARMA_RUN_TORSO_FRAMES, 12, 0.075f, tarmaRunTorsoTexture);
+	}
+	else
+	{
+		setTarmaTorsoAnimation(0, TARMA_IDLE_TORSO_FRAMES, 4, 0.16f, tarmaIdleTorsoTexture);
+	}
+
+	bool syncRunFrames = tarmaTorsoState == 1 && tarmaLegState == 1;
+
+	if (!syncRunFrames)
+	{
+		tarmaTorsoTimer += deltaTime;
+		if (tarmaTorsoFrameCount > 1 && tarmaTorsoTimer >= tarmaTorsoFrameDuration)
+		{
+			tarmaTorsoTimer = 0.0f;
+			tarmaTorsoFrame += 1;
+			if (tarmaTorsoFrame >= tarmaTorsoFrameCount)
+			{
+				tarmaTorsoFrame = 0;
+			}
+			tarmaTorsoSprite.setTextureRect(tarmaTorsoFrames[tarmaTorsoFrame]);
+		}
+	}
+
+	tarmaLegTimer += deltaTime;
+	if (tarmaLegFrameCount > 1 && tarmaLegTimer >= tarmaLegFrameDuration)
+	{
+		tarmaLegTimer = 0.0f;
+		tarmaLegFrame += 1;
+		if (tarmaLegFrame >= tarmaLegFrameCount)
+		{
+			tarmaLegFrame = 0;
+		}
+		tarmaLegsSprite.setTextureRect(tarmaLegFrames[tarmaLegFrame]);
+	}
+
+	if (syncRunFrames)
+	{
+		tarmaTorsoFrame = tarmaLegFrame;
+		tarmaTorsoSprite.setTextureRect(tarmaTorsoFrames[tarmaTorsoFrame]);
+	}
+
+	updateTarmaSpritePositions();
+}
+
+void PlayerSoldier::updateTarmaSpritePositions()
+{
+	if (!tarmaSpritesLoaded)
+	{
+		return;
+	}
+
+	float scale = 2.45f;
+	bool drawFlipped = !facingRight;
+	if (drawFlipped)
+	{
+		tarmaLegsSprite.setScale(-scale, scale);
+		tarmaTorsoSprite.setScale(-scale, scale);
+	}
+	else
+	{
+		tarmaLegsSprite.setScale(scale, scale);
+		tarmaTorsoSprite.setScale(scale, scale);
+	}
+
+	float centerX = x + width / 2.0f;
+	float legOriginX = TARMA_IDLE_LEG_ORIGIN_X[0];
+	float legOriginY = TARMA_IDLE_LEG_ORIGIN_Y[0];
+	if (tarmaLegState == 1)
+	{
+		legOriginX = TARMA_RUN_LEG_ORIGIN_X[tarmaLegFrame];
+		legOriginY = TARMA_RUN_LEG_ORIGIN_Y[tarmaLegFrame];
+	}
+
+	float torsoOriginX = TARMA_IDLE_TORSO_ORIGIN_X[tarmaTorsoFrame];
+	float torsoOriginY = TARMA_IDLE_TORSO_ORIGIN_Y[tarmaTorsoFrame];
+	if (tarmaTorsoState == 1)
+	{
+		torsoOriginX = TARMA_RUN_TORSO_ORIGIN_X[tarmaTorsoFrame];
+		torsoOriginY = TARMA_RUN_TORSO_ORIGIN_Y[tarmaTorsoFrame];
+	}
+	else if (tarmaTorsoState == 2)
+	{
+		torsoOriginX = TARMA_FIRE_ORIGIN_X[tarmaTorsoFrame];
+		torsoOriginY = TARMA_FIRE_ORIGIN_Y[tarmaTorsoFrame];
+	}
+	else if (tarmaTorsoState == 3)
+	{
+		torsoOriginX = TARMA_FACE_UP_ORIGIN_X[tarmaTorsoFrame];
+		torsoOriginY = TARMA_FACE_UP_ORIGIN_Y[tarmaTorsoFrame];
+	}
+	else if (tarmaTorsoState == 4)
+	{
+		torsoOriginX = TARMA_SHOOT_UP_ORIGIN_X[tarmaTorsoFrame];
+		torsoOriginY = TARMA_SHOOT_UP_ORIGIN_Y[tarmaTorsoFrame];
+	}
+
+	tarmaLegsSprite.setOrigin(legOriginX, legOriginY);
+	tarmaTorsoSprite.setOrigin(torsoOriginX, torsoOriginY);
+
+	float legAnchorY = y + height;
+	float torsoOffsetY = 12.0f;
+	tarmaLegsSprite.setPosition(centerX, legAnchorY);
+	tarmaTorsoSprite.setPosition(centerX, legAnchorY - torsoOffsetY * scale);
+}
+
 void PlayerSoldier::draw(sf::RenderWindow& window)
 {
 	if (!visible)
@@ -996,8 +1269,13 @@ void PlayerSoldier::draw(sf::RenderWindow& window)
 		window.draw(eriLegsSprite);
 		window.draw(eriTorsoSprite);
 	}
+	else if (currentCharacter == 1 && tarmaSpritesLoaded)
+	{
+		window.draw(tarmaLegsSprite);
+		window.draw(tarmaTorsoSprite);
+	}
 
-	if ((currentCharacter == 0 && marcoSpritesLoaded) || (currentCharacter == 2 && eriSpritesLoaded))
+	if ((currentCharacter == 0 && marcoSpritesLoaded) || (currentCharacter == 2 && eriSpritesLoaded) || (currentCharacter == 1 && tarmaSpritesLoaded))
 	{
 		if (maxHealth > 0)
 		{

@@ -70,6 +70,29 @@ private:
 	sf::Sprite eriTorsoSprite;
 	sf::Sprite eriLegsSprite;
 
+	bool tarmaSpritesLoaded;
+	int tarmaTorsoState;
+	int tarmaLegState;
+	const sf::IntRect* tarmaTorsoFrames;
+	const sf::IntRect* tarmaLegFrames;
+	int tarmaTorsoFrameCount;
+	int tarmaLegFrameCount;
+	int tarmaTorsoFrame;
+	int tarmaLegFrame;
+	float tarmaTorsoTimer;
+	float tarmaLegTimer;
+	float tarmaTorsoFrameDuration;
+	float tarmaLegFrameDuration;
+	sf::Texture tarmaIdleTorsoTexture;
+	sf::Texture tarmaIdleLegsTexture;
+	sf::Texture tarmaRunTorsoTexture;
+	sf::Texture tarmaRunLegsTexture;
+	sf::Texture tarmaFireTexture;
+	sf::Texture tarmaFaceUpTexture;
+	sf::Texture tarmaShootUpTexture;
+	sf::Sprite tarmaTorsoSprite;
+	sf::Sprite tarmaLegsSprite;
+
 	bool ridingVehicle;
 
 	void handleInput();
@@ -87,6 +110,12 @@ private:
 	void setEriLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
 	void updateEriLayeredAnimation(float deltaTime);
 	void updateEriSpritePositions();
+
+	void loadTarmaSprites();
+	void setTarmaTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void setTarmaLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void updateTarmaLayeredAnimation(float deltaTime);
+	void updateTarmaSpritePositions();
 
 public:
 	PlayerSoldier();
