@@ -16,6 +16,7 @@ protected:
 	sf::Image collisionMaskImage;
 	bool collisionMaskLoaded;
 	DynamicArray<float> groundProfile;
+	DynamicArray<sf::FloatRect> waterBlocks;
 	int groundProfileSpacing;
 	sf::Texture grassTexture;
 	sf::Texture dirtTexture;
@@ -33,14 +34,19 @@ protected:
 	void setupFullBiomeRect(int contentTop, int contentHeight);
 	void findImageContentY(const sf::Image& image, int& contentTop, int& contentHeight) const;
 	void buildGroundProfileFromMask();
+	void buildWaterBlocksFromMask();
 	bool isGroundMaskPixel(sf::Color pixel) const;
+	bool isWaterMaskPixel(sf::Color pixel) const;
 	int getSourceXFromWorldX(float worldX) const;
+	int getSourceYFromWorldY(float worldY) const;
 	float getWorldYFromSourceY(int sourceY) const;
 	float getMaskedGroundYAt(float x) const;
 	float getMaskedLandingY(float left, float right, float previousBottom, float currentBottom) const;
+	bool hasWaterInRect(const sf::FloatRect& rect) const;
 	void drawTileRow(sf::RenderWindow& window, sf::Texture& texture, int y);
 	void drawPlatform(sf::RenderWindow& window, const sf::FloatRect& platform);
 	void drawGeneratedTerrain(sf::RenderWindow& window);
+	void drawWaterBlocks(sf::RenderWindow& window);
 	void buildSurvivalPlatforms();
 
 public:
@@ -61,4 +67,10 @@ public:
 	float getGroundYAt(float x) const;
 	float getMainGroundYAt(float x) const;
 	float getGeneratedSurfaceY(float x) const;
+	char getCollisionTileAt(float worldX, float worldY) const;
+	bool isWaterInBounds(float left, float right, float top, float bottom) const;
+	float getWaterSurfaceYAt(float x) const;
+	bool isAerialBiome(float x, float y) const;
+	bool isPlainsBiome(float x, float y) const;
+	bool isAquaticBiome(float x, float y) const;
 };

@@ -78,3 +78,13 @@ void Projectile::setPlayerOwned(bool owned)
 {
 	playerOwned = owned;
 }
+
+bool Projectile::deferProjectileDeactivateAfterEnemyHit()
+{
+	return false;
+}
+
+bool Projectile::shouldIgnorePlayerProjectileVsEnemyChecks() const
+{
+	return false;
+}

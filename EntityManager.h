@@ -15,6 +15,9 @@ private:
 	DynamicArray<Entity*> entities;
 	int pendingScore;
 	Level* activeLevel;
+	int destroyedFlyingTara;
+	int destroyedBradley;
+	int destroyedEnemySub;
 
 	void checkProjectileEnemyCollisions();
 	void checkProjectileVehicleCollisions();
@@ -35,6 +38,10 @@ public:
 	int countActiveEnemies() const;
 	PlayerSoldier* getPlayer() const;
 	Vehicle* getVehicle() const;
+	Vehicle* getClosestVehicle(float x, float y) const;
+	int getDestroyedFlyingTaraCount() const;
+	int getDestroyedBradleyCount() const;
+	int getDestroyedEnemySubCount() const;
 	void removeEnemiesBehind(float minimumX);
 	void removeInactive();
 	void clear();

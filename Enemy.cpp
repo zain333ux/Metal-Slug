@@ -34,6 +34,7 @@ Enemy::Enemy()
 	target = 0;
 	fallbackColor = sf::Color(210, 70, 70);
 	canMoveInAir = false;
+	inWater = false;
 	usingSprite = false;
 	spriteFacesLeft = true;
 	spriteScale = 2.1f;
@@ -53,10 +54,6 @@ Enemy::Enemy()
 	body.setOutlineThickness(2.0f);
 	body.setFillColor(sf::Color(210, 70, 70));
 	setSpriteScale(2.1f);
-	if (loadSpriteSheet("Sprites/Clean/enemy_rebel_sheet.png"))
-	{
-		setSpriteFrame(0, 0, 96, 96);
-	}
 }
 
 void Enemy::setSpawnPosition(float newX, float newY)
@@ -86,8 +83,41 @@ void Enemy::update(float deltaTime)
 		pistolTimer -= deltaTime;
 	}
 
+	if (activeLevel != 0)
+	{
+		inWater = activeLevel->isWaterInBounds(x + 4.0f, x + width - 4.0f, y + height * 0.45f, y + height + 10.0f);
+	}
+
 	updateAI();
-	velocityY += Constants::GRAVITY * deltaTime;
+	if (activeLevel != 0 && grounded && velocityX != 0.0f)
+	{
+		float lookAheadX = velocityX > 0.0f ? x + width + 14.0f : x - 14.0f;
+		float nextGroundY = activeLevel->getGroundYAt(lookAheadX);
+		float currentBottom = y + height;
+		if (nextGroundY > currentBottom + 34.0f)
+		{
+			velocityX = 0.0f;
+			patrolDirection *= -1;
+		}
+	}
+
+	bool wasInWater = false;
+	if (activeLevel != 0)
+	{
+		wasInWater = inWater;
+	}
+
+	float gravity = Constants::GRAVITY;
+	if (wasInWater)
+	{
+		gravity *= 0.28f;
+		velocityX *= 0.75f;
+	}
+	velocityY += gravity * deltaTime;
+	if (wasInWater && velocityY > 150.0f)
+	{
+		velocityY = 150.0f;
+	}
 
 	float previousBottom = y + height;
 	Entity::update(deltaTime);
@@ -98,6 +128,9 @@ void Enemy::update(float deltaTime)
 		landingY = activeLevel->getLandingY(x, x + width, previousBottom, y + height);
 	}
 
+	inWater = activeLevel != 0 &&
+		activeLevel->isWaterInBounds(x + 4.0f, x + width - 4.0f, y + height * 0.45f, y + height + 10.0f);
+
 	if (y + height >= landingY)
 	{
 		y = landingY - height;
@@ -107,6 +140,22 @@ void Enemy::update(float deltaTime)
 	else
 	{
 		grounded = false;
+	}
+
+	if (activeLevel != 0 && y + height > activeLevel->getWorldHeight())
+	{
+		y = activeLevel->getWorldHeight() - height;
+		velocityY = 0.0f;
+		grounded = true;
+	}
+
+	if (y < 0.0f)
+	{
+		y = 0.0f;
+		if (velocityY < 0.0f)
+		{
+			velocityY = 0.0f;
+		}
 	}
 
 	if (x < 0.0f)
@@ -173,7 +222,7 @@ void Enemy::updateAI()
 		return;
 	}
 
-	if (!grounded && !canMoveInAir)
+	if (!grounded && !canMoveInAir && !inWater)
 	{
 		return;
 	}

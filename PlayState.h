@@ -25,6 +25,7 @@ private:
 	int campaignProfileOption;
 	float campaignSpawnX;
 	float campaignSpawnTimer;
+	float campaignVehicleSpawnTimer;
 	int campaignKills;
 	ScoreManager scoreManager;
 	PlayerSoldier* player;

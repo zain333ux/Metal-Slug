@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "Enemy.h"
 #include "EnemyFactory.h"
+#include "EnemyVehicleFactory.h"
 #include "Game.h"
 #include "Level.h"
 #include "LevelProfile.h"
@@ -11,8 +12,55 @@
 #include "DeveloperMode.h"
 #include "ModeSelectState.h"
 #include "Vehicle.h"
+#include "SlugFlyer.h"
+#include "Submarine.h"
 
 #include <string>
+
+namespace
+{
+	bool findWaterVehicleSpawn(Level* level, float preferredX, float& spawnX, float& spawnY)
+	{
+		if (level == 0)
+		{
+			return false;
+		}
+
+		const float worldWidth = level->getWorldWidth();
+		const float step = 160.0f;
+
+		for (int offset = 0; offset < 40; offset += 1)
+		{
+			for (int side = 0; side < 2; side += 1)
+			{
+				float testX = preferredX + step * static_cast<float>(offset);
+				if (side == 1)
+				{
+					testX = preferredX - step * static_cast<float>(offset);
+				}
+
+				if (testX < 120.0f)
+				{
+					testX = 120.0f;
+				}
+				if (testX > worldWidth - 220.0f)
+				{
+					testX = worldWidth - 220.0f;
+				}
+
+				float waterY = level->getWaterSurfaceYAt(testX);
+				if (waterY <= level->getWorldHeight() - 90.0f)
+				{
+					spawnX = testX;
+					spawnY = waterY + 50.0f;
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+}
 
 PlayState::PlayState(PlayMode newMode, int newCampaignProfileOption)
 {
@@ -25,6 +73,7 @@ PlayState::PlayState(PlayMode newMode, int newCampaignProfileOption)
 	campaignProfileOption = newCampaignProfileOption;
 	campaignSpawnX = 1200.0f;
 	campaignSpawnTimer = 0.0f;
+	campaignVehicleSpawnTimer = 2.5f;
 	campaignKills = 0;
 	player = 0;
 	vehicle = 0;
@@ -101,6 +150,7 @@ void PlayState::loadCurrentLevel(Game& game)
 
 	spawnVehicle(game);
 	spawnPickups(game);
+	campaignVehicleSpawnTimer = 2.5f;
 	levelComplete = false;
 	waitingForContinue = false;
 	gameOver = false;
@@ -110,10 +160,10 @@ void PlayState::spawnEnemy(Game& game, EnemyKind kind, float x, float y)
 {
 	Enemy* enemy = EnemyFactory::createEnemy(kind, x, y, player);
 	Level* level = game.getLevelManager().getCurrentLevel();
-	bool flyingEnemy = kind == ENEMY_MARTIAN || kind == ENEMY_BOSS_2;
+	bool flyingEnemy = kind == ENEMY_BOSS_2;
 	if (level != 0 && !flyingEnemy)
 	{
-		enemy->setPosition(x, level->getMainGroundYAt(x) - enemy->getHeight());
+		enemy->setPosition(x, level->getGroundYAt(x) - enemy->getHeight());
 	}
 	game.getEntityManager().addEntity(enemy);
 }
@@ -160,6 +210,9 @@ void PlayState::spawnSurvivalWave(Game& game)
 		spawnEnemy(game, ENEMY_SHIELDED, 4380.0f, 500.0f);
 		spawnEnemy(game, ENEMY_MARTIAN, 4740.0f, 360.0f);
 	}
+
+	Level* level = game.getLevelManager().getCurrentLevel();
+	EnemyVehicleFactory::spawnEnemyVehiclesForSurvivalLevel(currentLevel, level, game.getEntityManager(), player);
 }
 
 void PlayState::spawnBossWave(Game& game)
@@ -231,6 +284,10 @@ void PlayState::updateCampaignSpawning(Game& game, float deltaTime)
 	{
 		campaignSpawnTimer -= deltaTime;
 	}
+	if (campaignVehicleSpawnTimer > 0.0f)
+	{
+		campaignVehicleSpawnTimer -= deltaTime;
+	}
 
 	if (campaignSpawnTimer <= 0.0f && game.getEntityManager().countActiveEnemies() < 10)
 	{
@@ -241,6 +298,18 @@ void PlayState::updateCampaignSpawning(Game& game, float deltaTime)
 		spawnCampaignWave(game);
 		game.getEntityManager().setActiveLevel(level);
 		campaignSpawnTimer = 2.0f;
+	}
+
+	if (campaignVehicleSpawnTimer <= 0.0f)
+	{
+		EnemyVehicleFactory::spawnEnemyVehiclesForCampaign(
+			level,
+			game.getEntityManager(),
+			player,
+			game.getEntityManager().getDestroyedFlyingTaraCount(),
+			game.getEntityManager().getDestroyedBradleyCount(),
+			game.getEntityManager().getDestroyedEnemySubCount());
+		campaignVehicleSpawnTimer = 7.5f;
 	}
 }
 
@@ -269,6 +338,7 @@ void PlayState::spawnPickups(Game& game)
 void PlayState::spawnVehicle(Game& game)
 {
 	Level* level = game.getLevelManager().getCurrentLevel();
+	bool aquaticVehicleLevel = currentLevel == 3 || (mode == PLAY_MODE_CAMPAIGN && campaignProfileOption == 2);
 	float vehicleX = 330.0f;
 	float vehicleY = static_cast<float>(Constants::GROUND_Y) - 96.0f;
 
@@ -277,23 +347,58 @@ void PlayState::spawnVehicle(Game& game)
 		vehicleY = level->getMainGroundYAt(vehicleX) - 96.0f;
 	}
 
-	vehicle = new Vehicle(vehicleX, vehicleY);
-	if (level != 0)
+	if (!aquaticVehicleLevel)
 	{
-		vehicle->setMovementMaxX(level->getWorldWidth());
+		vehicle = new Vehicle(vehicleX, vehicleY);
+		if (level != 0)
+		{
+			vehicle->setMovementMaxX(level->getWorldWidth());
+		}
+		game.getEntityManager().addEntity(vehicle);
 	}
-	game.getEntityManager().addEntity(vehicle);
+
+	// Spawn Slug Flyer in higher terrain regions for aerial biome traversal.
+	if (level != 0 && !aquaticVehicleLevel && (mode == PLAY_MODE_CAMPAIGN || currentLevel <= 3))
+	{
+		float flyerX = level->getWorldWidth() * 0.28f;
+		float flyerY = level->getMainGroundYAt(flyerX) - 220.0f;
+		if (flyerY < 120.0f)
+		{
+			flyerY = 120.0f;
+		}
+		SlugFlyer* flyer = new SlugFlyer(flyerX, flyerY);
+		flyer->setMovementMaxX(level->getWorldWidth());
+		flyer->setActiveLevel(level);
+		game.getEntityManager().addEntity(flyer);
+	}
+
+	// Aquatic levels use the Slug Mariner. Search for real water so it never spawns below the map.
+	if (aquaticVehicleLevel)
+	{
+		float subX = 1800.0f;
+		float subY = 600.0f;
+		if (level != 0 && !findWaterVehicleSpawn(level, level->getWorldWidth() * 0.30f, subX, subY))
+		{
+			subX = level->getWorldWidth() * 0.30f;
+			subY = level->getMainGroundYAt(subX) - 90.0f;
+		}
+		SlugMariner* sub = new SlugMariner(subX, subY);
+		sub->setMovementMaxX(level ? level->getWorldWidth() : 20000.0f);
+		sub->setActiveLevel(level);
+		game.getEntityManager().addEntity(sub);
+		vehicle = sub;
+	}
 }
 
 void PlayState::handleVehicleInteraction(Game& game)
 {
-	vehicle = game.getEntityManager().getVehicle();
-
 	if (player == 0 || !player->isActive() || player->isDead())
 	{
 		previousVehicleKey = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
 		return;
 	}
+
+	vehicle = game.getEntityManager().getClosestVehicle(player->getCenterX(), player->getCenterY());
 
 	bool vehicleKey = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
 	if (vehicleKey && !previousVehicleKey)
@@ -408,6 +513,19 @@ void PlayState::update(Game& game, float deltaTime)
 
 	updateCampaignSpawning(game, deltaTime);
 
+	if (mode == PLAY_MODE_CAMPAIGN && !waitingForContinue)
+	{
+		bool vehicleQuotaMet =
+			game.getEntityManager().getDestroyedFlyingTaraCount() >= 3 &&
+			game.getEntityManager().getDestroyedBradleyCount() >= 3 &&
+			game.getEntityManager().getDestroyedEnemySubCount() >= 3;
+		if (vehicleQuotaMet)
+		{
+			waitingForContinue = true;
+			centerText.setString("CAMPAIGN VEHICLE QUOTA CLEAR\nPress Enter");
+		}
+	}
+
 	if (!waitingForContinue && mode != PLAY_MODE_CAMPAIGN)
 	{
 		Level* level = game.getLevelManager().getCurrentLevel();
@@ -447,9 +565,14 @@ void PlayState::updateCamera(Game& game)
 	}
 
 	float centerX = player->getCenterX();
-	float halfWidth = static_cast<float>(Constants::SCREEN_WIDTH) / 2.0f;
 	float centerY = player->getCenterY();
-	float halfHeight = static_cast<float>(Constants::SCREEN_HEIGHT) / 2.0f;
+	float cameraZoom = 1.45f;
+	float viewWidth = static_cast<float>(Constants::SCREEN_WIDTH) * cameraZoom;
+	float viewHeight = static_cast<float>(Constants::SCREEN_HEIGHT) * cameraZoom;
+	float halfWidth = viewWidth / 2.0f;
+	float halfHeight = viewHeight / 2.0f;
+	float topBias = (viewHeight - static_cast<float>(Constants::SCREEN_HEIGHT)) * 0.5f;
+	centerY -= topBias;
 	if (centerX < halfWidth)
 	{
 		centerX = halfWidth;
@@ -467,7 +590,7 @@ void PlayState::updateCamera(Game& game)
 		centerY = level->getWorldHeight() - halfHeight;
 	}
 
-	worldView.setSize(static_cast<float>(Constants::SCREEN_WIDTH), static_cast<float>(Constants::SCREEN_HEIGHT));
+	worldView.setSize(viewWidth, viewHeight);
 	worldView.setCenter(centerX, centerY);
 }
 
@@ -501,6 +624,9 @@ void PlayState::updateHud(Game& game)
 	{
 		text += "  Kills " + std::to_string(campaignKills);
 		text += "  Enemies " + std::to_string(game.getEntityManager().countActiveEnemies()) + "/10";
+		text += "  VT " + std::to_string(game.getEntityManager().getDestroyedFlyingTaraCount()) + "/3";
+		text += "  B " + std::to_string(game.getEntityManager().getDestroyedBradleyCount()) + "/3";
+		text += "  S " + std::to_string(game.getEntityManager().getDestroyedEnemySubCount()) + "/3";
 	}
 	else
 	{

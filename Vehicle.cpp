@@ -21,6 +21,7 @@ Vehicle::Vehicle(float startX, float startY)
 	occupied = false;
 	facingRight = true;
 	grounded = false;
+	inWater = false;
 	moveSpeed = Constants::PLAYER_MOVE_SPEED * 1.2f;
 	movementMaxX = Constants::WORLD_WIDTH_LEVEL_3 + 2200.0f;
 	damageFlashTimer = 0.0f;
@@ -466,18 +467,50 @@ void Vehicle::update(float deltaTime)
 		usingUphillAnimation = false;
 	}
 
-	velocityY += Constants::GRAVITY * deltaTime;
+	bool wasInWater = false;
+	if (activeLevel != 0)
+	{
+		wasInWater = activeLevel->isWaterInBounds(x + 8.0f, x + width - 8.0f, y + height * 0.45f, y + height + 12.0f);
+	}
+
+	float gravity = Constants::GRAVITY;
+	if (wasInWater)
+	{
+		gravity *= 0.24f;
+		if (velocityY > 120.0f)
+		{
+			velocityY = 120.0f;
+		}
+		velocityX *= 0.65f;
+	}
+	velocityY += gravity * deltaTime;
 
 	float previousBottom = y + height;
 	Entity::update(deltaTime);
 
 	float landingY = static_cast<float>(Constants::GROUND_Y);
+	float waterSurfaceY = static_cast<float>(Constants::WORLD_HEIGHT) + 1.0f;
 	if (activeLevel != 0)
 	{
 		landingY = activeLevel->getLandingY(x, x + width, previousBottom, y + height);
+		waterSurfaceY = activeLevel->getWaterSurfaceYAt(x + width * 0.5f);
 	}
 
-	if (y + height >= landingY)
+	inWater = activeLevel != 0 &&
+		activeLevel->isWaterInBounds(x + 8.0f, x + width - 8.0f, y + height * 0.45f, y + height + 12.0f);
+
+	bool canFloatOnWater = inWater && waterSurfaceY <= landingY - 8.0f;
+	float floatingBottom = waterSurfaceY + height * 0.28f;
+	if (canFloatOnWater && y + height > floatingBottom)
+	{
+		y = floatingBottom - height;
+		if (velocityY > 0.0f)
+		{
+			velocityY = 0.0f;
+		}
+		grounded = false;
+	}
+	else if (y + height >= landingY)
 	{
 		y = landingY - height;
 		velocityY = 0.0f;
@@ -486,6 +519,22 @@ void Vehicle::update(float deltaTime)
 	else
 	{
 		grounded = false;
+	}
+
+	if (activeLevel != 0 && y + height > activeLevel->getWorldHeight())
+	{
+		y = activeLevel->getWorldHeight() - height;
+		velocityY = 0.0f;
+		grounded = true;
+	}
+
+	if (y < 0.0f)
+	{
+		y = 0.0f;
+		if (velocityY < 0.0f)
+		{
+			velocityY = 0.0f;
+		}
 	}
 
 	if (x < 0.0f)
@@ -778,6 +827,27 @@ void Vehicle::updateColors()
 	}
 }
 
+void Vehicle::drawHealthBar(sf::RenderWindow& window)
+{
+	float healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
+	if (healthRatio < 0.0f)
+	{
+		healthRatio = 0.0f;
+	}
+
+	sf::RectangleShape healthBack;
+	healthBack.setPosition(x, y - 12.0f);
+	healthBack.setSize(sf::Vector2f(width, 6.0f));
+	healthBack.setFillColor(sf::Color(70, 20, 20));
+	window.draw(healthBack);
+
+	sf::RectangleShape healthFront;
+	healthFront.setPosition(x, y - 12.0f);
+	healthFront.setSize(sf::Vector2f(width * healthRatio, 6.0f));
+	healthFront.setFillColor(sf::Color(80, 230, 100));
+	window.draw(healthFront);
+}
+
 void Vehicle::draw(sf::RenderWindow& window)
 {
 	if (!visible)
@@ -802,23 +872,7 @@ void Vehicle::draw(sf::RenderWindow& window)
 		window.draw(frontWheel);
 	}
 
-	float healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
-	if (healthRatio < 0.0f)
-	{
-		healthRatio = 0.0f;
-	}
-
-	sf::RectangleShape healthBack;
-	healthBack.setPosition(x, y - 12.0f);
-	healthBack.setSize(sf::Vector2f(width, 6.0f));
-	healthBack.setFillColor(sf::Color(70, 20, 20));
-	window.draw(healthBack);
-
-	sf::RectangleShape healthFront;
-	healthFront.setPosition(x, y - 12.0f);
-	healthFront.setSize(sf::Vector2f(width * healthRatio, 6.0f));
-	healthFront.setFillColor(sf::Color(80, 230, 100));
-	window.draw(healthFront);
+	drawHealthBar(window);
 }
 
 void Vehicle::setActiveLevel(Level* level)

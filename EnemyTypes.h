@@ -4,8 +4,21 @@
 
 class RebelSoldier : public Enemy
 {
+private:
+	int rebelAnimationState;
+	float fireTimer;
+	float shotReleaseTimer;
+	sf::Texture idleTexture;
+	sf::Texture runTexture;
+	sf::Texture fireTexture;
+
+	void setRebelAnimation(int newState);
+	void updateRebelAnimation();
+
 public:
 	RebelSoldier();
+	void update(float deltaTime);
+	Projectile* createProjectileIfReady();
 	const char* getEnemyName() const;
 };
 
@@ -104,11 +117,20 @@ public:
 
 class MartianEnemy : public Enemy
 {
+private:
+	int martianAnimationState;
+	sf::Texture idleTexture;
+	sf::Texture walkTexture;
+
+	void setMartianAnimation(int newState);
+	void updateMartianAnimation();
+
 protected:
 	void updateAI();
 
 public:
 	MartianEnemy();
+	void update(float deltaTime);
 	const char* getEnemyName() const;
 };
 

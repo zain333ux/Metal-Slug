@@ -11,6 +11,7 @@ Soldier::Soldier()
 	jumpSpeed = Constants::PLAYER_JUMP_SPEED;
 	facingRight = true;
 	grounded = false;
+	inWater = false;
 	currentState = Constants::SOLDIER_STATE_IDLE;
 	stateTimer = 0.0f;
 	movementMaxX = Constants::WORLD_WIDTH_LEVEL_3 + 2200.0f;
@@ -38,7 +39,23 @@ Soldier::Soldier()
 
 void Soldier::update(float deltaTime)
 {
-	velocityY += Constants::GRAVITY * deltaTime;
+	bool wasInWater = false;
+	if (activeLevel != 0)
+	{
+		wasInWater = activeLevel->isWaterInBounds(x + 4.0f, x + width - 4.0f, y + height * 0.45f, y + height + 10.0f);
+	}
+
+	float gravity = Constants::GRAVITY;
+	if (wasInWater)
+	{
+		gravity *= 0.28f;
+		velocityX *= 0.82f;
+	}
+	velocityY += gravity * deltaTime;
+	if (wasInWater && velocityY > 150.0f)
+	{
+		velocityY = 150.0f;
+	}
 
 	float previousBottom = y + height;
 	Entity::update(deltaTime);
@@ -49,6 +66,9 @@ void Soldier::update(float deltaTime)
 		landingY = activeLevel->getLandingY(x, x + width, previousBottom, y + height);
 	}
 
+	inWater = activeLevel != 0 &&
+		activeLevel->isWaterInBounds(x + 4.0f, x + width - 4.0f, y + height * 0.45f, y + height + 10.0f);
+
 	if (y + height >= landingY)
 	{
 		y = landingY - height;
@@ -58,6 +78,22 @@ void Soldier::update(float deltaTime)
 	else
 	{
 		grounded = false;
+	}
+
+	if (activeLevel != 0 && y + height > activeLevel->getWorldHeight())
+	{
+		y = activeLevel->getWorldHeight() - height;
+		velocityY = 0.0f;
+		grounded = true;
+	}
+
+	if (y < 0.0f)
+	{
+		y = 0.0f;
+		if (velocityY < 0.0f)
+		{
+			velocityY = 0.0f;
+		}
 	}
 
 	if (x < 0.0f)
@@ -164,7 +200,11 @@ void Soldier::updateDebugColor()
 		return;
 	}
 
-	if (currentState == Constants::SOLDIER_STATE_RUNNING)
+	if (inWater)
+	{
+		body.setFillColor(sf::Color(70, 150, 230));
+	}
+	else if (currentState == Constants::SOLDIER_STATE_RUNNING)
 	{
 		body.setFillColor(sf::Color(80, 210, 120));
 	}
@@ -241,6 +281,11 @@ void Soldier::jump()
 	{
 		velocityY = -jumpSpeed;
 		grounded = false;
+	}
+	else if (inWater)
+	{
+		velocityY = -jumpSpeed * 0.55f;
+		inWater = false;
 	}
 }
 
@@ -348,4 +393,9 @@ bool Soldier::isFacingRight() const
 bool Soldier::isGrounded() const
 {
 	return grounded;
+}
+
+bool Soldier::isInWater() const
+{
+	return inWater;
 }

@@ -8,6 +8,29 @@
 
 #include <cmath>
 
+namespace
+{
+	bool loadBlackMaskedTexture(sf::Texture& texture, const char* fileName, unsigned int paddedWidth, unsigned int paddedHeight)
+	{
+		sf::Image image;
+		if (!image.loadFromFile(fileName))
+		{
+			return false;
+		}
+
+		image.createMaskFromColor(sf::Color::Black);
+		if (paddedWidth > image.getSize().x || paddedHeight > image.getSize().y)
+		{
+			sf::Image paddedImage;
+			paddedImage.create(paddedWidth, paddedHeight, sf::Color::Transparent);
+			paddedImage.copy(image, 0, 0);
+			return texture.loadFromImage(paddedImage);
+		}
+
+		return texture.loadFromImage(image);
+	}
+}
+
 RebelSoldier::RebelSoldier()
 {
 	maxHealth = 2;
@@ -23,6 +46,98 @@ RebelSoldier::RebelSoldier()
 	pistolTimer = 0.6f;
 	pistolEquipped = true;
 	fallbackColor = sf::Color(210, 70, 70);
+	rebelAnimationState = -1;
+	fireTimer = 0.0f;
+	shotReleaseTimer = 0.0f;
+
+	if (loadBlackMaskedTexture(idleTexture, "Sprites/Clean/RebelSoldier_idle.png", 717, 164) &&
+		loadBlackMaskedTexture(runTexture, "Sprites/Clean/RebelSoldier_run.png", 1956, 178) &&
+		loadBlackMaskedTexture(fireTexture, "Sprites/Clean/RebelSoldier_fire.png", 1472, 152))
+	{
+		usingSprite = true;
+		setSpriteScale(0.60f);
+		setRebelAnimation(0);
+	}
+}
+
+void RebelSoldier::update(float deltaTime)
+{
+	if (fireTimer > 0.0f)
+	{
+		fireTimer -= deltaTime;
+	}
+	if (shotReleaseTimer > 0.0f)
+	{
+		shotReleaseTimer -= deltaTime;
+	}
+
+	Enemy::update(deltaTime);
+	updateRebelAnimation();
+}
+
+Projectile* RebelSoldier::createProjectileIfReady()
+{
+	if (queuedShot && fireTimer <= 0.0f && shotReleaseTimer <= 0.0f)
+	{
+		fireTimer = 0.55f;
+		shotReleaseTimer = 0.18f;
+		return 0;
+	}
+
+	if (queuedShot && shotReleaseTimer > 0.0f)
+	{
+		return 0;
+	}
+
+	return Enemy::createProjectileIfReady();
+}
+
+void RebelSoldier::setRebelAnimation(int newState)
+{
+	if (!usingSprite || rebelAnimationState == newState)
+	{
+		return;
+	}
+
+	rebelAnimationState = newState;
+	animationRow = -1;
+	animationStartFrame = -1;
+
+	if (newState == 2)
+	{
+		sprite.setTexture(fireTexture, true);
+		setSpriteFrame(0, 0, 184, 152);
+		playAnimation(0, 0, 8, 0.07f);
+	}
+	else if (newState == 1)
+	{
+		sprite.setTexture(runTexture, true);
+		setSpriteFrame(0, 0, 163, 178);
+		playAnimation(0, 0, 12, 0.07f);
+	}
+	else
+	{
+		sprite.setTexture(idleTexture, true);
+		setSpriteFrame(0, 0, 179, 164);
+		playAnimation(0, 0, 4, 0.14f);
+	}
+}
+
+void RebelSoldier::updateRebelAnimation()
+{
+	if (fireTimer > 0.0f)
+	{
+		setRebelAnimation(2);
+		return;
+	}
+
+	if (grounded && std::abs(velocityX) > 5.0f)
+	{
+		setRebelAnimation(1);
+		return;
+	}
+
+	setRebelAnimation(0);
 }
 
 const char* RebelSoldier::getEnemyName() const
@@ -736,20 +851,68 @@ MartianEnemy::MartianEnemy()
 	detectionRange = 780.0f;
 	attackRange = 105.0f;
 	fallbackColor = sf::Color(190, 90, 230);
-	canMoveInAir = true;
-	setPosition(900.0f, 360.0f);
+	canMoveInAir = false;
+	martianAnimationState = -1;
+	width = 52.0f;
+	height = 86.0f;
+	body.setSize(sf::Vector2f(width, height));
+	setSpriteScale(2.0f);
+	setPosition(900.0f, 500.0f);
+	usingSprite = false;
+
+	if (loadMaskedTexture(idleTexture, "Sprites/Clean/Martian_idle.png") &&
+		loadMaskedTexture(walkTexture, "Sprites/Clean/Martian_walk.png"))
+	{
+		usingSprite = true;
+		setMartianAnimation(0);
+	}
 }
 
 void MartianEnemy::updateAI()
 {
 	Enemy::updateAI();
-	if (target != 0 && target->isActive())
+}
+
+void MartianEnemy::update(float deltaTime)
+{
+	Enemy::update(deltaTime);
+	updateMartianAnimation();
+}
+
+void MartianEnemy::setMartianAnimation(int newState)
+{
+	if (!usingSprite || martianAnimationState == newState)
 	{
-		if (y > 430.0f)
-		{
-			velocityY = -80.0f;
-		}
+		return;
 	}
+
+	martianAnimationState = newState;
+	animationRow = -1;
+	animationStartFrame = -1;
+
+	if (newState == 1)
+	{
+		sprite.setTexture(walkTexture, true);
+		setSpriteFrame(0, 0, 51, 43);
+		playAnimation(0, 16, 0.08f);
+	}
+	else
+	{
+		sprite.setTexture(idleTexture, true);
+		setSpriteFrame(0, 0, 52, 43);
+		playAnimation(0, 16, 0.12f);
+	}
+}
+
+void MartianEnemy::updateMartianAnimation()
+{
+	if (grounded && std::abs(velocityX) > 5.0f)
+	{
+		setMartianAnimation(1);
+		return;
+	}
+
+	setMartianAnimation(0);
 }
 
 const char* MartianEnemy::getEnemyName() const

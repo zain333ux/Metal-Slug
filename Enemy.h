@@ -29,6 +29,7 @@ protected:
 	bool canMoveInAir;
 	bool facingRight;
 	bool grounded;
+	bool inWater;
 	float moveSpeed;
 	float movementMaxX;
 	Level* activeLevel;
@@ -65,14 +66,14 @@ public:
 	void setSpawnPosition(float newX, float newY);
 	void setTarget(PlayerSoldier* newTarget);
 	void update(float deltaTime);
-	void draw(sf::RenderWindow& window);
+	virtual void draw(sf::RenderWindow& window) override;
 	void setMovementMaxX(float maxX);
 	void setActiveLevel(Level* level);
 	virtual Projectile* createProjectileIfReady();
 	virtual bool applyProjectileHit(Projectile& projectile);
 	int getScoreValue() const;
 	int getContactDamage() const;
-	bool canDealContactDamage() const;
+	virtual bool canDealContactDamage() const;
 	void restartContactDamageCooldown();
 	virtual const char* getEnemyName() const;
 	bool isFacingRight() const;

@@ -1,7 +1,10 @@
 #include "EnemyFactory.h"
 
 #include "Enemy.h"
+#include "EnemySub.h"
 #include "EnemyTypes.h"
+#include "FlyingTara.h"
+#include "M15ABradley.h"
 
 Enemy* EnemyFactory::createEnemy(EnemyKind kind, float x, float y, PlayerSoldier* target)
 {
@@ -30,6 +33,18 @@ Enemy* EnemyFactory::createEnemy(EnemyKind kind, float x, float y, PlayerSoldier
 	else if (kind == ENEMY_MARTIAN)
 	{
 		enemy = new MartianEnemy();
+	}
+	else if (kind == ENEMY_FLYING_TARA)
+	{
+		enemy = new FlyingTara();
+	}
+	else if (kind == ENEMY_M15A_BRADLEY)
+	{
+		enemy = new M15ABradley();
+	}
+	else if (kind == ENEMY_SUB_VEHICLE)
+	{
+		enemy = new EnemySub();
 	}
 	else if (kind == ENEMY_BOSS_1)
 	{

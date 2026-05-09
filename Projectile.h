@@ -28,4 +28,10 @@ public:
 	float getBlastRadius() const;
 	void markFiredWhileAirborne(bool airborne);
 	void setPlayerOwned(bool owned);
+
+	/// When player-owned rockets need smoke / linger after an AoE resolves, skip immediate deactivate.
+	virtual bool deferProjectileDeactivateAfterEnemyHit();
+
+	/// Skip projectile vs enemy checks during terminal smoke / effects (Slug Flyer rocket).
+	virtual bool shouldIgnorePlayerProjectileVsEnemyChecks() const;
 };

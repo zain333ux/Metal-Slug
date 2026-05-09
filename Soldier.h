@@ -15,6 +15,7 @@ protected:
 	float stateTimer;
 	float movementMaxX;
 	Level* activeLevel;
+	bool inWater;
 	sf::RectangleShape body;
 	sf::Texture texture;
 	bool usingSprite;
@@ -38,7 +39,7 @@ public:
 	Soldier();
 
 	virtual void update(float deltaTime);
-	virtual void draw(sf::RenderWindow& window);
+	virtual void draw(sf::RenderWindow& window) override;
 
 	void moveLeft();
 	void moveRight();
@@ -56,4 +57,5 @@ public:
 	int getCurrentState() const;
 	bool isFacingRight() const;
 	bool isGrounded() const;
+	bool isInWater() const;
 };

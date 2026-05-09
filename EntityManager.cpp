@@ -1,6 +1,7 @@
 #include "EntityManager.h"
 
 #include "Enemy.h"
+#include "EnemyVehicle.h"
 #include "Collectible.h"
 #include "PlayerSoldier.h"
 #include "Projectile.h"
@@ -14,6 +15,9 @@ EntityManager::EntityManager()
 {
 	pendingScore = 0;
 	activeLevel = 0;
+	destroyedFlyingTara = 0;
+	destroyedBradley = 0;
+	destroyedEnemySub = 0;
 }
 
 EntityManager::~EntityManager()
@@ -109,6 +113,10 @@ void EntityManager::checkProjectileEnemyCollisions()
 		{
 			continue;
 		}
+		if (projectile->shouldIgnorePlayerProjectileVsEnemyChecks())
+		{
+			continue;
+		}
 
 		int killedByThisProjectile = 0;
 		bool hitSomething = false;
@@ -159,7 +167,10 @@ void EntityManager::checkProjectileEnemyCollisions()
 						pendingScore += enemy->getScoreValue();
 					}
 				}
-				projectile->deactivate();
+				if (!projectile->deferProjectileDeactivateAfterEnemyHit())
+				{
+					projectile->deactivate();
+				}
 				break;
 			}
 		}
@@ -379,6 +390,45 @@ Vehicle* EntityManager::getVehicle() const
 	return 0;
 }
 
+Vehicle* EntityManager::getClosestVehicle(float x, float y) const
+{
+	Vehicle* closest = 0;
+	float minDist = 1e9f;
+
+	for (int i = 0; i < entities.getSize(); i += 1)
+	{
+		Vehicle* vehicle = dynamic_cast<Vehicle*>(entities.get(i));
+		if (vehicle != 0 && vehicle->isActive())
+		{
+			float dx = vehicle->getCenterX() - x;
+			float dy = vehicle->getCenterY() - y;
+			float distSq = dx * dx + dy * dy;
+			if (distSq < minDist)
+			{
+				minDist = distSq;
+				closest = vehicle;
+			}
+		}
+	}
+
+	return closest;
+}
+
+int EntityManager::getDestroyedFlyingTaraCount() const
+{
+	return destroyedFlyingTara;
+}
+
+int EntityManager::getDestroyedBradleyCount() const
+{
+	return destroyedBradley;
+}
+
+int EntityManager::getDestroyedEnemySubCount() const
+{
+	return destroyedEnemySub;
+}
+
 void EntityManager::removeEnemiesBehind(float minimumX)
 {
 	for (int i = 0; i < entities.getSize(); i += 1)
@@ -397,6 +447,24 @@ void EntityManager::removeInactive()
 	{
 		if (entities.get(i) == 0 || !entities.get(i)->isActive())
 		{
+			EnemyVehicle* enemyVehicle = dynamic_cast<EnemyVehicle*>(entities.get(i));
+			if (enemyVehicle != 0 && enemyVehicle->isDead())
+			{
+				EnemyVehicleType type = enemyVehicle->getVehicleType();
+				if (type == ENEMY_VEHICLE_FLYING_TARA)
+				{
+					destroyedFlyingTara += 1;
+				}
+				else if (type == ENEMY_VEHICLE_M15A_BRADLEY)
+				{
+					destroyedBradley += 1;
+				}
+				else if (type == ENEMY_VEHICLE_SUB)
+				{
+					destroyedEnemySub += 1;
+				}
+			}
+
 			Vehicle* vehicle = dynamic_cast<Vehicle*>(entities.get(i));
 			if (vehicle != 0 && vehicle->isOccupied())
 			{
@@ -422,4 +490,7 @@ void EntityManager::clear()
 	}
 
 	entities.clear();
+	destroyedFlyingTara = 0;
+	destroyedBradley = 0;
+	destroyedEnemySub = 0;
 }

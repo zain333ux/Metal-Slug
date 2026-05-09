@@ -30,6 +30,7 @@ PlayerSoldier::PlayerSoldier()
 	previousGrenadeKey = false;
 	previousRocketKey = false;
 	ridingVehicle = false;
+	pilotHiddenWhileInsideVehicle = false;
 	setPosition(120.0f, 500.0f);
 	setSpriteScale(2.2f);
 	if (loadSpriteSheet("Sprites/Clean/player_marco_sheet.png"))
@@ -75,7 +76,27 @@ void PlayerSoldier::respawn()
 	aimingUp = false;
 	damageTimer = 0.0f;
 	setRidingVehicle(false);
+	setPilotHiddenForVehicle(false);
 	playAnimation(Constants::PLAYER_ANIM_IDLE, 4, 0.18f);
+}
+
+void PlayerSoldier::setPilotHiddenForVehicle(bool hide)
+{
+	pilotHiddenWhileInsideVehicle = hide;
+	if (hide && ridingVehicle)
+	{
+		visible = false;
+	}
+}
+
+void PlayerSoldier::draw(sf::RenderWindow& window)
+{
+	if (!visible || (pilotHiddenWhileInsideVehicle && ridingVehicle))
+	{
+		return;
+	}
+
+	Soldier::draw(window);
 }
 
 void PlayerSoldier::applyCharacterStats()
@@ -163,7 +184,21 @@ void PlayerSoldier::handleInput()
 		moveRight();
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (inWater)
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::W) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		{
+			velocityY = -jumpSpeed * 0.45f;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		{
+			velocityY += jumpSpeed * 0.015f;
+		}
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
 		jump();
 	}

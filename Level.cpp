@@ -38,7 +38,7 @@ void Level::load()
 		blocksLoaded = true;
 	}
 
-	if (!campaignGenerated && !fullBiomeBackground)
+	if (!campaignGenerated)
 	{
 		buildSurvivalPlatforms();
 	}
@@ -49,7 +49,7 @@ void Level::load()
 bool Level::loadBackground()
 {
 	if (!campaignGenerated && levelNumber >= 1 && levelNumber <= 3 &&
-		loadFullBiomeBackground("Sprites/Clean/3biomes.png", "Sprites/Clean/3biomes_collison.png"))
+		loadFullBiomeBackground("Sprites/Clean/3biomes.png", "Sprites/Clean/CollisionFinal.png"))
 	{
 		return true;
 	}
@@ -117,6 +117,7 @@ bool Level::loadCollisionMask(const char* fileName)
 
 	collisionMaskLoaded = true;
 	buildGroundProfileFromMask();
+	buildWaterBlocksFromMask();
 	return groundProfile.getSize() > 0;
 }
 
@@ -267,6 +268,11 @@ bool Level::isGroundMaskPixel(sf::Color pixel) const
 	return pixel.a > 0 && pixel.g > 180 && pixel.r < 120 && pixel.b < 120;
 }
 
+bool Level::isWaterMaskPixel(sf::Color pixel) const
+{
+	return pixel.a > 0 && pixel.b > 180 && pixel.r < 120 && pixel.g < 120;
+}
+
 int Level::getSourceXFromWorldX(float worldX) const
 {
 	if (worldX < 0.0f)
@@ -297,6 +303,36 @@ int Level::getSourceXFromWorldX(float worldX) const
 	return sourceX;
 }
 
+int Level::getSourceYFromWorldY(float worldY) const
+{
+	if (worldY < 0.0f)
+	{
+		worldY = 0.0f;
+	}
+	if (worldY > worldHeight)
+	{
+		worldY = worldHeight;
+	}
+
+	int sourceY = backgroundTextureRect.top;
+	if (worldHeight > 0.0f && backgroundTextureRect.height > 0)
+	{
+		sourceY += static_cast<int>(worldY * static_cast<float>(backgroundTextureRect.height) / worldHeight);
+	}
+
+	int maxY = backgroundTextureRect.top + backgroundTextureRect.height - 1;
+	if (sourceY > maxY)
+	{
+		sourceY = maxY;
+	}
+	if (sourceY < backgroundTextureRect.top)
+	{
+		sourceY = backgroundTextureRect.top;
+	}
+
+	return sourceY;
+}
+
 float Level::getWorldYFromSourceY(int sourceY) const
 {
 	if (backgroundTextureRect.height <= 0)
@@ -315,6 +351,184 @@ float Level::getWorldYFromSourceY(int sourceY) const
 	}
 
 	return relativeY * worldHeight;
+}
+
+char Level::getCollisionTileAt(float worldX, float worldY) const
+{
+	if (!collisionMaskLoaded || backgroundTextureRect.width <= 0 || backgroundTextureRect.height <= 0)
+	{
+		return ' ';
+	}
+
+	int sourceX = getSourceXFromWorldX(worldX);
+	int sourceY = getSourceYFromWorldY(worldY);
+	sf::Color pixel = collisionMaskImage.getPixel(static_cast<unsigned int>(sourceX), static_cast<unsigned int>(sourceY));
+	if (isGroundMaskPixel(pixel))
+	{
+		return 'g';
+	}
+	if (isWaterMaskPixel(pixel))
+	{
+		return 'w';
+	}
+
+	return ' ';
+}
+
+bool Level::isWaterInBounds(float left, float right, float top, float bottom) const
+{
+	if (!collisionMaskLoaded)
+	{
+		return false;
+	}
+
+	if (right < left)
+	{
+		float temp = left;
+		left = right;
+		right = temp;
+	}
+	if (bottom < top)
+	{
+		float temp = top;
+		top = bottom;
+		bottom = temp;
+	}
+
+	float centerX = (left + right) * 0.5f;
+	float centerY = (top + bottom) * 0.5f;
+	float sampleXs[3];
+	sampleXs[0] = left + 4.0f;
+	sampleXs[1] = centerX;
+	sampleXs[2] = right - 4.0f;
+
+	float sampleYs[4];
+	sampleYs[0] = top + 4.0f;
+	sampleYs[1] = centerY;
+	sampleYs[2] = bottom - 4.0f;
+	sampleYs[3] = bottom + 8.0f;
+
+	for (int xIndex = 0; xIndex < 3; xIndex += 1)
+	{
+		for (int yIndex = 0; yIndex < 4; yIndex += 1)
+		{
+			if (getCollisionTileAt(sampleXs[xIndex], sampleYs[yIndex]) == 'w')
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+float Level::getWaterSurfaceYAt(float x) const
+{
+	if (!collisionMaskLoaded || backgroundTextureRect.width <= 0 || backgroundTextureRect.height <= 0)
+	{
+		return worldHeight + 1.0f;
+	}
+
+	int sourceX = getSourceXFromWorldX(x);
+	int startY = backgroundTextureRect.top;
+	int endY = backgroundTextureRect.top + backgroundTextureRect.height;
+	int maskHeight = static_cast<int>(collisionMaskImage.getSize().y);
+	if (endY > maskHeight)
+	{
+		endY = maskHeight;
+	}
+
+	for (int sourceY = startY; sourceY < endY; sourceY += 1)
+	{
+		if (isWaterMaskPixel(collisionMaskImage.getPixel(static_cast<unsigned int>(sourceX), static_cast<unsigned int>(sourceY))))
+		{
+			return getWorldYFromSourceY(sourceY);
+		}
+	}
+
+	return worldHeight + 1.0f;
+}
+
+bool Level::isAquaticBiome(float x, float y) const
+{
+	float waterY = getWaterSurfaceYAt(x);
+	return waterY <= worldHeight && y >= waterY + 4.0f;
+}
+
+bool Level::isAerialBiome(float x, float y) const
+{
+	float groundY = getMainGroundYAt(x);
+	return groundY < worldHeight * 0.60f && y < groundY - 80.0f;
+}
+
+bool Level::isPlainsBiome(float x, float y) const
+{
+	return !isAquaticBiome(x, y) && !isAerialBiome(x, y);
+}
+
+bool Level::hasWaterInRect(const sf::FloatRect& rect) const
+{
+	if (!collisionMaskLoaded)
+	{
+		return false;
+	}
+
+	float sampleXs[3];
+	sampleXs[0] = rect.left + 4.0f;
+	sampleXs[1] = rect.left + rect.width * 0.5f;
+	sampleXs[2] = rect.left + rect.width - 4.0f;
+
+	float sampleYs[3];
+	sampleYs[0] = rect.top + 4.0f;
+	sampleYs[1] = rect.top + rect.height * 0.5f;
+	sampleYs[2] = rect.top + rect.height - 4.0f;
+
+	for (int xIndex = 0; xIndex < 3; xIndex += 1)
+	{
+		for (int yIndex = 0; yIndex < 3; yIndex += 1)
+		{
+			if (getCollisionTileAt(sampleXs[xIndex], sampleYs[yIndex]) == 'w')
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void Level::buildWaterBlocksFromMask()
+{
+	waterBlocks.clear();
+	if (!collisionMaskLoaded || backgroundTextureRect.width <= 0 || backgroundTextureRect.height <= 0)
+	{
+		return;
+	}
+
+	float blockSize = static_cast<float>(Constants::TILE_SIZE);
+	for (float y = 0.0f; y < worldHeight; y += blockSize)
+	{
+		float blockHeight = blockSize;
+		if (y + blockHeight > worldHeight)
+		{
+			blockHeight = worldHeight - y;
+		}
+
+		for (float x = 0.0f; x < worldWidth; x += blockSize)
+		{
+			float blockWidth = blockSize;
+			if (x + blockWidth > worldWidth)
+			{
+				blockWidth = worldWidth - x;
+			}
+
+			sf::FloatRect block(x, y, blockWidth, blockHeight);
+			if (hasWaterInRect(block))
+			{
+				waterBlocks.pushBack(block);
+			}
+		}
+	}
 }
 
 float Level::getMaskedGroundYAt(float x) const
@@ -454,6 +668,8 @@ void Level::draw(sf::RenderWindow& window)
 		window.draw(backgroundSprite);
 	}
 
+	drawWaterBlocks(window);
+
 	if (blocksLoaded && !fullBiomeBackground)
 	{
 		if (campaignGenerated)
@@ -467,10 +683,6 @@ void Level::draw(sf::RenderWindow& window)
 			drawTileRow(window, stoneTexture, Constants::GROUND_Y + Constants::TILE_SIZE * 2);
 		}
 
-		for (int i = 0; i < platforms.getSize(); i += 1)
-		{
-			drawPlatform(window, platforms.get(i));
-		}
 	}
 	else if (!fullBiomeBackground)
 	{
@@ -479,6 +691,35 @@ void Level::draw(sf::RenderWindow& window)
 		ground.setSize(sf::Vector2f(static_cast<float>(Constants::SCREEN_WIDTH), static_cast<float>(Constants::SCREEN_HEIGHT - Constants::GROUND_Y)));
 		ground.setFillColor(sf::Color(90, 70, 45, 120));
 		window.draw(ground);
+	}
+
+	if (blocksLoaded)
+	{
+		for (int i = 0; i < platforms.getSize(); i += 1)
+		{
+			drawPlatform(window, platforms.get(i));
+		}
+	}
+}
+
+void Level::drawWaterBlocks(sf::RenderWindow& window)
+{
+	(void)window;
+	return;
+
+	if (waterBlocks.getSize() == 0)
+	{
+		return;
+	}
+
+	sf::RectangleShape waterBlock;
+	waterBlock.setFillColor(sf::Color(30, 120, 220, 24));
+	for (int i = 0; i < waterBlocks.getSize(); i += 1)
+	{
+		const sf::FloatRect& block = waterBlocks.get(i);
+		waterBlock.setPosition(block.left, block.top);
+		waterBlock.setSize(sf::Vector2f(block.width, block.height));
+		window.draw(waterBlock);
 	}
 }
 
@@ -561,45 +802,47 @@ void Level::drawPlatform(sf::RenderWindow& window, const sf::FloatRect& platform
 
 void Level::buildSurvivalPlatforms()
 {
+	float platformYOffset = fullBiomeBackground ? 260.0f : 0.0f;
+
 	if (levelNumber == 1)
 	{
-		platforms.pushBack(sf::FloatRect(520.0f, 690.0f, 420.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(1080.0f, 650.0f, 380.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(1640.0f, 615.0f, 420.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(2260.0f, 655.0f, 440.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(2920.0f, 700.0f, 420.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(520.0f, 690.0f + platformYOffset, 420.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(1080.0f, 650.0f + platformYOffset, 380.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(1640.0f, 615.0f + platformYOffset, 420.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(2260.0f, 655.0f + platformYOffset, 440.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(2920.0f, 700.0f + platformYOffset, 420.0f, 34.0f));
 		return;
 	}
 
 	if (levelNumber == 2)
 	{
-		platforms.pushBack(sf::FloatRect(460.0f, 700.0f, 360.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(960.0f, 660.0f, 340.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(1460.0f, 620.0f, 360.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(2040.0f, 665.0f, 420.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(2680.0f, 615.0f, 380.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(3340.0f, 675.0f, 460.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(3920.0f, 705.0f, 360.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(460.0f, 700.0f + platformYOffset, 360.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(960.0f, 660.0f + platformYOffset, 340.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(1460.0f, 620.0f + platformYOffset, 360.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(2040.0f, 665.0f + platformYOffset, 420.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(2680.0f, 615.0f + platformYOffset, 380.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(3340.0f, 675.0f + platformYOffset, 460.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(3920.0f, 705.0f + platformYOffset, 360.0f, 34.0f));
 		return;
 	}
 
 	if (levelNumber == 3)
 	{
-		platforms.pushBack(sf::FloatRect(460.0f, 705.0f, 340.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(900.0f, 660.0f, 320.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(1340.0f, 620.0f, 340.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(1820.0f, 575.0f, 340.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(2340.0f, 625.0f, 380.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(2920.0f, 680.0f, 420.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(3540.0f, 635.0f, 360.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(4140.0f, 690.0f, 420.0f, 34.0f));
-		platforms.pushBack(sf::FloatRect(4700.0f, 710.0f, 360.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(460.0f, 705.0f + platformYOffset, 340.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(900.0f, 660.0f + platformYOffset, 320.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(1340.0f, 620.0f + platformYOffset, 340.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(1820.0f, 575.0f + platformYOffset, 340.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(2340.0f, 625.0f + platformYOffset, 380.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(2920.0f, 680.0f + platformYOffset, 420.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(3540.0f, 635.0f + platformYOffset, 360.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(4140.0f, 690.0f + platformYOffset, 420.0f, 34.0f));
+		platforms.pushBack(sf::FloatRect(4700.0f, 710.0f + platformYOffset, 360.0f, 34.0f));
 		return;
 	}
 
-	platforms.pushBack(sf::FloatRect(520.0f, 690.0f, 420.0f, 34.0f));
-	platforms.pushBack(sf::FloatRect(1220.0f, 650.0f, 420.0f, 34.0f));
-	platforms.pushBack(sf::FloatRect(1880.0f, 700.0f, 420.0f, 34.0f));
+	platforms.pushBack(sf::FloatRect(520.0f, 690.0f + platformYOffset, 420.0f, 34.0f));
+	platforms.pushBack(sf::FloatRect(1220.0f, 650.0f + platformYOffset, 420.0f, 34.0f));
+	platforms.pushBack(sf::FloatRect(1880.0f, 700.0f + platformYOffset, 420.0f, 34.0f));
 }
 
 void Level::extendIfNeeded(float playerX)
@@ -642,12 +885,12 @@ int Level::getLevelNumber() const
 
 float Level::getLandingY(float left, float right, float previousBottom, float currentBottom) const
 {
+	float landingY = getMainGroundYAt((left + right) * 0.5f);
 	if (collisionMaskLoaded)
 	{
-		return getMaskedLandingY(left, right, previousBottom, currentBottom);
+		landingY = getMaskedLandingY(left, right, previousBottom, currentBottom);
 	}
 
-	float landingY = getMainGroundYAt((left + right) * 0.5f);
 	for (int i = 0; i < platforms.getSize(); i += 1)
 	{
 		const sf::FloatRect& platform = platforms.get(i);

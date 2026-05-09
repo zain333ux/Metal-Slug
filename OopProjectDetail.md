@@ -1,0 +1,394 @@
+PLAYABLE CHARACTERS MARCO ROSSI The pure infantry fighter. The benchmark
+for direct combat performance Buffs 25% higher fire rate His melee
+attack can pierce through shielded opponents Weaknesses Has 2 less
+grenades than base value No bonuses when piloting the slug Special
+Power-up Allows Marco to fire in both directions simultaneously for a
+limited time (10 seconds) TARMA Mediocre on foot. Transformational on
+vehicle Buffs 25% higher vehicle fire rate 20% higher vehicle durability
+If the vehicle is destroyed with Tarma in it, Tarma survives (the
+vehicle acts like a totem of undying) Weaknesses 20% slower than base on
+foot 20% less HP on foot Special Power up Becomes immune to all damage
+to him and the vehicle he is piloting for a limited time (20 seconds).
+ERI KASAMOTO The grenade system is her primary weapon Buffs Carries
+double the grenades 50% bigger blast radius Weaknesses No melee attack
+20% lower fire rate Special Power-up Allows her to throw 2 grenades at
+the cost of one for a limited time (10 seconds). (The extra one falls 2
+blocks farther) BASE STATS The character spawns with a pistol with
+infinite ammo and also a knife. The player can pick up better weapons
+temporarily disabling the pistol. Pistol Damage: 3 HP Knife Damage: 2 HP
+Pistol Fire-rate: 4 shots per second Melee Range: Only upon collision
+Melee Cooldown: 0.5s Starting Grenades: 10 Grenade Damage: 20 HP (Rest
+open to interpretation) FIOLINA GERMI The Weapon Master Buffs When
+picking up a weapon, she gets 50% more ammo than base 10% higher fire
+rate than base Weaknesses 25% less damage on melee attacks 2 less
+grenades than base Special Power up Fire rate gets increased by 100% for
+a limited time(10 seconds) - SUPERCHARGED FUSION COMPANION The plaver
+can spawn a \"Fusion Companion for 30 seconds ONCE per level in Survival
+Mode and with a cooldown of 3 minutes in Campaign Mode. This \"Fusion
+Companion\" is an immortal combination of 2-4 of the above characters.
+This companion is computer controlled and follows the player and kills
+the enemies. The stats of the chosen characters to be fused are taken
+and then averaged to form the stats of the fusion. All the buffs and
+weaknesses are also inherited. P.S. the sprite for this upto your own
+choice. SWITCHING BETWEEN CHARACTERS Pressing the Z Key during the play
+will switch to the next character. Each character will have a separate
+inventory states (i.e. if Marco picked up a weapon, Tarma will not have
+access to it). Each character will have exactly 2 lives, and once dead,
+the player can\'t switch to that character. STATES The characters can be
+in one of two states in the game (reference to the video) UNDEAD: 50%
+decrease in walking speed for 10 secs. MUMMY: Converts to a mummy for 10
+secs and only has a knife as a weapon. ENEMIES INFANTRY REBEL SOLDIER
+The most basic enemy. Has a pistol equipped. Has 2 HP. Spawns in batches
+of 2-4. SHIELDED SOLDIER Carries a riot shield that blocks frontal
+bullet hits entirely; must be hit from above, behind, or with
+explosives. Has a pistol and a shield. Has 5 HP. Spawns in batches of
+1-2 GRENADE SOLDIER Lobs grenades towards the player in projectile
+motion. Has 2 HP. Spawns in batches of 1-2. BAZOOKA SOLDIER Slow-moving
+fires a rocket at a steep arc and uses a rocket launcher. Has 2 HP.
+Spawns in batches of 1-2 AERIAL PARATROOPERS Descend from the top as
+either of the 4 infantry types. Inherits the batch sizes as well UNDEAD
+MUMMY WARRIOR Slowly walks towards the player. Transforms the player
+upon collision. Crumbles when hit and then, it is resurrected after 3
+seconds. Only dies from explosions or fire. 5 HP. Spawns alone ZOMBIES
+Slowly walks towards the player and transforms the player to undead upon
+collision. Has a pistol as well 5 HP. Spawns in batches of 3-5 ALIENS
+MARTIAN 2 PHASED. In the Phase 1, it flies in a pod above the player and
+fires energy beams when on top. In Phase 2, when the pod explodes, the
+Martian is on foot and has a pistol. Has 3 HP DAMAGE PROTOCOL FOR THE
+PLAYER When hit by a bullet, the player transitions to injury state for
+exactly 1 second and if in that state, the player is hit again, it
+transitions to the next state of criticality for 1 second and if it\'s
+hit again in that state, it dies. You have to showcase these states by
+adding a translucent red hue to the screen like in modern AAA games like
+GTA V and RDR 2. Same damage taking applies to player vehicles. Upon
+death the player respawns with the same inventory and loses a life.
+VEHICLES ENEMY VEHICLES FLYING TARA Hovers at medium height. Moves
+horizontally. Drops a grenade when on top of the player. Spawns in
+batches of 2. S M-15A BRADLEY It\'s a long range artillery unit designed
+to be a stationary long range missile launcher. Has 7 HP. Launches
+missiles in projectile motion. They can move horizontally in plain
+regions to approach the player ENEMY SUB It spawns in the aquatic biome
+and fires rockets towards the player. Has 7 HP. PLAYER VEHICLES METAL
+SLUG (SV-001) Useful in the plains biome. Fires rapid fire bullets. Must
+be driven by the characters. It can tilt (360 degree movement) and
+traverse 1 block differences making it flexible. SLUG FLYER Can be flown
+and fires bullets at half the slug\'s speed Has 4 missiles built in.
+SLUG MARINER A faster alternative to swimming in the ocean in the
+aquatic biome. It has three types of missiles 3 each in ammo. A straight
+horizontal one and a straight vertical one (for enemies above). The
+third one is in reverse projectile motion towards the surface of the
+water 4 AMPHIBOUS SLUG It\'s a flyer and a mariner and a normal slug.
+When it touches water, it changes to a mariner and when it comes out of
+the water, it changes to a flyer, and when grounded it becomes the
+normal slug. WEAPONS FIRE ARMS PISTOL Default weapon Always available
+Infinite Ammo Note: This uses BASE STATS ABOVE HEAVY MACHINE GUN Fires
+rapidly when the key is held down. Double the fire rate of a normal
+pistol. One bullet deals the same damage as one bullet of the pistol
+i.e. 3 HP ROCKET LAUNCHER Single rocket per trigger pull. Explosions on
+impact. 2 seconds reload between shots. Deals 5 HP in a blast radius if
+3 blocks FLAME SHOT Key held trigger. Shoots a stream of fire for 5
+blocks The enemies caught in the stream take 2 HP damage per second. The
+only way to kill the mummies is this weapon as they die instantly from
+fire. LASER GUN Spawns a beam till the end of the screen in the facing
+direction when triggered. Instantly kills the enemies upon impact.
+GRENADES HAND GRENADE The default held grenade by all the characters.
+Ballistic arc throw. Deals 5 HP in a blast radius of 3 blocks FIRE BOMB
+GRENADE Eri\'s default grenade is replaced by this. This type explodes
+on impact just like the default one but this one also spawns a
+persistent pool of fire of radius 3 blocks. This pool remains active for
+10 seconds and damages just like the fire stream from the flame shot.
+AIMING Aiming is recommended to be done via mouse (It can be implemented
+using keyboard keys). The angle at which the player can aim is
+determined by the facing direction. The minimum angle is 0 degrees i.e.
+straight horizontally and the max is 90 degrees i.e. straight
+vertically. Any angle in between 0 and 90 should also work. COLLECTIBLES
+FOOD Turkey or fruit. Has a small chance of dropping when an enemy is
+killed. Serves the purpose of replenishing the player\'s saturation
+stat. Turkey replenishes 3 units and fruit replenishes 2 units. POW
+PRISONER A prisoner of the Morden\'s army waiting for you to free him.
+When in close proximity a press of a key releases it and as a thank you
+it drops a supply crate for you and Qvahishes. SUPPLY CRATE The supply
+crate replenishes the weapons or ammo of the character. It will always
+contain a weapon and some ammo. Player can choose to pickup that weapon
+and replace it with the one already yielded. In case of not picking it
+up, the crate replenishes the existing ammo of the player. The Crate
+also contains 3-5 Hand grenades or 1-3 Fire bomb grenades. For Eri, the
+hand grenades convert to fire bomb grenades. There is a 90% chance that
+the weapon in the crate is either an HMG, a flame shot or a rocket
+launcher with ammo. Or a 10% chance that it is a laser gun. FANNUM TAX
+The Fat player\'s arrival introduces its own gravitational field. This
+means that when bullets get into its range, even when they were not
+hitting it initially in its non-fat state, now they bend their
+trajectory onto the fat player. GAME MODES Your game must support two
+distinct play modes, each demanding a completely different approach to
+level management and memory architecture. The game\'s main menu must
+allow the player to choose between them before play begins. THE GAUNTLET
+a.k.a Survival Mode The mode consists of 3 Levels and a Boss Level. All
+the levels must have Vertical and Horizontal Scrolling implemented in
+it. Each level is to be made of 2D Voxels where the width must be
+between 150-250 blocks per level and the height must be between 20-60
+blocks per level. Do note that all the enemies should have predefined
+positions backed into the respective levels. The Anatomy of the levels:
+All the levels must consist of 3 specific biomes Aerial: The altitudes
+are high in these regions consisting of mountainous terrain with jagged
+peaks Plains: Central altitudes where we see plainer terrain with small
+hills. Aquatic: Lowest Altitudes utilizing a fixed sea level which must
+be vast enough to have ships sailing and must be deep enough for
+underwater fights. Note: Difficulty should increase level by level (not
+anatomy by anatomy) LEVEL 1 Infantry must spawn 2 batches of each enemy
+evenly distributed in all three biomes Aerial and Alien must spawn 1
+batches of each enemy in the aerial biomes only. Undead must spawn 2
+batches of each enemy in plains biomes only. Must spawn 2 batches of
+zombies in the Aquatic Biome. 2 batches of flying Tara during the level.
+1 POW prisoner per biome. 1 Enemy sub in Aquatic Biome 2100 AE DOHE 58 D
+JUP 2UP 2 LEVEL 2 Infantry must spawn 3 batches of each enemy in the
+whole distributed evenly in all three biomes Aerial and Alien must spawn
+2 batches of each enemy in the aerial biomes only. Undead must spawn 3
+batches of each enemy in plains biomes only. Must spawn: 3 batches of
+zombies in the aquatic biome. 3 batches of flying Tara during the level.
+2 M-15A Bradley placed in different locations. 2 POW prisoners in the
+plains and 1 each in the remaining biomes. 1 enemy sub in the Aquatic
+Biome LEVEL 3 Infantry must spawn 3 batches of each enemy in the whole
+distributed evenly in all three biomes Aerial and Alien must spawn 3
+batches of each enemy in the aerial biomes only. Undead must spawn 4
+batches of each enemy in plains biomes only. Must spawn 4 batches of
+zombies in the aquatic biome. 3 batches of flying Tara during the level.
+2 M-15A Bradley placed in different locations. 2 POW prisoners per
+biome. 2 aquatic subs in the Aquatic Biome BOSS LEVEL The Boss level is
+just like the 3 survival level with horizontal and vertical scrolling
+but instead of the normal enemies, it will spawn bosses. PHASE 1 The
+player starts in the plains biome and faces the ground boss. When the
+ground boss\' HP drops to 50% it retreats to outside the screen and
+disappears. The player has to move ahead to the next biome in that level
+i.e. the aerial biome. PHASE 2 In the Aerial Biome, the player
+encounters the aerial boss. When the aerial boss\' HP drops to 50%, it
+retreats to outside the screen and disappears. The player has to move
+ahead to the next biome in that level i.e. the aquatic biome. PHASE 3 In
+the Aquatic Biome, the player encounters the aquatic boss. A slug
+mariner is parked on the coast to be used in the under water battle When
+the aquatic boss\' HP drops to 50%, it retreats to outside the screen
+and disappears. The player has to move ahead to the next biome in that
+level i.e. the blended one with all three biomes PHASE 4 In this phase,
+the player moves to a blend of two biomes. A section of the aquatic
+biome and a section of the plains biome. All three retreat bosses
+reappear, collide violently with an explosion and fuse together to form
+the ultimate boss which can fly like the aerial boss, battle on the
+ground like the ground boss and swim like the aquatic boss. It\'s all
+three bosses at the same time. Whenever each bosses ability is used they
+must be done polymorphically. When it\'s on the ground it uses the
+ground boss sprite. When in the water it uses the aquatic boss sprite
+and when flying it uses the aerial boss sprite. It transitions from one
+state to the next in a cycle after every 10-15 seconds. It has separate
+healths of all the fused bosses and when in one state that health
+depletes the boss can\'t transition to that state. To overwhelm the
+player. The bosses (phases 1-4) spawn minions of the same type as the
+boss. From that type it chooses an enemy and spawns minions in the form
+of that enemy in batches of 2-4. After every batch kill a crate spawns
+to replenish the ammo of the player. BOSS ENEMIES IRON NOKANA (Ground
+Boss) A missile launcher turret on the top and a hidden flamethrower on
+its bottom The flame thrower behaves like the flame shot and
+occasionally throws fire bomb grenades. Has 30 HP Spawns in a strictly
+flat region 05 HAIRBUSTER RIBERTS (Aerial BoSS) Is equipped with several
+forms of armaments, such as rockets and fire bomb grenades. Has 30 HP.
+Spawns in high altitude regions SEA SATAN (Aquatic Boss) The Sea Satan
+is a huge submarine. It can attack using its guns that fire like an HMG
+with one fitted on either side. It also fires rockets towards the
+players. Has 30 HP THE INFINITE WORLD a.k.a Campaign Mode This is a
+single Level. It generates infinite terrain towards the left and towards
+the right of the player who could theoretically go 1 million blocks in
+one direction. For this purpose, you would have to leverage procedural
+generation via fractal noise. Fractal Noise: Fractal noise is n number
+of Perlin Noise layers stacked on top of each other for more diversity
+and detail. (Links and reference documents have been provided to you for
+both these concepts to help you understand them as you would have to
+implement the noise from scratch) The implementation of this Fractal
+Noise will be responsible to generate the height map which will then be
+mapped to the biomes: Aerial Plains Aquatic This single level will be
+considered complete until 5 of each type of enemies have been killed. 3
+of each enemy vehicles must also be destroyed. Injecting OOP into the
+veins of Perlin Noise When generating the World/level in campaign mode
+the player is given an option to choose a Perlin Noise profile to choose
+from that will set the inputs of the noise function resulting in terrain
+features. Amplified: The peaks and the ocean are extra amplified while
+the plains remain the same. Flat: Opposite of Amplified. No dramatic
+peaks and deep oceans. Normal: The normal profile where the depth of the
+ocean and the altitude of the peaks is normal as in uniformly
+distributed. You must implement a level creator profile factory to
+generate these profiles and then use pointers of an abstract class to
+polymorphically choose the level profile at runtime. Note: Enemy
+Spawning will be done dynamically at runtime (No fixed positions). To
+complete the single Campaign Level, you must kill 5 of each of the
+enemies. The player must also destroy 3 of each enemy vehicle. RULES FOR
+BOTH MODES Blocks / Voxels in both modes must be destructible via blasts
+if they fall into the blast radius. If the craters are created \<= 3
+blocks wide and \>= 1 block deep, then this crater must fill up with
+water if exposed to rain for a certain amount of time. Rain is an
+environment feature which can happen at a random time for a random
+interval. The bottom-most layer of the levels must be a special block
+that must be indestructible under any circumstances. You must spawn each
+of the player vehicles in both modes in each level at appropriate
+locations so that they can be of the most help. THE ART OF SELF PLAYING
+a.k.a Al becomes the gamer Neuro Evolution of Augmented Topologies
+(NEAT) is an Evolutionary Optimization Algorithm presented by Kenneth O.
+Stanley and Risto Miikkulainen in 2002. The original research paper is
+attached with the Project file to understand the complete working of the
+algorithm. You are required to add a \"Self Playing\" mode which is
+based on NEAT that lets the players automatically play the game, err;
+adjust and evolve both the weight and topology of the network over
+generations so that they produce a player that performs better than the
+pre generations. This evolution should happen indefinitely, making the
+next generation better and better automatically; till the self playing
+mode is exited. It should keep a record of the global best player along
+with its weights and topology. This global best player should be the
+best run across every time the self playing mode is ever played. The
+keyboard key \'B\' should be preserved, and press it to activate that
+best player alongside the current running generation \[highlighted in
+whatever way you deem the best\] for comparison and visual benchmarking.
+Scoring BASIC ENEMY KILLS Class Enemy Score Rebel Soldier 50 Shielded
+Soldier 75 Bazooka Soldier 100 Grenade Soldier 100 Aerial Paratroopers
++25 from base infantry enemy Undead Mummy 150 Zombie 100 Alien Martian
+200 BOSS KILLS Encounter Score Normal Bosses (Phases 1-3) 500 Ultimate
+Boss (Phase 4) 1500 BONUSES ON KILLS Feat Description Score Melee Kill
+Kill an enemy with a knife in close range +50 Aerial Kill Killing an
+enemy mid jump +100 Multi-Kill Killing 2 enemies with a grenade or a
+rocket +200 Massacre Killing 3 or more enemies with a grenade or a
+rocket +300 basen x 50 for kill more than 3 LEVEL CLEAR SCORES Feat
+Description Score Survival mode clear Kill all the enemies and reach the
+right boundary 1000 Campaign mode clear Reach the kill quota to start
+the boss level 3000 Flawless victory Killing 2 enemies with a grenade or
+a rocket 5000 Special Game Features DEVELOPER MODE You must implement a
+\"Developer Mode\" cheat code (your choice) into the game that lets the
+player be immortal, and lets it have access to every weapon (a weapon
+each to every character) so that during the demo we can test and verify
+everything implemented without the student dying repeatedly. (Lesson
+learned from last year FORKS OF FATE The \'R\' key on Keyboard when
+pressed should enable a rewind of 10 seconds, showing a frame by frame
+reversal of the player and its environment including the enemies. Store
+the timeline in a git-like sequence where an action done if in the past,
+bursts out another branch of the timeline from that point. Wherever the
+\'R\' button is pressed a node (checkpoints) should form branching out
+alternate timelines; that should be stored using appropriate file
+handling techniques. You should implement a way to shift between
+timelines from a specífic node across a run of the game. THE REFLEX
+FINGERPRINT As you play the game, the game learns your exact style of
+playing. The longer you play the better the game gets at imitating you.
+Assign a specific key which bursts out a reflex fingerprint mode during
+playing. This will enable the game to autopilot for 15 seconds based on
+your exact playing styles and imitate your patterns of attack and
+defense. The parameters should be at least but not limited to
+FingerPrint file; can add more for accurate representation. THE
+FINGERPRINT FILE AND GHOST A downloadable Player Style Profile should be
+implemented. It should have the exact style of the players, the
+parameters and their weights. The file should be uploadable to another
+instance of a game on a separate device and a ghost player (fainted in
+colours and transparency) following the exact playing style as encoded
+in the uploaded fingerprint file; should spawn alongside the main
+player. The ghost should play automatically based on the said style,
+varying from fingerprint file to file. The ghost inflicts 80% less
+damage and has 300% more health than a regular player. We have attached
+the format in \'parameters.csv\'. This has to be the exact format so
+that one import can be an exported file of another GRUDGEFUL ENEMIES The
+enemies that survive your attacks and you move past them (your screen
+frame does move past them) do not get killed. They have a photographic
+memory and return backwards with a better power enhanced version. They
+hold a grudge against you and attack you first finding their way through
+obstacles. MEMORY OF COWARDICE The world remembers what the player
+leaves unfinished. Enemies that are ignored instead of killed gather in
+a hidden reserve and may eventually return together in a sudden,
+overwhelming counterattack. ECHO CHAMBERS When the player is submerged
+into the water in aquatic biomes you must use muffled sounds for sound
+effects and background music. The catch is that you can\'t use prepared
+muffled sounds. You must use Q4 of assignment 2 and decompose the sounds
+into discrete frequencies and delete the frequencies at the higher end
+of the spectrum. This decomposition must happen at runtime. THE RAGEBAIT
+It tracks not your actual score but your score expectation; what you
+historically believed a run was worth at its midpoint based on how you
+played the first half. When a run is going well by your own historical
+standards, it starts introducing low-value enemies and removing
+high-value configurations, so the final score lands slightly below your
+expectation. Never catastrophically. Always just enough disappointment
+to motivate one more run. It has learned the exact gap between your
+expected score and your actual score that keeps you playing. It
+maintains that gap indefinitely. THE DEATH COMPOSITOR Every death
+you\'ve ever had is stored as a fingerprint, your health, position,
+active weapon, enemy configuration, time since last checkpoint. It
+builds a composition of your most frequent death fingerprints. When your
+current run state closely resembles a historical death fingerprint, the
+game starts gently steering the environment toward completing that
+pattern; not spawning the specific enemy that killed you before, but
+tilting spawn weights toward it, shifting enemy aggression up slightly,
+placing a wall just where you historically needed open space. It
+doesn\'t kill you. It recreates the conditions and lets you kill
+yourself. The death feels like yours. It was assembled from a library of
+your previous ones. THE CHAINS OF DEATH You are chained into a series of
+predictions. A prediction of states. It maintains a small set of states
+more like abstract behavioral states like pressing, consolidating,
+retreating, burning resources, stalling (the more the better). Each
+state is defined by a cluster of observable signals: movement speed,
+grenade frequency, weapon swap rate, distance maintained from enemies,
+time spent near cover versus in open space (extra points will be awarded
+for more parameters). You are always in exactly one state. The state
+you\'re in right now is inferred from the last 4 seconds of your inputs.
+The chain is the transition table. From pressing, for example, you
+historically move to buming resources 40% of the time, stay in pressing
+35%, and drop to consolidating 25%. From consolidating, you almost never
+go directly to retreating, you pass through stalling first, almost
+always. The chain predicts your next state, not your next action. It
+doesn\'t know you\'re about to throw a grenade. It knows you\'re about
+to enter burning resources, which means a grenade or a rocket or a slug
+slam is coming in the next 6 seconds. That\'s enough information it
+needs to paralyze you. The enemy spawner factory reads the chain\'s
+current prediction. If you\'re about to enter burning resources, it
+holds the next heavy enemy spawn for 7 seconds; lets you bait into waste
+the resource on nothing, then sends the heavy infantry. If you\'re in
+stalling, it accelerates spawns because stalling players historically
+respond to pressure by either snapping into pressing or collapsing into
+retreating, and both are exploitable transitions. The chain has a second
+use. Some states are traps. For example the chain figures out that
+Consolidating followed by pressing is your highest-performance sequence
+you reset, then commit, and you play well. The game identifies when
+you\'re entering that sequence and introduces a single disruption, one
+offscreen bullet, one mis-timed spawn; calibrated to knock you out of
+consolidation before you complete it. You never get the clean reset. You
+always go into pressing slightly unready. The disruption is when you
+least expect it knocking you out at your lowest moments. The boss uses
+the chain differently. It watches your state transitions for the first
+20 seconds of the fight, establishes your current transition
+probabilities under pressure, and identifies the state you spend the
+least time in. That state is your gap like it understands the behavioral
+configuration you avoid or move through too quickly. The boss then
+engineers conditions that force you into that state and hold you there.
+If you almost never stall, the boss creates a situation where the
+correct response is to wait, and waits with you, because it knows
+waiting is where you break The chain remembers across sessions. Your
+transition probabilities from last week are in there, weighted less than
+today\'s but still present. If you spent a month playing aggressively
+and just came back after a break, the chain has both versions of you-
+the aggressive one and whatever you are now, the weights are decided
+between them by recency. The first 10 minutes of a retuming session are
+the most dangerous. The chain is running on old you while you\'re still
+figuring out what you currently are. URDU ASSEMBLY INJECTION When the
+developer mode key is pressed thrice in 2 seconds a terminal window
+spawns letting you input commands in Urdu assembly from Assignment 3.
+Using the syntax and reserved words from Urdu Assembly you can add, or
+subtract from stats or variables like health, score, ammo etc. For
+Example. JAMA LIVES, 2 JAMA AMMO, 5 JAMA GRENADES, 10
+\[MetalSlug00P2026\]\$ JAMA LIVES, 2 \[Metal Slug00P2026\]\$ JAMA AMMO,
+5 \[MetalSlug00P2026\]\$ JAMA GRENADES, 10 \[MetalSlug00P2026\]\$ This
+dynamically modifies the behaviour of the game at runtime. You are able
+to Run Urdu Assembly in the terminal directly. Think of it as similar to
+how Python\'s Interactive mode runs. This is direct injection into
+runtime behaviour of the game. THE VOICE OF THE BENE GESSERIT Think of
+this as a Startup Engine. Use windows.h to link up to the device\'s
+microphone and as the game\'s instance starts; the microphone starts
+listening for the magic phrase \"Valar Morghulis\" ( the exact audio is
+provided alongst the project file). The provided audio must be
+decomposed using fast fourier transformations (Q4 mentioned rawrrr) and
+stored into matrices. The audio sampling coming from the microphone must
+be decomposed in similar fashion. You need to account for the
+environmental damages to the listened audio as that would produce a
+blurred version of the original audio; so exact matching must not be
+done but rather cosine similarity be applied between both versions and
+anything that matches 40% of the original sound must trigger the game to
+start. A popup of \"Command Detected Successfully\" upon detecting the
+phrase.

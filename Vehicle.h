@@ -9,7 +9,7 @@ class PlayerSoldier;
 
 class Vehicle : public DamageableEntity
 {
-private:
+protected:
 	enum VehicleAnimationKind
 	{
 		VEHICLE_ANIM_IDLE,
@@ -35,6 +35,7 @@ private:
 	bool occupied;
 	bool facingRight;
 	bool grounded;
+	bool inWater;
 	int baseMaxHealth;
 	float baseFireCooldown;
 	float moveSpeed;
@@ -77,32 +78,35 @@ private:
 	sf::CircleShape frontWheel;
 
 	void resetAnimation(VehicleAnimation& animation);
-	bool loadVehicleSprites();
+	virtual bool loadVehicleSprites();
 	bool loadAnimation(VehicleAnimation& animation, const sf::Image& sheetImage, sf::Color backgroundColor, int x, int y, int totalWidth, int totalHeight, int frameCount, float frameDuration, bool loop);
 	void setFrameBounds(VehicleAnimation& animation, int frameIndex, int frameLeft, int frameWidth);
 	void setAnimationBottomPadding(VehicleAnimation& animation, int bottomPadding);
 	VehicleAnimation& getAnimation(int animationKind, bool uphill);
 	void setAnimationFrame(VehicleAnimation& animation, int frameIndex);
 	void setCannonFrame(int frameIndex);
-	void handleMovementInput();
-	void updateAnimation(float deltaTime);
+	virtual void handleMovementInput();
+	virtual void updateAnimation(float deltaTime);
 	void updateCannonAnimation(float deltaTime);
 	void updateVisualPosition();
 	void updateColors();
 	void applyDriverBonuses(const PlayerSoldier* driver);
 
+protected:
+	void drawHealthBar(sf::RenderWindow& window);
+
 public:
 	Vehicle(float startX, float startY);
 
-	void update(float deltaTime);
-	void draw(sf::RenderWindow& window);
-	void handleWeaponInput(EntityManager& entityManager, float deltaTime);
-	void takeDamage(int damage);
+	virtual void update(float deltaTime);
+	virtual void draw(sf::RenderWindow& window);
+	virtual void handleWeaponInput(EntityManager& entityManager, float deltaTime);
+	virtual void takeDamage(int damage) override;
 
 	bool canMount(const PlayerSoldier& player) const;
-	void mount(PlayerSoldier& player);
-	void dismount(PlayerSoldier& player);
-	void ejectPlayer(PlayerSoldier& player);
+	virtual void mount(PlayerSoldier& player);
+	virtual void dismount(PlayerSoldier& player);
+	virtual void ejectPlayer(PlayerSoldier& player);
 
 	void setActiveLevel(Level* level);
 	void setMovementMaxX(float maxX);
