@@ -63,7 +63,7 @@ protected:
 public:
 	Enemy();
 
-	void setSpawnPosition(float newX, float newY);
+	virtual void setSpawnPosition(float newX, float newY);
 	void setTarget(PlayerSoldier* newTarget);
 	void update(float deltaTime);
 	void draw(sf::RenderWindow& window);

@@ -133,9 +133,10 @@ void GrenadeProjectile::update(float deltaTime)
 
 	Projectile::update(deltaTime);
 
-	if (y + height >= Constants::GROUND_Y)
+	float groundY = getGroundY();
+	if (y + height >= groundY)
 	{
-		y = Constants::GROUND_Y - height;
+		y = groundY - height;
 		explode();
 	}
 }

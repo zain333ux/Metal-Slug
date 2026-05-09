@@ -197,6 +197,7 @@ private:
 
  protected:
 	void updateAI();
+	bool loadPodTexture(sf::Texture& targetTexture, const char* fileName);
 
 public:
 	MartianPod();
@@ -206,6 +207,7 @@ public:
 	Entity* createSpawnedEntityIfReady();
 	bool applyProjectileHit(Projectile& projectile);
 	const char* getEnemyName() const;
+	void setSpawnPosition(float newX, float newY);
 
 private:
 	void updateMovement(float deltaTime);

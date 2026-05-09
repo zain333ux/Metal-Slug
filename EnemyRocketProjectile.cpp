@@ -53,13 +53,16 @@ static bool loadBazookaExplosionTexture()
 
 EnemyRocketProjectile::EnemyRocketProjectile(float startX, float startY, float throwVelocityX, float throwVelocityY)
 {
-	damage = 28;
+	storedDamage = 28;
+	damage = 0;
 	lifeTime = 2.8f;
 	width = 32.0f;
 	height = 32.0f;
 	explosive = true;
 	blastRadius = 145.0f;
 	exploded = false;
+	armed = false;
+	armTimer = 0.16f;
 	explosionTimer = 0.18f;
 	currentFrame = 0;
 	frameTimer = 0.0f;
@@ -137,6 +140,16 @@ void EnemyRocketProjectile::update(float deltaTime)
 		return;
 	}
 
+	if (!armed)
+	{
+		armTimer -= deltaTime;
+		if (armTimer <= 0.0f)
+		{
+			armed = true;
+			damage = storedDamage;
+		}
+	}
+
 	lifeTime -= deltaTime;
 	if (lifeTime <= 0.0f)
 	{
@@ -160,9 +173,10 @@ void EnemyRocketProjectile::update(float deltaTime)
 	Entity::update(deltaTime);
 	body.setPosition(x, y);
 
-	if (y + height >= Constants::GROUND_Y)
+	float groundY = getGroundY();
+	if (y + height >= groundY)
 	{
-		y = Constants::GROUND_Y - height;
+		y = groundY - height;
 		explode();
 	}
 }
@@ -185,6 +199,11 @@ void EnemyRocketProjectile::draw(sf::RenderWindow& window)
 
 void EnemyRocketProjectile::onCollision()
 {
+	if (!armed)
+	{
+		return;
+	}
+
 	explode();
 	damage = 0;
 }

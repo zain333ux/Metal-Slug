@@ -2,6 +2,8 @@
 
 #include "Entity.h"
 
+class Level;
+
 class Projectile : public Entity
 {
 protected:
@@ -13,6 +15,9 @@ protected:
 	bool firedWhileAirborne;
 	bool playerOwned;
 	float blastRadius;
+	Level* activeLevel;
+
+	float getGroundY() const;
 
 public:
 	Projectile();
@@ -29,4 +34,5 @@ public:
 	float getBlastRadius() const;
 	void markFiredWhileAirborne(bool airborne);
 	void setPlayerOwned(bool owned);
+	void setActiveLevel(Level* level);
 };

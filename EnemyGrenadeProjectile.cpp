@@ -61,13 +61,16 @@ static bool loadEnemyGrenadeExplosionTexture()
 
 EnemyGrenadeProjectile::EnemyGrenadeProjectile(float startX, float startY, float throwVelocityX, float throwVelocityY)
 {
-	damage = 18;
+	storedDamage = 18;
+	damage = 0;
 	lifeTime = 2.6f;
 	width = 42.0f;
 	height = 42.0f;
 	explosive = true;
 	blastRadius = 120.0f;
 	exploded = false;
+	armed = false;
+	armTimer = 0.16f;
 	explosionTimer = 0.0f;
 	currentFrame = 0;
 	frameTimer = 0.0f;
@@ -144,6 +147,16 @@ void EnemyGrenadeProjectile::update(float deltaTime)
 		return;
 	}
 
+	if (!armed)
+	{
+		armTimer -= deltaTime;
+		if (armTimer <= 0.0f)
+		{
+			armed = true;
+			damage = storedDamage;
+		}
+	}
+
 	lifeTime -= deltaTime;
 	if (lifeTime <= 0.0f)
 	{
@@ -167,9 +180,10 @@ void EnemyGrenadeProjectile::update(float deltaTime)
 	Entity::update(deltaTime);
 	body.setPosition(x, y);
 
-	if (y + height >= Constants::GROUND_Y)
+	float groundY = getGroundY();
+	if (y + height >= groundY)
 	{
-		y = Constants::GROUND_Y - height;
+		y = groundY - height;
 		explode();
 	}
 }
@@ -192,6 +206,11 @@ void EnemyGrenadeProjectile::draw(sf::RenderWindow& window)
 
 void EnemyGrenadeProjectile::onCollision()
 {
+	if (!armed)
+	{
+		return;
+	}
+
 	explode();
 	damage = 0;
 }

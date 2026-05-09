@@ -6,6 +6,9 @@ class EnemyGrenadeProjectile : public Projectile
 {
 private:
 	bool exploded;
+	bool armed;
+	float armTimer;
+	int storedDamage;
 	float explosionTimer;
 	int currentFrame;
 	float frameTimer;

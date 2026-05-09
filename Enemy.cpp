@@ -94,10 +94,19 @@ void Enemy::update(float deltaTime)
 		landingY = activeLevel->getLandingY(x, x + width, previousBottom, y + height);
 	}
 
-	if (y + height >= landingY)
+	if (y + height >= landingY - 8.0f && velocityY >= 0.0f)
 	{
 		y = landingY - height;
 		velocityY = 0.0f;
+		grounded = true;
+	}
+	else if (y + height >= landingY)
+	{
+		y = landingY - height;
+		if (velocityY > 0.0f)
+		{
+			velocityY = 0.0f;
+		}
 		grounded = true;
 	}
 	else

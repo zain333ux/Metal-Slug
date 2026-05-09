@@ -148,7 +148,7 @@ void PlayState::spawnSurvivalWave(Game& game)
 		spawnEnemy(game, ENEMY_BAZOOKA, 1120.0f, 500.0f);
 		spawnEnemy(game, ENEMY_GRENADE, 1360.0f, 500.0f);
 		spawnEnemy(game, ENEMY_BAZOOKA, 1740.0f, 500.0f);
-		spawnEnemyAt(game, ENEMY_GRENADE, 1900.0f, 615.0f - 96.0f);
+		spawnEnemy(game, ENEMY_GRENADE, 1900.0f, 519.0f);
 		spawnEnemy(game, ENEMY_SHIELDED, 2280.0f, 500.0f);
 		spawnEnemy(game, ENEMY_GRENADE, 2760.0f, 500.0f);
 		spawnEnemy(game, ENEMY_MARTIAN, 3260.0f, 360.0f);

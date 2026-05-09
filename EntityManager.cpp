@@ -2,6 +2,7 @@
 
 #include "Enemy.h"
 #include "Collectible.h"
+#include "Level.h"
 #include "PlayerSoldier.h"
 #include "Projectile.h"
 #include "ScoreManager.h"
@@ -40,6 +41,11 @@ void EntityManager::addEntity(Entity* entity)
 		{
 			vehicle->setActiveLevel(activeLevel);
 		}
+		Projectile* projectile = dynamic_cast<Projectile*>(entity);
+		if (projectile != 0)
+		{
+			projectile->setActiveLevel(activeLevel);
+		}
 		entities.pushBack(entity);
 	}
 }
@@ -63,6 +69,11 @@ void EntityManager::setActiveLevel(Level* level)
 		if (vehicle != 0)
 		{
 			vehicle->setActiveLevel(activeLevel);
+		}
+		Projectile* projectile = dynamic_cast<Projectile*>(entities.get(i));
+		if (projectile != 0)
+		{
+			projectile->setActiveLevel(activeLevel);
 		}
 	}
 }

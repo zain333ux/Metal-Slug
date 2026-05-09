@@ -614,8 +614,8 @@ Projectile* BazookaSoldier::createProjectileIfReady()
 		}
 	}
 
-	float rocketX = facingRight ? x + width + 8.0f : x - 42.0f;
-	float rocketY = y + 30.0f;
+	float rocketX = facingRight ? x + width + 34.0f : x - 66.0f;
+	float rocketY = y + 36.0f;
 	return new EnemyRocketProjectile(rocketX, rocketY, rocketVelocityX, -640.0f);
 }
 
@@ -851,8 +851,8 @@ Projectile* GrenadeSoldier::createProjectileIfReady()
 		}
 	}
 
-	float grenadeX = facingRight ? x + width - 8.0f : x - 10.0f;
-	float grenadeY = y + 34.0f;
+	float grenadeX = facingRight ? x + width + 18.0f : x - 48.0f;
+	float grenadeY = y + 36.0f;
 	return new EnemyGrenadeProjectile(grenadeX, grenadeY, throwVelocityX, -570.0f);
 }
 
@@ -1113,10 +1113,19 @@ void MartianInfantry::update(float deltaTime)
 		landingY = activeLevel->getLandingY(x, x + width, previousBottom, y + height);
 	}
 
-	if (y + height >= landingY)
+	if (y + height >= landingY - 8.0f && velocityY >= 0.0f)
 	{
 		y = landingY - height;
 		velocityY = 0.0f;
+		grounded = true;
+	}
+	else if (y + height >= landingY)
+	{
+		y = landingY - height;
+		if (velocityY > 0.0f)
+		{
+			velocityY = 0.0f;
+		}
 		grounded = true;
 	}
 	else
@@ -1323,14 +1332,16 @@ MartianPod::MartianPod()
 	width = 88.0f;
 	height = 70.0f;
 	body.setSize(sf::Vector2f(width, height));
+	body.setOutlineThickness(0.0f);
+	body.setFillColor(sf::Color::Transparent);
 	setSpriteScale(1.9f);
 	setPosition(900.0f, hoverBaseY);
 	patrolLeft = 760.0f;
 	patrolRight = 1180.0f;
 
-	if (loadMaskedTexture(movementTexture, "Sprites/Clean/MartianPod_movement.png") &&
-		loadMaskedTexture(attackTexture, "Sprites/Clean/MartianPod_Bullet.png") &&
-		loadMaskedTexture(deathTexture, "Sprites/Clean/MartianPod_death.png"))
+	if (loadPodTexture(movementTexture, "Sprites/Clean/MartianPod_movement.png") &&
+		loadPodTexture(attackTexture, "Sprites/Clean/MartianPod_Bullet.png") &&
+		loadPodTexture(deathTexture, "Sprites/Clean/MartianPod_death.png"))
 	{
 		usingSprite = true;
 		attackSprite.setTexture(attackTexture);
@@ -1339,6 +1350,31 @@ MartianPod::MartianPod()
 	}
 }
 
+bool MartianPod::loadPodTexture(sf::Texture& targetTexture, const char* fileName)
+{
+	sf::Image image;
+	if (!image.loadFromFile(fileName))
+	{
+		return false;
+	}
+
+	image.createMaskFromColor(sf::Color(255, 0, 255));
+	image.createMaskFromColor(sf::Color::White);
+	return targetTexture.loadFromImage(image);
+}
+
+void MartianPod::setSpawnPosition(float newX, float newY)
+{
+	setPosition(newX, newY);
+	hoverBaseY = newY;
+	hoverTimer = 0.0f;
+	patrolLeft = newX - 240.0f;
+	patrolRight = newX + 240.0f;
+	if (patrolLeft < 0.0f)
+	{
+		patrolLeft = 0.0f;
+	}
+}
 void MartianPod::updateAI()
 {
 	if (dying)
@@ -1457,7 +1493,12 @@ void MartianPod::updateMovement(float deltaTime)
 {
 	if (hoverTimer <= 0.0f)
 	{
-		hoverBaseY = y;
+		float groundY = static_cast<float>(Constants::GROUND_Y);
+		if (activeLevel != 0)
+		{
+			groundY = activeLevel->getGroundYAt(getCenterX());
+		}
+		hoverBaseY = groundY - 400.0f;
 	}
 	hoverTimer += deltaTime;
 	Entity::update(deltaTime);
@@ -1578,7 +1619,14 @@ void MartianPod::draw(sf::RenderWindow& window)
 		window.draw(attackSprite);
 	}
 
-	Enemy::draw(window);
+	if (usingSprite)
+	{
+		window.draw(sprite);
+	}
+	else
+	{
+		window.draw(body);
+	}
 }
 
 void MartianPod::setPodAnimation(int newState)
