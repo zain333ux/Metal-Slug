@@ -17,6 +17,24 @@ namespace
 			xAcc += ww;
 		}
 	}
+
+	sf::Texture enemyVehicleRocketTexture;
+	bool enemyVehicleRocketTextureLoaded = false;
+
+	bool loadEnemyVehicleRocketTexture()
+	{
+		if (!enemyVehicleRocketTextureLoaded)
+		{
+			sf::Image image;
+			if (image.loadFromFile("Sprites/Clean/Bazooka_bullet.png"))
+			{
+				image.createMaskFromColor(sf::Color::White);
+				image.createMaskFromColor(sf::Color(255, 0, 255));
+				enemyVehicleRocketTextureLoaded = enemyVehicleRocketTexture.loadFromImage(image);
+			}
+		}
+		return enemyVehicleRocketTextureLoaded;
+	}
 } // namespace
 
 // --- Bradley arcing missile -------------------------------------------------
@@ -334,5 +352,73 @@ void EnemySubTorpedoProjectile::draw(sf::RenderWindow& window)
 	else
 	{
 		BallisticProjectile::draw(window);
+	}
+}
+
+// --- Straight enemy vehicle rocket -----------------------------------------
+
+EnemyStraightRocketProjectile::EnemyStraightRocketProjectile(float startX, float startY, bool newFacingRight)
+{
+	damage = 24;
+	lifeTime = 2.4f;
+	width = 34.0f;
+	height = 18.0f;
+	explosive = false;
+	blastRadius = 0.0f;
+	facingRight = newFacingRight;
+	setPlayerOwned(false);
+	setPosition(startX, startY);
+	setVelocity(facingRight ? 470.0f : -470.0f, 0.0f);
+
+	body.setSize(sf::Vector2f(width, height));
+	body.setFillColor(sf::Color(240, 100, 50));
+	body.setOutlineThickness(0.0f);
+
+	const sf::Texture* tex = loadEnemyVehicleRocketTexture() ? &enemyVehicleRocketTexture : nullptr;
+	static FrameRect rocketFrames[4];
+	static bool rocketGeoReady = false;
+	if (!rocketGeoReady)
+	{
+		rocketFrames[0] = FrameRect{0, 0, 13, 14, 0, 0};
+		rocketFrames[1] = FrameRect{13, 0, 13, 14, 0, 0};
+		rocketFrames[2] = FrameRect{26, 0, 13, 14, 0, 0};
+		rocketFrames[3] = FrameRect{39, 0, 14, 14, 0, 0};
+		rocketGeoReady = true;
+	}
+
+	if (tex != nullptr && rocketGeoReady)
+	{
+		rocketAnim.setTexture(tex);
+		rocketAnim.setFrames(rocketFrames, 4);
+		rocketAnim.setFrameTime(0.08f);
+		rocketAnim.setLoop(true);
+		rocketAnim.setScale(2.0f, 2.0f);
+		rocketAnim.setFacingRight(facingRight);
+		rocketAnim.reset();
+	}
+}
+
+void EnemyStraightRocketProjectile::update(float deltaTime)
+{
+	Projectile::update(deltaTime);
+	rocketAnim.update(deltaTime);
+
+	if (x + width < -200.0f || x > Constants::WORLD_WIDTH_LEVEL_3 + 2500.0f)
+	{
+		deactivate();
+	}
+}
+
+void EnemyStraightRocketProjectile::draw(sf::RenderWindow& window)
+{
+	const sf::Texture* tex = loadEnemyVehicleRocketTexture() ? &enemyVehicleRocketTexture : nullptr;
+	if (tex != nullptr && rocketAnim.getFrameCount() > 0)
+	{
+		rocketAnim.setFacingRight(facingRight);
+		rocketAnim.drawAtAnchor(window, x + width * 0.5f, y + height);
+	}
+	else
+	{
+		Projectile::draw(window);
 	}
 }

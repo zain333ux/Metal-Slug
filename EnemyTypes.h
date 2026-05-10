@@ -114,15 +114,29 @@ public:
 
 class ZombieEnemy : public Enemy
 {
+private:
+	sf::Texture walkTexture;
+
 public:
 	ZombieEnemy();
+	void update(float deltaTime);
 	const char* getEnemyName() const;
 };
 
 class MummyEnemy : public Enemy
 {
+private:
+	int mummyAnimationState;
+	float hurtTimer;
+	sf::Texture idleTexture;
+	sf::Texture walkTexture;
+
+	void updateMummyAnimation();
+
 public:
 	MummyEnemy();
+	void update(float deltaTime);
+	bool applyProjectileHit(Projectile& projectile);
 	const char* getEnemyName() const;
 };
 

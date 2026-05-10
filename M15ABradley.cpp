@@ -114,7 +114,7 @@ void M15ABradley::update(float deltaTime)
 
 		body.setFillColor(sf::Color::Transparent);
 
-		idleAnim.setFacingRight(facingRight);
+		idleAnim.setFacingRight(!facingRight);
 
 		idleAnim.update(deltaTime);
 
@@ -150,7 +150,7 @@ void M15ABradley::draw(sf::RenderWindow& window)
 
 
 
-	idleAnim.setFacingRight(facingRight);
+	idleAnim.setFacingRight(!facingRight);
 
 	idleAnim.drawAtAnchor(window, x + width * 0.5f, y + height);
 
@@ -290,69 +290,11 @@ Projectile* M15ABradley::attack()
 
 {
 
-	float spawnX = facingRight ? x + width + 4.0f : x - 16.0f;
+	float spawnX = facingRight ? x + width + 8.0f : x - 42.0f;
 
-	float spawnY = y + 22.0f;
+	float spawnY = y + 30.0f;
 
-	float targetX = spawnX + (facingRight ? preferredRange : -preferredRange);
-
-	float targetY = spawnY;
-
-	if (target != 0)
-
-	{
-
-		targetX = target->getCenterX();
-
-		targetY = target->getCenterY();
-
-	}
-
-
-
-	float dx = targetX - spawnX;
-
-	float dy = targetY - spawnY;
-
-	float vx = dx * 0.65f;
-
-	if (vx > 390.0f)
-
-	{
-
-		vx = 390.0f;
-
-	}
-
-	if (vx < -390.0f)
-
-	{
-
-		vx = -390.0f;
-
-	}
-
-	float vy = -560.0f - dy * 0.2f;
-
-	if (vy < -760.0f)
-
-	{
-
-		vy = -760.0f;
-
-	}
-
-	if (vy > -420.0f)
-
-	{
-
-		vy = -420.0f;
-
-	}
-
-
-
-	return new BradleyArcMissileProjectile(spawnX, spawnY, vx, vy);
+	return new EnemyStraightRocketProjectile(spawnX, spawnY, facingRight);
 
 }
 

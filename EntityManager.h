@@ -23,6 +23,7 @@ private:
 	void checkProjectileEnemyCollisions();
 	void checkProjectileVehicleCollisions();
 	void checkProjectilePlayerCollisions();
+	void checkProjectilePrisonerCollisions();
 	void checkEnemyVehicleCollisions();
 	void checkEnemyPlayerCollisions();
 	void checkPlayerCollectibleCollisions();

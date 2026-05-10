@@ -228,6 +228,19 @@ static const float FIO_IDLE_LEG_ORIGIN_Y[] = { 24.0f };
 static const float FIO_RUN_LEG_ORIGIN_X[] = { 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f };
 static const float FIO_RUN_LEG_ORIGIN_Y[] = { 26.0f, 25.0f, 23.0f, 26.0f, 26.0f, 25.0f, 25.0f, 23.0f, 25.0f, 25.0f, 26.0f, 26.0f };
 
+static const int PLAYER_FORM_NORMAL = 0;
+static const int PLAYER_FORM_ZOMBIE_EMERGE = 1;
+static const int PLAYER_FORM_ZOMBIE = 2;
+static const int PLAYER_FORM_MUMMY = 3;
+
+static const sf::IntRect PLAYER_MUMMY_IDLE_FRAMES[] =
+{
+	sf::IntRect(0, 0, 30, 45),   // frame 0
+	sf::IntRect(30, 0, 30, 45),   // frame 1
+	sf::IntRect(60, 0, 30, 45),   // frame 2
+	sf::IntRect(90, 0, 30, 45),   // frame 3
+};
+
 PlayerSoldier::PlayerSoldier()
 {
 	firing = false;
@@ -307,12 +320,17 @@ PlayerSoldier::PlayerSoldier()
 
 	ridingVehicle = false;
 	pilotHiddenWhileInsideVehicle = false;
+	transformationState = PLAYER_FORM_NORMAL;
+	transformationTimer = 0.0f;
+	transformationFrameTimer = 0.0f;
+	transformationFrame = 0;
 	setPosition(120.0f, 500.0f);
 	setSpriteScale(2.2f);
 	loadMarcoSprites();
 	loadEriSprites();
 	loadTarmaSprites();
 	loadFioSprites();
+	loadTransformationSprites();
 	applyCharacterStats();
 }
 
@@ -325,7 +343,16 @@ bool PlayerSoldier::loadMaskedTexture(sf::Texture& targetTexture, const char* fi
 	}
 
 	image.createMaskFromColor(sf::Color::White);
+	image.createMaskFromColor(sf::Color(255, 0, 255));
 	return targetTexture.loadFromImage(image);
+}
+
+void PlayerSoldier::loadTransformationSprites()
+{
+	loadMaskedTexture(zombieWalkTexture, "Sprites/Clean/Zombie_walk.png");
+	loadMaskedTexture(zombieEmergeTexture, "Sprites/Clean/Zombie_emerge.png");
+	loadMaskedTexture(mummyIdleTexture, "Sprites/Clean/MummyWarrior_idle.png");
+	loadMaskedTexture(mummyWalkTexture, "Sprites/Clean/MummyWarrior_walk.png");
 }
 
 void PlayerSoldier::loadMarcoSprites()
@@ -430,6 +457,10 @@ void PlayerSoldier::respawn()
 	fireAnimationTimer = 0.0f;
 	aimingUp = false;
 	damageTimer = 0.0f;
+	transformationState = PLAYER_FORM_NORMAL;
+	transformationTimer = 0.0f;
+	transformationFrameTimer = 0.0f;
+	transformationFrame = 0;
 	marcoTorsoState = -1;
 	marcoLegState = -1;
 	eriTorsoState = -1;
@@ -518,6 +549,25 @@ void PlayerSoldier::handleInput()
 	}
 
 	stopMoving();
+	if (isTransformed())
+	{
+		aimingUp = false;
+		moveSpeed = Constants::PLAYER_MOVE_SPEED * 0.5f;
+		if (transformationState == PLAYER_FORM_ZOMBIE_EMERGE)
+		{
+			return;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		{
+			moveLeft();
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		{
+			moveRight();
+		}
+		return;
+	}
+
 	aimingUp = sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
 
 	bool switchKey = sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
@@ -582,6 +632,8 @@ void PlayerSoldier::update(float deltaTime)
 		refillDemoInventory();
 	}
 
+	updateTransformation(deltaTime);
+
 	if (ridingVehicle)
 	{
 		stopMoving();
@@ -597,10 +649,20 @@ void PlayerSoldier::update(float deltaTime)
 	{
 		body.setFillColor(sf::Color(90, 90, 90));
 	}
+	else if (damageTimer > 0.0f)
+	{
+		body.setFillColor(sf::Color(255, 90, 90));
+	}
 }
 
 void PlayerSoldier::updatePlayerAnimation(float deltaTime)
 {
+	if (isTransformed())
+	{
+		updateTransformationAnimation(deltaTime);
+		return;
+	}
+
 	if (currentCharacter == 0 && marcoSpritesLoaded)
 	{
 		updateMarcoLayeredAnimation(deltaTime);
@@ -651,6 +713,45 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 
 	if (isDead() || ridingVehicle)
 	{
+		return;
+	}
+
+	if (transformationState == PLAYER_FORM_ZOMBIE_EMERGE)
+	{
+		return;
+	}
+
+	if (isZombieForm())
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+			{
+				facingRight = false;
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			{
+				facingRight = true;
+			}
+			float bulletX = facingRight ? x + width : x;
+			weapon.fire(entityManager, bulletX, y + 38.0f, facingRight, false);
+		}
+		return;
+	}
+
+	if (isMummyForm())
+	{
+		bool meleeKey = sf::Keyboard::isKeyPressed(sf::Keyboard::K);
+		if (meleeKey && !previousMeleeKey && meleeTimer <= 0.0f)
+		{
+			float hitX = facingRight ? x + width : x;
+			MeleeHitbox* hitbox = new MeleeHitbox(hitX, y + 18.0f, facingRight, !grounded);
+			entityManager.addEntity(hitbox);
+			meleeTimer = Constants::MELEE_COOLDOWN;
+		}
+		previousMeleeKey = meleeKey;
+		previousGrenadeKey = sf::Keyboard::isKeyPressed(sf::Keyboard::G);
+		previousRocketKey = sf::Keyboard::isKeyPressed(sf::Keyboard::R);
 		return;
 	}
 
@@ -766,6 +867,20 @@ void PlayerSoldier::refillDemoInventory()
 	// Eri (2): Rockets
 	rockets[2] = 99;
 	// Fio (3): Pistol
+}
+
+void PlayerSoldier::addGrenades(int amount)
+{
+	if (amount <= 0)
+	{
+		return;
+	}
+
+	grenades[currentCharacter] += amount;
+	if (grenades[currentCharacter] > 99)
+	{
+		grenades[currentCharacter] = 99;
+	}
 }
 
 void PlayerSoldier::addRocketAmmo(int amount)
@@ -890,6 +1005,202 @@ int PlayerSoldier::getRockets() const
 int PlayerSoldier::getHmgBullets() const
 {
 	return hmgBullets[currentCharacter];
+}
+
+void PlayerSoldier::zombify()
+{
+	if (isDead() || ridingVehicle || transformationState == PLAYER_FORM_ZOMBIE || transformationState == PLAYER_FORM_ZOMBIE_EMERGE)
+	{
+		return;
+	}
+
+	transformationState = PLAYER_FORM_ZOMBIE_EMERGE;
+	transformationTimer = 10.0f;
+	transformationFrame = 0;
+	transformationFrameTimer = 0.0f;
+	stopMoving();
+	aimingUp = false;
+	firing = false;
+	fireAnimationTimer = 0.0f;
+	transformationSprite.setTexture(zombieEmergeTexture, true);
+	transformationSprite.setTextureRect(sf::IntRect(0, 0, 49, 41));
+	updateTransformationSpritePosition();
+}
+
+void PlayerSoldier::mummify()
+{
+	if (isDead() || ridingVehicle || transformationState == PLAYER_FORM_MUMMY)
+	{
+		return;
+	}
+
+	transformationState = PLAYER_FORM_MUMMY;
+	transformationTimer = 10.0f;
+	transformationFrame = 0;
+	transformationFrameTimer = 0.0f;
+	stopMoving();
+	aimingUp = false;
+	firing = false;
+	fireAnimationTimer = 0.0f;
+	transformationSprite.setTexture(mummyIdleTexture, true);
+	transformationSprite.setTextureRect(sf::IntRect(0, 0, 40, 45));
+	updateTransformationSpritePosition();
+}
+
+bool PlayerSoldier::isZombieForm() const
+{
+	return transformationState == PLAYER_FORM_ZOMBIE || transformationState == PLAYER_FORM_ZOMBIE_EMERGE;
+}
+
+bool PlayerSoldier::isMummyForm() const
+{
+	return transformationState == PLAYER_FORM_MUMMY;
+}
+
+bool PlayerSoldier::isTransformed() const
+{
+	return transformationState != PLAYER_FORM_NORMAL;
+}
+
+bool PlayerSoldier::canUseVehicle() const
+{
+	return !isTransformed();
+}
+
+void PlayerSoldier::updateTransformation(float deltaTime)
+{
+	if (!isTransformed())
+	{
+		return;
+	}
+
+	moveSpeed = Constants::PLAYER_MOVE_SPEED * 0.5f;
+
+	if (transformationState == PLAYER_FORM_ZOMBIE_EMERGE)
+	{
+		return;
+	}
+
+	transformationTimer -= deltaTime;
+	if (transformationTimer <= 0.0f)
+	{
+		transformationState = PLAYER_FORM_NORMAL;
+		transformationTimer = 0.0f;
+		transformationFrame = 0;
+		transformationFrameTimer = 0.0f;
+		applyCharacterStats();
+	}
+}
+
+void PlayerSoldier::updateTransformationAnimation(float deltaTime)
+{
+	int frameWidthLocal = 45;
+	int frameHeightLocal = 41;
+	int frameCount = 24;
+	float frameDuration = 0.08f;
+
+	if (transformationState == PLAYER_FORM_ZOMBIE_EMERGE)
+	{
+		frameWidthLocal = 49;
+		frameHeightLocal = 41;
+		frameCount = 79;
+		frameDuration = 0.045f;
+		transformationSprite.setTexture(zombieEmergeTexture, true);
+	}
+	else if (transformationState == PLAYER_FORM_MUMMY)
+	{
+		if (currentState == Constants::SOLDIER_STATE_RUNNING)
+		{
+			frameWidthLocal = 36;
+			frameHeightLocal = 45;
+			frameCount = 18;
+			frameDuration = 0.075f;
+			transformationSprite.setTexture(mummyWalkTexture, true);
+		}
+		else
+		{
+			frameCount = 3;
+			frameDuration = 0.16f;
+			transformationSprite.setTexture(mummyIdleTexture, true);
+		}
+	}
+	else
+	{
+		transformationSprite.setTexture(zombieWalkTexture, true);
+		if (currentState != Constants::SOLDIER_STATE_RUNNING)
+		{
+			transformationFrame = 0;
+			transformationFrameTimer = 0.0f;
+			transformationSprite.setTextureRect(sf::IntRect(0, 0, frameWidthLocal, frameHeightLocal));
+			updateTransformationSpritePosition();
+			return;
+		}
+	}
+
+	transformationFrameTimer += deltaTime;
+	if (transformationFrameTimer >= frameDuration)
+	{
+		transformationFrameTimer = 0.0f;
+		transformationFrame += 1;
+		if (transformationFrame >= frameCount)
+		{
+			if (transformationState == PLAYER_FORM_ZOMBIE_EMERGE)
+			{
+				transformationState = PLAYER_FORM_ZOMBIE;
+				transformationFrame = 0;
+				transformationFrameTimer = 0.0f;
+				transformationSprite.setTexture(zombieWalkTexture, true);
+				transformationSprite.setTextureRect(sf::IntRect(0, 0, 45, 41));
+				updateTransformationSpritePosition();
+				return;
+			}
+			if (transformationState == PLAYER_FORM_MUMMY && currentState != Constants::SOLDIER_STATE_RUNNING)
+			{
+				transformationFrame = 1;
+			}
+			else
+			{
+				transformationFrame = 0;
+			}
+		}
+	}
+
+	if (transformationState == PLAYER_FORM_MUMMY && currentState != Constants::SOLDIER_STATE_RUNNING)
+	{
+		transformationSprite.setTextureRect(PLAYER_MUMMY_IDLE_FRAMES[transformationFrame]);
+	}
+	else
+	{
+		transformationSprite.setTextureRect(sf::IntRect(transformationFrame * frameWidthLocal, 0, frameWidthLocal, frameHeightLocal));
+	}
+	updateTransformationSpritePosition();
+}
+
+void PlayerSoldier::updateTransformationSpritePosition()
+{
+	float scale = 2.35f;
+	bool drawFlipped = !facingRight;
+	if (transformationState == PLAYER_FORM_MUMMY)
+	{
+		drawFlipped = facingRight;
+	}
+	if (drawFlipped)
+	{
+		transformationSprite.setScale(-scale, scale);
+	}
+	else
+	{
+		transformationSprite.setScale(scale, scale);
+	}
+
+	sf::FloatRect bounds = transformationSprite.getGlobalBounds();
+	float drawX = x + width / 2.0f - bounds.width / 2.0f;
+	if (drawFlipped)
+	{
+		drawX = x + width / 2.0f + bounds.width / 2.0f;
+	}
+	float drawY = y + height - bounds.height;
+	transformationSprite.setPosition(drawX, drawY);
 }
 
 void PlayerSoldier::setMarcoTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
@@ -1615,28 +1926,43 @@ void PlayerSoldier::draw(sf::RenderWindow& window)
 		return;
 	}
 
-	if (currentCharacter == 0 && marcoSpritesLoaded)
+	sf::Color playerTint = damageTimer > 0.0f ? sf::Color(255, 120, 120) : sf::Color::White;
+
+	if (isTransformed())
 	{
+		transformationSprite.setColor(playerTint);
+		window.draw(transformationSprite);
+	}
+	else if (currentCharacter == 0 && marcoSpritesLoaded)
+	{
+		marcoLegsSprite.setColor(playerTint);
+		marcoTorsoSprite.setColor(playerTint);
 		window.draw(marcoLegsSprite);
 		window.draw(marcoTorsoSprite);
 	}
 	else if (currentCharacter == 2 && eriSpritesLoaded)
 	{
+		eriLegsSprite.setColor(playerTint);
+		eriTorsoSprite.setColor(playerTint);
 		window.draw(eriLegsSprite);
 		window.draw(eriTorsoSprite);
 	}
 	else if (currentCharacter == 1 && tarmaSpritesLoaded)
 	{
+		tarmaLegsSprite.setColor(playerTint);
+		tarmaTorsoSprite.setColor(playerTint);
 		window.draw(tarmaLegsSprite);
 		window.draw(tarmaTorsoSprite);
 	}
 	else if (currentCharacter == 3 && fioSpritesLoaded)
 	{
+		fioLegsSprite.setColor(playerTint);
+		fioTorsoSprite.setColor(playerTint);
 		window.draw(fioLegsSprite);
 		window.draw(fioTorsoSprite);
 	}
 
-	if ((currentCharacter == 0 && marcoSpritesLoaded) || (currentCharacter == 2 && eriSpritesLoaded) || (currentCharacter == 1 && tarmaSpritesLoaded) || (currentCharacter == 3 && fioSpritesLoaded))
+	if (isTransformed() || (currentCharacter == 0 && marcoSpritesLoaded) || (currentCharacter == 2 && eriSpritesLoaded) || (currentCharacter == 1 && tarmaSpritesLoaded) || (currentCharacter == 3 && fioSpritesLoaded))
 	{
 		if (maxHealth > 0)
 		{

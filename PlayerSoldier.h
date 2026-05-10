@@ -119,11 +119,24 @@ private:
 
 	bool ridingVehicle;
 	bool pilotHiddenWhileInsideVehicle;
+	int transformationState;
+	float transformationTimer;
+	float transformationFrameTimer;
+	int transformationFrame;
+	sf::Texture zombieWalkTexture;
+	sf::Texture zombieEmergeTexture;
+	sf::Texture mummyIdleTexture;
+	sf::Texture mummyWalkTexture;
+	sf::Sprite transformationSprite;
 
 	void handleInput();
 	void updatePlayerAnimation(float deltaTime);
 	void applyCharacterStats();
 	bool loadMaskedTexture(sf::Texture& targetTexture, const char* fileName);
+	void loadTransformationSprites();
+	void updateTransformation(float deltaTime);
+	void updateTransformationAnimation(float deltaTime);
+	void updateTransformationSpritePosition();
 	void loadMarcoSprites();
 	void setMarcoTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
 	void setMarcoLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
@@ -158,10 +171,17 @@ public:
 	void handleWeaponInput(EntityManager& entityManager, float deltaTime);
 	void switchCharacter();
 	void refillDemoInventory();
+	void addGrenades(int amount);
 	void addRocketAmmo(int amount);
 	void addHmgAmmo(int amount);
 	void setRidingVehicle(bool riding);
 	void setPilotHiddenForVehicle(bool hide);
+	void zombify();
+	void mummify();
+	bool isZombieForm() const;
+	bool isMummyForm() const;
+	bool isTransformed() const;
+	bool canUseVehicle() const;
 	void handleVehicleDestruction();
 	bool isRidingVehicle() const;
 	float getVehicleFireCooldownMultiplier() const;

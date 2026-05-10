@@ -8,6 +8,9 @@
 #include "Level.h"
 #include "PlayerSoldier.h"
 #include "Projectile.h"
+#include "GrenadeProjectile.h"
+#include "RocketProjectile.h"
+#include "VehicleBullet.h"
 
 #include <cmath>
 
@@ -32,22 +35,22 @@ static const sf::IntRect REBEL_FIRE_FRAMES[] =
 
 static const sf::IntRect MARTIAN_POD_MOVE_FRAMES[] =
 {
-	sf::IntRect(0, 0, 48, 42), sf::IntRect(48, 0, 48, 42), sf::IntRect(96, 0, 48, 42), sf::IntRect(144, 0, 48, 42),
-	sf::IntRect(192, 0, 48, 42), sf::IntRect(240, 0, 48, 42), sf::IntRect(288, 0, 48, 42), sf::IntRect(336, 0, 50, 42),
-	sf::IntRect(0, 43, 48, 42), sf::IntRect(48, 43, 48, 42), sf::IntRect(96, 43, 48, 42), sf::IntRect(144, 43, 48, 42),
-	sf::IntRect(192, 43, 48, 42), sf::IntRect(240, 43, 48, 42), sf::IntRect(288, 43, 48, 42), sf::IntRect(336, 43, 50, 42)
+	sf::IntRect(5, 3, 43, 38), sf::IntRect(48, 3, 48, 38), sf::IntRect(99, 3, 44, 38), sf::IntRect(146, 3, 43, 38),
+	sf::IntRect(192, 3, 48, 38), sf::IntRect(240, 3, 48, 38), sf::IntRect(288, 4, 48, 37), sf::IntRect(336, 4, 38, 37),
+	sf::IntRect(5, 45, 43, 37), sf::IntRect(48, 45, 48, 37), sf::IntRect(99, 45, 43, 37), sf::IntRect(145, 45, 44, 37),
+	sf::IntRect(192, 44, 48, 38), sf::IntRect(240, 43, 48, 39), sf::IntRect(288, 44, 48, 38), sf::IntRect(336, 43, 39, 39)
 };
 
 static const sf::IntRect MARTIAN_POD_DEATH_FRAMES[] =
 {
-	sf::IntRect(0, 0, 52, 62), sf::IntRect(52, 0, 52, 62), sf::IntRect(104, 0, 60, 62),
-	sf::IntRect(164, 0, 62, 62), sf::IntRect(226, 0, 69, 62), sf::IntRect(295, 0, 91, 62),
-	sf::IntRect(0, 62, 70, 62), sf::IntRect(70, 62, 58, 62), sf::IntRect(128, 62, 59, 62),
-	sf::IntRect(187, 62, 50, 62), sf::IntRect(237, 62, 48, 62), sf::IntRect(285, 62, 48, 62),
-	sf::IntRect(333, 62, 53, 62),
-	sf::IntRect(0, 124, 51, 63), sf::IntRect(51, 124, 46, 63), sf::IntRect(97, 124, 46, 63),
-	sf::IntRect(143, 124, 45, 63), sf::IntRect(188, 124, 40, 63), sf::IntRect(228, 124, 40, 63),
-	sf::IntRect(268, 124, 42, 63), sf::IntRect(310, 124, 76, 63)
+	sf::IntRect(5, 20, 44, 38), sf::IntRect(52, 18, 49, 40), sf::IntRect(104, 8, 54, 50),
+	sf::IntRect(164, 6, 55, 52), sf::IntRect(226, 5, 63, 53), sf::IntRect(295, 4, 64, 54),
+	sf::IntRect(5, 69, 61, 52), sf::IntRect(70, 70, 54, 51), sf::IntRect(128, 64, 55, 57),
+	sf::IntRect(187, 68, 46, 53), sf::IntRect(237, 69, 44, 52), sf::IntRect(285, 69, 45, 52),
+	sf::IntRect(333, 68, 45, 53),
+	sf::IntRect(5, 130, 43, 53), sf::IntRect(51, 129, 43, 54), sf::IntRect(97, 127, 40, 56),
+	sf::IntRect(143, 126, 41, 57), sf::IntRect(188, 129, 35, 54), sf::IntRect(228, 128, 35, 55),
+	sf::IntRect(268, 137, 41, 40), sf::IntRect(310, 139, 65, 34)
 };
 
 static const sf::IntRect MARTIAN_POD_ATTACK_FRAMES[] =
@@ -92,18 +95,18 @@ static const sf::IntRect MARTIAN_TELEPORT_FRAMES[] =
 
 static const sf::IntRect MARTIAN_DEATH_FRAMES[] =
 {
-	sf::IntRect(0, 0, 54, 43), sf::IntRect(54, 0, 54, 43), sf::IntRect(108, 0, 54, 43), sf::IntRect(162, 0, 54, 43),
-	sf::IntRect(216, 0, 54, 43), sf::IntRect(270, 0, 54, 43), sf::IntRect(324, 0, 54, 43), sf::IntRect(378, 0, 54, 43),
-	sf::IntRect(432, 0, 54, 43), sf::IntRect(486, 0, 54, 43), sf::IntRect(540, 0, 54, 43), sf::IntRect(594, 0, 54, 43),
-	sf::IntRect(648, 0, 54, 43), sf::IntRect(702, 0, 54, 43), sf::IntRect(756, 0, 54, 43), sf::IntRect(810, 0, 48, 43),
-	sf::IntRect(0, 43, 54, 43), sf::IntRect(54, 43, 54, 43), sf::IntRect(108, 43, 54, 43), sf::IntRect(162, 43, 54, 43),
+	sf::IntRect(10, 9, 40, 34), sf::IntRect(62, 9, 41, 34), sf::IntRect(115, 9, 42, 34), sf::IntRect(169, 9, 40, 34),
+	sf::IntRect(226, 9, 41, 34), sf::IntRect(284, 9, 38, 34), sf::IntRect(334, 9, 38, 34), sf::IntRect(385, 9, 37, 34),
+	sf::IntRect(437, 9, 36, 34), sf::IntRect(489, 9, 35, 34), sf::IntRect(542, 9, 37, 34), sf::IntRect(595, 10, 39, 33),
+	sf::IntRect(649, 13, 38, 30), sf::IntRect(702, 12, 54, 31), sf::IntRect(756, 13, 33, 30), sf::IntRect(822, 15, 29, 28),
+	sf::IntRect(14, 43, 34, 43), sf::IntRect(72, 43, 29, 43), sf::IntRect(128, 43, 31, 43), sf::IntRect(183, 43, 33, 43),
 	sf::IntRect(216, 43, 54, 43), sf::IntRect(270, 43, 54, 43), sf::IntRect(324, 43, 54, 43), sf::IntRect(378, 43, 54, 43),
-	sf::IntRect(432, 43, 54, 43), sf::IntRect(486, 43, 54, 43), sf::IntRect(540, 43, 54, 43), sf::IntRect(594, 43, 54, 43),
-	sf::IntRect(648, 43, 54, 43), sf::IntRect(702, 43, 54, 43), sf::IntRect(756, 43, 54, 43), sf::IntRect(810, 43, 48, 43),
-	sf::IntRect(0, 86, 54, 43), sf::IntRect(54, 86, 54, 43), sf::IntRect(108, 86, 54, 43), sf::IntRect(162, 86, 54, 43),
-	sf::IntRect(216, 86, 54, 43), sf::IntRect(270, 86, 54, 43), sf::IntRect(324, 86, 54, 43), sf::IntRect(378, 86, 54, 43),
-	sf::IntRect(432, 86, 54, 43), sf::IntRect(486, 86, 54, 43), sf::IntRect(540, 86, 54, 43), sf::IntRect(594, 86, 54, 43),
-	sf::IntRect(648, 86, 54, 43), sf::IntRect(702, 86, 54, 43), sf::IntRect(756, 86, 54, 43), sf::IntRect(810, 86, 48, 43)
+	sf::IntRect(432, 43, 54, 43), sf::IntRect(486, 43, 54, 43), sf::IntRect(540, 43, 54, 43), sf::IntRect(594, 43, 42, 43),
+	sf::IntRect(666, 43, 24, 5), sf::IntRect(720, 43, 24, 5), sf::IntRect(760, 43, 50, 5), sf::IntRect(810, 43, 41, 5),
+	sf::IntRect(8, 86, 44, 36), sf::IntRect(63, 86, 45, 36), sf::IntRect(116, 86, 46, 36), sf::IntRect(162, 86, 54, 36),
+	sf::IntRect(216, 86, 54, 36), sf::IntRect(270, 86, 54, 36), sf::IntRect(324, 86, 54, 36), sf::IntRect(378, 86, 54, 36),
+	sf::IntRect(432, 86, 54, 36), sf::IntRect(486, 86, 54, 36), sf::IntRect(540, 86, 54, 36), sf::IntRect(594, 86, 27, 36),
+	sf::IntRect(648, 86, 1, 1), sf::IntRect(702, 86, 1, 1), sf::IntRect(756, 86, 1, 1), sf::IntRect(810, 86, 1, 1)
 };
 
 RebelSoldier::RebelSoldier()
@@ -952,14 +955,33 @@ const char* GrenadeSoldier::getEnemyName() const
 
 ZombieEnemy::ZombieEnemy()
 {
-	maxHealth = 55;
+	maxHealth = 35;
 	health = maxHealth;
 	scoreValue = 100;
-	moveSpeed = 75.0f;
-	contactDamage = 18;
+	moveSpeed = Constants::ENEMY_MOVE_SPEED * 0.5f;
+	contactDamage = 0;
 	detectionRange = 430.0f;
-	attackRange = 80.0f;
+	stopDistance = 0.0f;
+	attackRange = 0.0f;
 	fallbackColor = sf::Color(130, 210, 140);
+	width = 52.0f;
+	height = 96.0f;
+	body.setSize(sf::Vector2f(width, height));
+	setSpriteScale(2.35f);
+	spriteFacesLeft = false;
+
+	if (loadMaskedTexture(walkTexture, "Sprites/Clean/Zombie_walk.png"))
+	{
+		usingSprite = true;
+		sprite.setTexture(walkTexture, true);
+		setSpriteFrame(0, 0, 45, 41);
+		playAnimation(0, 0, 24, 0.08f);
+	}
+}
+
+void ZombieEnemy::update(float deltaTime)
+{
+	Enemy::update(deltaTime);
 }
 
 const char* ZombieEnemy::getEnemyName() const
@@ -972,11 +994,85 @@ MummyEnemy::MummyEnemy()
 	maxHealth = 70;
 	health = maxHealth;
 	scoreValue = 150;
-	moveSpeed = 65.0f;
-	contactDamage = 22;
+	moveSpeed = Constants::ENEMY_MOVE_SPEED * 0.5f;
+	contactDamage = 0;
 	detectionRange = 390.0f;
-	attackRange = 80.0f;
+	stopDistance = 0.0f;
+	attackRange = 0.0f;
 	fallbackColor = sf::Color(225, 215, 165);
+	mummyAnimationState = -1;
+	hurtTimer = 0.0f;
+	width = 52.0f;
+	height = 96.0f;
+	body.setSize(sf::Vector2f(width, height));
+	setSpriteScale(2.25f);
+
+	if (loadMaskedTexture(idleTexture, "Sprites/Clean/MummyWarrior_idle.png") &&
+		loadMaskedTexture(walkTexture, "Sprites/Clean/MummyWarrior_walk.png"))
+	{
+		usingSprite = true;
+		updateMummyAnimation();
+	}
+}
+
+void MummyEnemy::update(float deltaTime)
+{
+	if (hurtTimer > 0.0f)
+	{
+		hurtTimer -= deltaTime;
+	}
+
+	Enemy::update(deltaTime);
+	updateMummyAnimation();
+
+	if (hurtTimer > 0.0f)
+	{
+		sprite.setColor(sf::Color(255, 120, 120));
+	}
+	else
+	{
+		sprite.setColor(sf::Color::White);
+	}
+}
+
+bool MummyEnemy::applyProjectileHit(Projectile& projectile)
+{
+	bool canDamage = projectile.isExplosive() ||
+		dynamic_cast<VehicleBullet*>(&projectile) != 0 ||
+		dynamic_cast<GrenadeProjectile*>(&projectile) != 0 ||
+		dynamic_cast<RocketProjectile*>(&projectile) != 0;
+
+	if (!canDamage)
+	{
+		return false;
+	}
+
+	DamageableEntity::takeDamage(projectile.getDamage());
+	hurtTimer = 0.25f;
+	return true;
+}
+
+void MummyEnemy::updateMummyAnimation()
+{
+	int nextState = velocityX != 0.0f ? 1 : 0;
+	if (nextState == mummyAnimationState)
+	{
+		return;
+	}
+
+	mummyAnimationState = nextState;
+	if (mummyAnimationState == 1)
+	{
+		sprite.setTexture(walkTexture, true);
+		setSpriteFrame(0, 0, 36, 45);
+		playAnimation(0, 0, 18, 0.075f);
+	}
+	else
+	{
+		sprite.setTexture(idleTexture, true);
+		setSpriteFrame(0, 0, 40, 45);
+		playAnimation(0, 0, 3, 0.16f);
+	}
 }
 
 const char* MummyEnemy::getEnemyName() const

@@ -466,53 +466,11 @@ Projectile* EnemySub::attack()
 
 {
 
-	float spawnX = facingRight ? x + width + 10.0f : x - 24.0f;
+	float spawnX = facingRight ? x + width + 10.0f : x - 44.0f;
 
 	float spawnY = y + height * 0.55f;
 
-
-
-	float targetX = spawnX + (facingRight ? 1.0f : -1.0f);
-
-	float targetY = spawnY;
-
-	if (target != 0)
-
-	{
-
-		targetX = target->getCenterX();
-
-		targetY = target->getCenterY();
-
-	}
-
-
-
-	float dx = targetX - spawnX;
-
-	float dy = targetY - spawnY;
-
-	float length = std::sqrt(dx * dx + dy * dy);
-
-	if (length < 1.0f)
-
-	{
-
-		length = 1.0f;
-
-	}
-
-
-
-	float speed = 430.0f;
-
-	float vx = dx / length * speed;
-
-	float vy = dy / length * speed;
-
-
-
-	return new EnemySubTorpedoProjectile(spawnX, spawnY, vx, vy);
+	return new EnemyStraightRocketProjectile(spawnX, spawnY, facingRight);
 
 }
 
@@ -708,7 +666,7 @@ void EnemySub::update(float deltaTime)
 
 
 
-	moveAnim.setFacingRight(facingRight);
+	moveAnim.setFacingRight(!facingRight);
 
 	moveAnim.update(deltaTime);
 
@@ -762,7 +720,7 @@ void EnemySub::draw(sf::RenderWindow& window)
 
 		deathAnim.setTint(flash ? flashTint : neutral);
 
-		deathAnim.setFacingRight(facingRight);
+		deathAnim.setFacingRight(!facingRight);
 
 		deathAnim.drawAtAnchor(window, x + width * 0.5f, y + height);
 
@@ -774,7 +732,7 @@ void EnemySub::draw(sf::RenderWindow& window)
 
 		turnAnim.setTint(moveTint);
 
-		turnAnim.setFacingRight(facingRight);
+		turnAnim.setFacingRight(!facingRight);
 
 		turnAnim.drawAtAnchor(window, x + width * 0.5f, y + height);
 
@@ -785,6 +743,8 @@ void EnemySub::draw(sf::RenderWindow& window)
 	{
 
 		moveAnim.setTint(moveTint);
+
+		moveAnim.setFacingRight(!facingRight);
 
 		moveAnim.drawAtAnchor(window, x + width * 0.5f, y + height);
 
