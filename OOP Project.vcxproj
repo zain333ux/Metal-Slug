@@ -88,9 +88,11 @@
     <ClCompile Include="Collectible.cpp" />
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossLevelManager.cpp" />
+    <ClCompile Include="Constants.cpp" />
     <ClCompile Include="DamageableEntity.cpp" />
     <ClCompile Include="DeveloperMode.cpp" />
     <ClCompile Include="BallisticProjectile.cpp" />
+    <ClCompile Include="DynamicArray.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="EnemyDownwardBullet.cpp" />
     <ClCompile Include="EnemyGrenadeProjectile.cpp" />

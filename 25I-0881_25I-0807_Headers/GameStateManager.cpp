@@ -1,0 +1,51 @@
+#include "GameStateManager.h"
+
+
+using namespace std;
+using namespace sf;
+
+GameStateManager::GameStateManager()
+{
+	currentState = 0;
+}
+
+GameStateManager::~GameStateManager()
+{
+	// manager owns active state and cleans it on shutdown
+	delete currentState;
+}
+
+void GameStateManager::changeState(GameState* newState)
+{
+	if (currentState != newState)
+	{
+		// state switch pe purani screen memory se remove hoti he
+		delete currentState;
+		currentState = newState;
+	}
+}
+
+void GameStateManager::handleInput(Game& game)
+{
+	if (currentState != 0)
+	{
+		currentState->handleInput(game);
+	}
+}
+
+void GameStateManager::update(Game& game, float deltaTime)
+{
+	if (currentState != 0)
+	{
+		// polymorphism se current screen ka apna update call hota he
+		currentState->update(game, deltaTime);
+	}
+}
+
+void GameStateManager::draw(Game& game, RenderWindow& window)
+{
+	if (currentState != 0)
+	{
+		currentState->draw(game, window);
+	}
+}
