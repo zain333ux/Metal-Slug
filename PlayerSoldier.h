@@ -15,6 +15,7 @@ private:
 	int lives[4];
 	int grenades[4];
 	int rockets[4];
+	int hmgBullets[4];
 	float meleeTimer;
 	float grenadeTimer;
 	float rocketTimer;
@@ -156,6 +157,8 @@ public:
 	void handleWeaponInput(EntityManager& entityManager, float deltaTime);
 	void switchCharacter();
 	void refillDemoInventory();
+	void addRocketAmmo(int amount);
+	void addHmgAmmo(int amount);
 	void setRidingVehicle(bool riding);
 	void handleVehicleDestruction();
 	bool isRidingVehicle() const;
@@ -166,4 +169,5 @@ public:
 	int getLives() const;
 	int getGrenades() const;
 	int getRockets() const;
+	int getHmgBullets() const;
 };

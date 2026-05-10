@@ -1,6 +1,5 @@
 #include "PlayState.h"
 
-#include "Collectible.h"
 #include "Constants.h"
 #include "Enemy.h"
 #include "EnemyFactory.h"
@@ -100,7 +99,6 @@ void PlayState::loadCurrentLevel(Game& game)
 	}
 
 	spawnVehicle(game);
-	spawnPickups(game);
 	levelComplete = false;
 	waitingForContinue = false;
 	gameOver = false;
@@ -256,28 +254,6 @@ void PlayState::updateCampaignSpawning(Game& game, float deltaTime)
 		game.getEntityManager().setActiveLevel(level);
 		campaignSpawnTimer = 2.0f;
 	}
-}
-
-void PlayState::spawnPickups(Game& game)
-{
-	Level* level = game.getLevelManager().getCurrentLevel();
-	float crateX = 620.0f;
-	float powX = 1760.0f;
-	float foodX = 2500.0f;
-	float crateY = 700.0f;
-	float powY = 700.0f;
-	float foodY = 700.0f;
-
-	if (level != 0)
-	{
-		crateY = level->getMainGroundYAt(crateX) - 42.0f;
-		powY = level->getMainGroundYAt(powX) - 42.0f;
-		foodY = level->getMainGroundYAt(foodX) - 42.0f;
-	}
-
-	game.getEntityManager().addEntity(new Collectible(COLLECTIBLE_SUPPLY_CRATE, crateX, crateY));
-	game.getEntityManager().addEntity(new Collectible(COLLECTIBLE_POW, powX, powY));
-	game.getEntityManager().addEntity(new Collectible(COLLECTIBLE_FOOD, foodX, foodY));
 }
 
 void PlayState::spawnVehicle(Game& game)
@@ -498,6 +474,7 @@ void PlayState::updateHud(Game& game)
 		text += " Lives " + std::to_string(player->getLives());
 		text += " G " + std::to_string(player->getGrenades());
 		text += " R " + std::to_string(player->getRockets());
+		text += " HMG " + std::to_string(player->getHmgBullets());
 	}
 	if (vehicle != 0)
 	{
@@ -530,7 +507,7 @@ void PlayState::updateHud(Game& game)
 	{
 		text += "  DEV MODE";
 	}
-	text += "\nJ Shoot  K Knife  G Grenade  H Rocket  Z Switch  E Vehicle  F1x3 Dev";
+	text += "\nJ Shoot  K Knife  G Grenade  Z Switch  E Vehicle  F1x3 Dev";
 	hudText.setString(text);
 }
 

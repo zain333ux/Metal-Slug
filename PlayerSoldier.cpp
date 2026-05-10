@@ -237,7 +237,8 @@ PlayerSoldier::PlayerSoldier()
 	{
 		lives[i] = 2;
 		grenades[i] = 10;
-		rockets[i] = 4;
+		rockets[i] = 0;
+		hmgBullets[i] = 0;
 	}
 	meleeTimer = 0.0f;
 	grenadeTimer = 0.0f;
@@ -630,7 +631,8 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::J))
 	{
-		if (weapon.canFire())
+		bool canFireWeapon = weapon.canFire();
+		if (canFireWeapon)
 		{
 			firing = true;
 			fireAnimationTimer = 0.24f;
@@ -656,7 +658,39 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 		}
 
 		float bulletY = aimingUp ? y + 6.0f : y + 38.0f;
-		weapon.fire(entityManager, bulletX, bulletY, facingRight, aimingUp);
+
+		if (canFireWeapon)
+		{
+			if (rockets[currentCharacter] > 0 || (DeveloperMode::isEnabled() && currentCharacter == 2))
+			{
+				RocketProjectile* rocket = new RocketProjectile(bulletX, bulletY, facingRight, aimingUp);
+				entityManager.addEntity(rocket);
+				if (!DeveloperMode::isEnabled())
+				{
+					rockets[currentCharacter] -= 1;
+				}
+				weapon.restartCooldown();
+			}
+			else if (hmgBullets[currentCharacter] > 0 || (DeveloperMode::isEnabled() && currentCharacter == 1))
+			{
+				weapon.fire(entityManager, bulletX, bulletY, facingRight, aimingUp);
+				if (!DeveloperMode::isEnabled())
+				{
+					hmgBullets[currentCharacter] -= 1;
+				}
+				// Double fire rate: set cooldown to half of the normal cooldown
+				weapon.setCooldown(Constants::PLAYER_FIRE_COOLDOWN * 0.5f);
+				weapon.restartCooldown();
+				// Note: cooldown will be reset to character default in applyCharacterStats if they switch, 
+				// but for HMG we want it persistent while firing.
+			}
+			else
+			{
+				// Ensure cooldown is normal for pistol
+				applyCharacterStats(); 
+				weapon.fire(entityManager, bulletX, bulletY, facingRight, aimingUp);
+			}
+		}
 	}
 
 	bool meleeKey = sf::Keyboard::isKeyPressed(sf::Keyboard::K);
@@ -689,24 +723,7 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 	}
 	previousGrenadeKey = grenadeKey;
 
-	bool rocketKey = sf::Keyboard::isKeyPressed(sf::Keyboard::H);
-	if (rocketKey && !previousRocketKey && rocketTimer <= 0.0f)
-	{
-		if (rockets[currentCharacter] > 0 || DeveloperMode::isEnabled())
-		{
-			float rocketX = facingRight ? x + width : x;
-			float rocketY = y + 42.0f;
-			RocketProjectile* rocket = new RocketProjectile(rocketX, rocketY, facingRight, !grounded);
-			entityManager.addEntity(rocket);
-			if (!DeveloperMode::isEnabled())
-			{
-				rockets[currentCharacter] -= 1;
-			}
-			rocketTimer = Constants::ROCKET_COOLDOWN;
-			fireAnimationTimer = 0.24f;
-		}
-	}
-	previousRocketKey = rocketKey;
+	previousGrenadeKey = grenadeKey;
 }
 
 void PlayerSoldier::refillDemoInventory()
@@ -714,7 +731,43 @@ void PlayerSoldier::refillDemoInventory()
 	for (int i = 0; i < 4; i += 1)
 	{
 		grenades[i] = 99;
-		rockets[i] = 99;
+		rockets[i] = 0;
+		hmgBullets[i] = 0;
+	}
+
+	// Marco: Pistol (already set above)
+	// Tarma (1): HMG
+	hmgBullets[1] = 999;
+	// Eri (2): Rockets
+	rockets[2] = 99;
+	// Fio (3): Pistol
+}
+
+void PlayerSoldier::addRocketAmmo(int amount)
+{
+	if (amount <= 0)
+	{
+		return;
+	}
+
+	rockets[currentCharacter] += amount;
+	if (rockets[currentCharacter] > 99)
+	{
+		rockets[currentCharacter] = 99;
+	}
+}
+
+void PlayerSoldier::addHmgAmmo(int amount)
+{
+	if (amount <= 0)
+	{
+		return;
+	}
+
+	hmgBullets[currentCharacter] += amount;
+	if (hmgBullets[currentCharacter] > 999)
+	{
+		hmgBullets[currentCharacter] = 999;
 	}
 }
 
@@ -807,6 +860,11 @@ int PlayerSoldier::getGrenades() const
 int PlayerSoldier::getRockets() const
 {
 	return rockets[currentCharacter];
+}
+
+int PlayerSoldier::getHmgBullets() const
+{
+	return hmgBullets[currentCharacter];
 }
 
 void PlayerSoldier::setMarcoTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)

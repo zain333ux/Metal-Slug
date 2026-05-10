@@ -1,41 +1,143 @@
 #include "Collectible.h"
 
+#include "Constants.h"
+#include "Level.h"
 #include "PlayerSoldier.h"
 
 Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 {
 	kind = newKind;
-	width = 42.0f;
-	height = 42.0f;
+	activeLevel = 0;
+	velocityX = 0.0f;
+	velocityY = 0.0f;
+	spriteLoaded = false;
+	animationFrames = 0;
+	animationFrameCount = 1;
+	animationFrameIndex = 0;
+	animationTimer = 0.0f;
+	animationFrameDuration = 0.12f;
+	lifeTime = 12.0f;
+
+	width = 32.0f;
+	height = 32.0f;
 	setPosition(newX, newY);
+	fallbackBody.setOutlineColor(sf::Color::Black);
+	fallbackBody.setOutlineThickness(1.0f);
 
-	body.setSize(sf::Vector2f(width, height));
-	body.setOutlineColor(sf::Color::Black);
-	body.setOutlineThickness(2.0f);
-
-	if (kind == COLLECTIBLE_SUPPLY_CRATE)
+	if (kind == COLLECTIBLE_FRUIT)
 	{
-		body.setFillColor(sf::Color(170, 105, 45));
+		loadMaskedTexture("Sprites/Clean/fruit_item.png");
 	}
-	else if (kind == COLLECTIBLE_POW)
+	else if (kind == COLLECTIBLE_TURKEY)
 	{
-		body.setFillColor(sf::Color(240, 240, 245));
+		loadMaskedTexture("Sprites/Clean/turkey_item.png");
+		static const sf::IntRect TURKEY_FRAMES[] =
+		{
+			sf::IntRect(1, 2, 26, 32), sf::IntRect(32, 4, 26, 30), sf::IntRect(63, 3, 26, 31),
+			sf::IntRect(95, 3, 26, 31), sf::IntRect(126, 2, 26, 32), sf::IntRect(157, 2, 26, 32),
+			sf::IntRect(188, 3, 26, 31), sf::IntRect(218, 3, 26, 31), sf::IntRect(249, 3, 27, 31),
+			sf::IntRect(281, 3, 28, 31), sf::IntRect(314, 4, 28, 30)
+		};
+		animationFrames = TURKEY_FRAMES;
+		animationFrameCount = 11;
+		animationFrameDuration = 0.08f;
+	}
+	else if (kind == COLLECTIBLE_ROCKET_ITEM)
+	{
+		loadMaskedTexture("Sprites/Clean/rocket_item.png");
 	}
 	else
 	{
-		body.setFillColor(sf::Color(245, 90, 80));
+		loadMaskedTexture("Sprites/Clean/HMG_item.png");
 	}
+
+	if (!spriteLoaded)
+	{
+		fallbackBody.setSize(sf::Vector2f(width, height));
+		if (kind == COLLECTIBLE_FRUIT)
+		{
+			fallbackBody.setFillColor(sf::Color(245, 90, 80));
+		}
+		else if (kind == COLLECTIBLE_TURKEY)
+		{
+			fallbackBody.setFillColor(sf::Color(210, 140, 80));
+		}
+		else
+		{
+			fallbackBody.setFillColor(sf::Color(170, 170, 210));
+		}
+	}
+
+	if (spriteLoaded && animationFrames != 0)
+	{
+		itemSprite.setTextureRect(animationFrames[0]);
+	}
+	updateVisualPosition();
+}
+
+void Collectible::update(float deltaTime)
+{
+	if (!active)
+	{
+		return;
+	}
+	lifeTime -= deltaTime;
+	if (lifeTime <= 0.0f)
+	{
+		deactivate();
+		return;
+	}
+
+	float previousBottom = y + height;
+	velocityY += Constants::GRAVITY * deltaTime;
+	Entity::update(deltaTime);
+
+	float landingY = static_cast<float>(Constants::GROUND_Y);
+	if (activeLevel != 0)
+	{
+		landingY = activeLevel->getLandingY(x, x + width, previousBottom, y + height);
+	}
+	if (y + height >= landingY)
+	{
+		y = landingY - height;
+		velocityY = 0.0f;
+	}
+
+	if (animationFrames != 0 && animationFrameCount > 1)
+	{
+		animationTimer += deltaTime;
+		if (animationTimer >= animationFrameDuration)
+		{
+			animationTimer = 0.0f;
+			animationFrameIndex += 1;
+			if (animationFrameIndex >= animationFrameCount)
+			{
+				animationFrameIndex = 0;
+			}
+			itemSprite.setTextureRect(animationFrames[animationFrameIndex]);
+		}
+	}
+
+	updateVisualPosition();
 }
 
 void Collectible::apply(PlayerSoldier& player)
 {
-	if (kind == COLLECTIBLE_SUPPLY_CRATE || kind == COLLECTIBLE_POW)
+	if (kind == COLLECTIBLE_FRUIT)
 	{
-		player.refillDemoInventory();
+		player.heal(20);
+	}
+	else if (kind == COLLECTIBLE_TURKEY)
+	{
+		player.heal(30);
+	}
+	else if (kind == COLLECTIBLE_ROCKET_ITEM)
+	{
+		player.addRocketAmmo(4);
 	}
 	else
 	{
-		player.heal(25);
+		player.addHmgAmmo(100);
 	}
 
 	deactivate();
@@ -43,14 +145,59 @@ void Collectible::apply(PlayerSoldier& player)
 
 void Collectible::draw(sf::RenderWindow& window)
 {
-	if (visible)
+	if (!visible || !active)
 	{
-		body.setPosition(x, y);
-		window.draw(body);
+		return;
 	}
+
+	if (spriteLoaded)
+	{
+		window.draw(itemSprite);
+	}
+	else
+	{
+		fallbackBody.setPosition(x, y);
+		window.draw(fallbackBody);
+	}
+}
+
+void Collectible::setActiveLevel(Level* level)
+{
+	activeLevel = level;
 }
 
 CollectibleKind Collectible::getKind() const
 {
 	return kind;
+}
+
+bool Collectible::loadMaskedTexture(const char* fileName)
+{
+	if (!texture.loadFromFile(fileName))
+	{
+		spriteLoaded = false;
+		return false;
+	}
+	itemSprite.setTexture(texture, true);
+	spriteLoaded = true;
+	return true;
+}
+
+void Collectible::updateVisualPosition()
+{
+	if (!spriteLoaded)
+	{
+		return;
+	}
+
+	float spriteScale = 2.0f;
+	itemSprite.setScale(spriteScale, spriteScale);
+	sf::FloatRect bounds = itemSprite.getLocalBounds();
+	if (bounds.height > 0.0f)
+	{
+		width = bounds.width * spriteScale;
+		height = bounds.height * spriteScale;
+	}
+	itemSprite.setPosition(x, y);
+	fallbackBody.setSize(sf::Vector2f(width, height));
 }

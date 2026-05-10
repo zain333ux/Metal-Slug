@@ -8,6 +8,7 @@
 class PlayerSoldier;
 class Level;
 class Vehicle;
+class Enemy;
 
 class EntityManager
 {
@@ -22,6 +23,8 @@ private:
 	void checkEnemyVehicleCollisions();
 	void checkEnemyPlayerCollisions();
 	void checkPlayerCollectibleCollisions();
+	void handleEnemyKilled(Enemy* enemy);
+	void spawnDropForEnemy(const Enemy& enemy);
 
 public:
 	EntityManager();

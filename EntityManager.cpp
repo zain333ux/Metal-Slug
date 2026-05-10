@@ -8,13 +8,17 @@
 #include "ScoreManager.h"
 #include "Soldier.h"
 #include "Vehicle.h"
+#include "EnemyTypes.h"
 
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 
 EntityManager::EntityManager()
 {
 	pendingScore = 0;
 	activeLevel = 0;
+	std::srand(static_cast<unsigned int>(std::time(0)));
 }
 
 EntityManager::~EntityManager()
@@ -46,6 +50,11 @@ void EntityManager::addEntity(Entity* entity)
 		{
 			projectile->setActiveLevel(activeLevel);
 		}
+		Collectible* collectible = dynamic_cast<Collectible*>(entity);
+		if (collectible != 0)
+		{
+			collectible->setActiveLevel(activeLevel);
+		}
 		entities.pushBack(entity);
 	}
 }
@@ -74,6 +83,11 @@ void EntityManager::setActiveLevel(Level* level)
 		if (projectile != 0)
 		{
 			projectile->setActiveLevel(activeLevel);
+		}
+		Collectible* collectible = dynamic_cast<Collectible*>(entities.get(i));
+		if (collectible != 0)
+		{
+			collectible->setActiveLevel(activeLevel);
 		}
 	}
 }
@@ -162,7 +176,7 @@ void EntityManager::checkProjectileEnemyCollisions()
 							if (damageApplied && nearbyEnemy->isDead())
 							{
 								killedByThisProjectile += 1;
-								pendingScore += nearbyEnemy->getScoreValue();
+								handleEnemyKilled(nearbyEnemy);
 							}
 						}
 					}
@@ -173,7 +187,7 @@ void EntityManager::checkProjectileEnemyCollisions()
 					if (damageApplied && enemy->isDead())
 					{
 						killedByThisProjectile += 1;
-						pendingScore += enemy->getScoreValue();
+						handleEnemyKilled(enemy);
 					}
 				}
 				projectile->onCollision();
@@ -333,6 +347,63 @@ void EntityManager::checkPlayerCollectibleCollisions()
 			}
 		}
 	}
+}
+
+void EntityManager::handleEnemyKilled(Enemy* enemy)
+{
+	if (enemy == 0 || enemy->hasProcessedDeath())
+	{
+		return;
+	}
+
+	enemy->markDeathProcessed();
+
+	pendingScore += enemy->getScoreValue();
+	spawnDropForEnemy(*enemy);
+
+	MartianPod* pod = dynamic_cast<MartianPod*>(enemy);
+	if (pod != 0)
+	{
+		return;
+	}
+
+	MartianInfantry* infantry = dynamic_cast<MartianInfantry*>(enemy);
+	if (infantry == 0)
+	{
+		enemy->deactivate();
+	}
+}
+
+void EntityManager::spawnDropForEnemy(const Enemy& enemy)
+{
+	int roll = std::rand() % 100;
+	CollectibleKind dropKind;
+	if (roll < 5)
+	{
+		dropKind = COLLECTIBLE_ROCKET_ITEM;
+	}
+	else if (roll < 10)
+	{
+		dropKind = COLLECTIBLE_HMG_ITEM;
+	}
+	else if (roll < 20)
+	{
+		dropKind = COLLECTIBLE_TURKEY;
+	}
+	else if (roll < 40)
+	{
+		dropKind = COLLECTIBLE_FRUIT;
+	}
+	else
+	{
+		return;
+	}
+	// std::cout << "Drop roll=" << roll << " type=" << static_cast<int>(dropKind) << std::endl;
+
+	float spawnX = enemy.getCenterX() - 12.0f;
+	float spawnY = enemy.getY();
+	Collectible* drop = new Collectible(dropKind, spawnX, spawnY);
+	addEntity(drop);
 }
 
 void EntityManager::drawAll(sf::RenderWindow& window)
