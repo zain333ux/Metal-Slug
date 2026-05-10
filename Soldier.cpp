@@ -178,7 +178,7 @@ void Soldier::updateVisualPosition()
 
 	if (usingSprite)
 	{
-		// kuch sprite sheets left facing hoti hein isliye flag se flip fix hota he
+		// kuch sprite sheets left facing hein isliye flag se flip fix hota he
 		bool drawFlipped = !facingRight;
 		if (spriteFacesLeft)
 		{

@@ -45,7 +45,7 @@ int main()
 	Texture wallTex1;
 	Sprite wallSprite1;
 
-	wallTex1.loadFromFile("Sprites/blocks/grass_block_side.png");
+	wallTex1.loadFromFile("25I-0881_25I-0807_Assets/Sprites/blocks/grass_block_side.png");
 	wallSprite1.setTexture(wallTex1);
 
 	////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ int main()
 	Texture playerTex;
 	Sprite playerSprite;
 
-	playerTex.loadFromFile("Sprites/Character.png");
+	playerTex.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Character.png");
 	playerSprite.setTexture(playerTex);
 	playerSprite.setScale(scale_x, scale_y);
 

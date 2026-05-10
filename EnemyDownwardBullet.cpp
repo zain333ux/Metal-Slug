@@ -33,8 +33,8 @@ EnemyDownwardBullet::EnemyDownwardBullet(float startX, float startY, Level* leve
 	body.setOutlineThickness(0);
 
 	Image image;
-	if (image.loadFromFile("Sprites/Clean/MartianPod_Bullet.png") ||
-		image.loadFromFile("Sprites/Clean/MartianPod_bullet.png"))
+	if (image.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/MartianPod_Bullet.png") ||
+		image.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/MartianPod_bullet.png"))
 	{
 		image.createMaskFromColor(Color(255, 0, 255));
 		image.createMaskFromColor(Color::White);

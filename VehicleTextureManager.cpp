@@ -54,52 +54,52 @@ const Texture* VehicleTextureManager::getTexture(VehicleTextureId id)
 	switch (id)
 	{
 	case VehicleTextureId::SlugFlyerIdle:
-		tryLoad(i, "Sprites/Clean/SlugFlyerIdle.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/SlugFlyerIdle.png");
 		break;
 	case VehicleTextureId::SlugFlyerLand:
-		tryLoad(i, "Sprites/Clean/SlugFlyerLand.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/SlugFlyerLand.png");
 		break;
 	case VehicleTextureId::SlugFlyerRocket:
-		tryLoad(i, "Sprites/Clean/SlugFlyerRocket.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/SlugFlyerRocket.png");
 		break;
 	case VehicleTextureId::SlugFlyerShoot:
-		tryLoad(i, "Sprites/Clean/SlugFlyerShoot.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/SlugFlyerShoot.png");
 		break;
 	case VehicleTextureId::SlugMarinerIdle:
-		tryLoad(i, "Sprites/Clean/SlugSumbarineIdle.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/SlugSumbarineIdle.png");
 		break;
 	case VehicleTextureId::EnemySubMove:
-		tryLoad(i, "Sprites/Clean/EnemySubmarineMove.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/EnemySubmarineMove.png");
 		break;
 	case VehicleTextureId::EnemySubTurn:
-		tryLoad(i, "Sprites/Clean/EnemySubmarineTurn.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/EnemySubmarineTurn.png");
 		break;
 	case VehicleTextureId::EnemySubDeath:
-		tryLoad(i, "Sprites/Clean/EnemySubmarineFallingApart.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/EnemySubmarineFallingApart.png");
 		break;
 	case VehicleTextureId::EnemySubBullet:
-		tryLoad(i, "Sprites/Clean/EnemySubmarineBullet.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/EnemySubmarineBullet.png");
 		break;
 	case VehicleTextureId::BradleyIdle:
-		tryLoad(i, "Sprites/Clean/M-15ABradleyIdle.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/M-15ABradleyIdle.png");
 		break;
 	case VehicleTextureId::BradleyRocketUp:
-		tryLoad(i, "Sprites/Clean/M-15ABradleyRocketUp.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/M-15ABradleyRocketUp.png");
 		break;
 	case VehicleTextureId::BradleyBullet:
-		tryLoad(i, "Sprites/Clean/M-15ABradleyBullet.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/M-15ABradleyBullet.png");
 		break;
 	case VehicleTextureId::TaraIdle:
-		tryLoad(i, "Sprites/Clean/FlyingTaraIdle.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/FlyingTaraIdle.png");
 		break;
 	case VehicleTextureId::TaraMoveDown:
-		tryLoad(i, "Sprites/Clean/FlyingTaraMoveDown.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/FlyingTaraMoveDown.png");
 		break;
 	case VehicleTextureId::TaraMoveUp:
-		tryLoad(i, "Sprites/Clean/FlyingTaraMoveUp.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/FlyingTaraMoveUp.png");
 		break;
 	case VehicleTextureId::TaraRocket:
-		tryLoad(i, "Sprites/Clean/FlyingTaraRocket.png");
+		tryLoad(i, "25I-0881_25I-0807_Assets/Sprites/Clean/FlyingTaraRocket.png");
 		break;
 	default:
 		break;

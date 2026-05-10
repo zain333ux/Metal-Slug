@@ -34,7 +34,7 @@ static void applyGrenadeTexture(RectangleShape& body)
 	if (!grenadeTextureLoaded)
 	{
 		Image image;
-		if (image.loadFromFile("Sprites/Clean/grenade.png"))
+		if (image.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/grenade.png"))
 		{
 			image.createMaskFromColor(Color::White);
 			grenadeTextureLoaded = grenadeTexture.loadFromImage(image);
@@ -54,7 +54,7 @@ static bool loadGrenadeExplosionTexture()
 	if (!grenadeExplosionTextureLoaded)
 	{
 		Image image;
-		if (image.loadFromFile("Sprites/Clean/Explosion.png"))
+		if (image.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/Explosion.png"))
 		{
 			image.createMaskFromColor(Color::White);
 			grenadeExplosionTextureLoaded = grenadeExplosionTexture.loadFromImage(image);

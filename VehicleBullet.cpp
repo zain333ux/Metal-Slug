@@ -48,7 +48,7 @@ bool VehicleBullet::loadBulletTexture()
 	}
 
 	Image sheetImage;
-	if (!sheetImage.loadFromFile("Sprites/Metal Slug.png"))
+	if (!sheetImage.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Metal Slug.png"))
 	{
 		return false;
 	}

@@ -27,7 +27,7 @@ static void applyPlayerRocketTexture(RectangleShape& body)
 	{
 		// texture is loaded once and reused by all player rockets
 		Image image;
-		if (image.loadFromFile("Sprites/Clean/Bazooka_bullet.png"))
+		if (image.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/Bazooka_bullet.png"))
 		{
 			image.createMaskFromColor(Color::White);
 			playerRocketTextureLoaded = playerRocketTexture.loadFromImage(image);
@@ -47,7 +47,7 @@ static bool loadPlayerRocketExplosionTexture()
 	if (!playerRocketExplosionTextureLoaded)
 	{
 		Image image;
-		if (image.loadFromFile("Sprites/Clean/Explosion.png"))
+		if (image.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/Explosion.png"))
 		{
 			image.createMaskFromColor(Color::White);
 			playerRocketExplosionTextureLoaded = playerRocketExplosionTexture.loadFromImage(image);

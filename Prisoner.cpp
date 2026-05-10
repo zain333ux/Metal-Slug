@@ -49,10 +49,10 @@ bool Prisoner::loadMaskedTexture(Texture& target, const char* fileName)
 
 void Prisoner::buildAnimations()
 {
-	if (!loadMaskedTexture(stuckTexture, "Sprites/Clean/prisoner_stuck.png") ||
-		!loadMaskedTexture(breakTexture, "Sprites/Clean/prisoner_break.png") ||
-		!loadMaskedTexture(dropTexture, "Sprites/Clean/prisoner_drop.png") ||
-		!loadMaskedTexture(runTexture, "Sprites/Clean/prisoner_run.png"))
+	if (!loadMaskedTexture(stuckTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/prisoner_stuck.png") ||
+		!loadMaskedTexture(breakTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/prisoner_break.png") ||
+		!loadMaskedTexture(dropTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/prisoner_drop.png") ||
+		!loadMaskedTexture(runTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/prisoner_run.png"))
 	{
 		return;
 	}

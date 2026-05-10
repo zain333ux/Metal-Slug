@@ -125,7 +125,7 @@
     <ClCompile Include="RocketProjectile.cpp" />
     <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="SlugFlyer.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Soldier.cpp" />
     <ClCompile Include="VehicleSpecialProjectiles.cpp" />
     <ClCompile Include="StraightProjectile.cpp" />

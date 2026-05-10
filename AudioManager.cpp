@@ -2,10 +2,10 @@
 
 #include <fstream>
 #include <iostream>
-
-
 using namespace std;
 using namespace sf;
+
+
 
 AudioManager* AudioManager::activeManager = 0;
 
@@ -136,23 +136,23 @@ const char* AudioManager::getMusicPath(MusicTrack track) const
 {
 	if (track == MUSIC_MENU)
 	{
-		return "Audio/menu_music.ogg";
+		return "25I-0881_25I-0807_Assets/Audio/menu_music.ogg";
 	}
 	if (track == MUSIC_LEVEL1)
 	{
-		return "Audio/level1.ogg";
+		return "25I-0881_25I-0807_Assets/Audio/level1.ogg";
 	}
 	if (track == MUSIC_LEVEL2)
 	{
-		return "Audio/level2.ogg";
+		return "25I-0881_25I-0807_Assets/Audio/level2.ogg";
 	}
 	if (track == MUSIC_LEVEL3)
 	{
-		return "Audio/level3.ogg";
+		return "25I-0881_25I-0807_Assets/Audio/level3.ogg";
 	}
 	if (track == MUSIC_BOSS)
 	{
-		return "Audio/boss.ogg";
+		return "25I-0881_25I-0807_Assets/Audio/boss.ogg";
 	}
 	return "";
 }
@@ -161,23 +161,23 @@ const char* AudioManager::getSfxPath(SoundEffectType type) const
 {
 	if (type == SFX_BULLET_FIRE)
 	{
-		return "Audio/sfx/bulletfire.wav";
+		return "25I-0881_25I-0807_Assets/Audio/sfx/bulletfire.wav";
 	}
 	if (type == SFX_EXPLOSION)
 	{
-		return "Audio/sfx/explosion.wav";
+		return "25I-0881_25I-0807_Assets/Audio/sfx/explosion.wav";
 	}
 	if (type == SFX_COLLECT)
 	{
-		return "Audio/sfx/collect.wav";
+		return "25I-0881_25I-0807_Assets/Audio/sfx/collect.wav";
 	}
 	if (type == SFX_MENU_SELECT)
 	{
-		return "Audio/menu_move.wav";
+		return "25I-0881_25I-0807_Assets/Audio/menu_move.wav";
 	}
 	if (type == SFX_MENU_MOVE)
 	{
-		return "Audio/menu_move.wav";
+		return "25I-0881_25I-0807_Assets/Audio/menu_move.wav";
 	}
 	return "";
 }

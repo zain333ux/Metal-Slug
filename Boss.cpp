@@ -1,5 +1,4 @@
 #include "Boss.h"
-
 #include "Collectible.h"
 #include "Constants.h"
 #include "EnemyBullet.h"
@@ -13,61 +12,60 @@
 
 #include <cmath>
 #include <cstdlib>
-
-
 using namespace std;
 using namespace sf;
 
-namespace
+
+
+
+float clampBossValue(float value, float minimum, float maximum)
 {
-	float clampBossValue(float value, float minimum, float maximum)
+	if (value < minimum)
 	{
-		if (value < minimum)
-		{
-			return minimum;
-		}
-		if (value > maximum)
-		{
-			return maximum;
-		}
-		return value;
+		return minimum;
 	}
-
-	float aimedVelocityX(const Boss& boss, const PlayerSoldier* player, float speed)
+	if (value > maximum)
 	{
-		if (player == 0)
-		{
-			return speed;
-		}
-
-		float dx = player->getCenterX() - boss.getCenterX();
-		float dy = player->getCenterY() - boss.getCenterY();
-		// normalize aim vector so speed stays same at any distance
-		float length = sqrt(dx * dx + dy * dy);
-		if (length < 1)
-		{
-			return speed;
-		}
-		return dx / length * speed;
+		return maximum;
 	}
-
-	float aimedVelocityY(const Boss& boss, const PlayerSoldier* player, float speed)
-	{
-		if (player == 0)
-		{
-			return 0;
-		}
-
-		float dx = player->getCenterX() - boss.getCenterX();
-		float dy = player->getCenterY() - boss.getCenterY();
-		float length = sqrt(dx * dx + dy * dy);
-		if (length < 1)
-		{
-			return 0;
-		}
-		return dy / length * speed;
-	}
+	return value;
 }
+
+float aimedVelocityX(const Boss& boss, const PlayerSoldier* player, float speed)
+{
+	if (player == 0)
+	{
+		return speed;
+	}
+
+	float dx = player->getCenterX() - boss.getCenterX();
+	float dy = player->getCenterY() - boss.getCenterY();
+	// normalize aim vector so speed stays same at any distance
+	float length = sqrt(dx * dx + dy * dy);
+	if (length < 1)
+	{
+		return speed;
+	}
+	return dx / length * speed;
+}
+
+float aimedVelocityY(const Boss& boss, const PlayerSoldier* player, float speed)
+{
+	if (player == 0)
+	{
+		return 0;
+	}
+
+	float dx = player->getCenterX() - boss.getCenterX();
+	float dy = player->getCenterY() - boss.getCenterY();
+	float length = sqrt(dx * dx + dy * dy);
+	if (length < 1)
+	{
+		return 0;
+	}
+	return dy / length * speed;
+}
+
 
 Boss::Boss(BossType newBossType, BiomeType newBiomeType, bool newFinalPhase)
 {
@@ -244,7 +242,7 @@ bool Boss::applyProjectileHit(Projectile& projectile)
 	int bossDamage = 3;
 	if (projectile.isExplosive())
 	{
-		// explosives are stronger against boss than normal bullets
+		// explosives are stronger against boss than normal bullets (duh)
 		bossDamage = 20;
 	}
 	else if (projectile.isMelee())
@@ -321,7 +319,7 @@ IronNokanaBoss::IronNokanaBoss(float startX, float worldY, bool finalPhaseBoss)
 	: Boss(BossType::IronNokana, finalPhaseBoss ? BiomeType::Merged : BiomeType::Plains, finalPhaseBoss)
 {
 	float ironScale = 1.55f;
-	float ironXOffset = 0;    // negative = left, positive = right
+	float ironXOffset = 0;    // -ve is left and +ve is right direction
 
 	width = 180 * ironScale;
 	height = 121 * ironScale;
@@ -333,7 +331,7 @@ IronNokanaBoss::IronNokanaBoss(float startX, float worldY, bool finalPhaseBoss)
 	body.setSize(Vector2f(width, height));
 	body.setFillColor(fallbackColor);
 
-	loadStaticBossTexture("Sprites/Clean/Iron_Nokana.png", ironScale);
+	loadStaticBossTexture("25I-0881_25I-0807_Assets/Sprites/Clean/Iron_Nokana.png", ironScale);
 
 	setSpawnPosition(startX + ironXOffset, worldY - height);
 
@@ -454,7 +452,7 @@ SeaSatanBoss::SeaSatanBoss(float startX, float startY, bool finalPhaseBoss)
 	fallbackColor = Color(45, 110, 170);
 	body.setSize(Vector2f(width, height));
 	body.setFillColor(fallbackColor);
-	loadStaticBossTexture("Sprites/Clean/Sea_Satan.png", 1);
+	loadStaticBossTexture("25I-0881_25I-0807_Assets/Sprites/Clean/Sea_Satan.png", 1);
 	setSpawnPosition(startX, startY);
 	velocityX = finalPhase ? 0 : -moveSpeed;
 	updateBossVisual();
@@ -573,7 +571,7 @@ HairbusterRibertsBoss::HairbusterRibertsBoss(float startX, float startY, bool fi
 	fallbackColor = Color(165, 165, 85);
 	body.setSize(Vector2f(width, height));
 	body.setFillColor(fallbackColor);
-	loadStaticBossTexture("Sprites/Clean/Hairbuster.png", 1.3f);
+	loadStaticBossTexture("25I-0881_25I-0807_Assets/Sprites/Clean/Hairbuster.png", 1.3f);
 	setSpawnPosition(startX, startY);
 	velocityX = moveSpeed;
 	updateBossVisual();

@@ -14,7 +14,7 @@ static void applyPistolBulletTexture(RectangleShape& body)
 	if (!pistolBulletTextureLoaded)
 	{
 		Image image;
-		if (image.loadFromFile("Sprites/Clean/Pistol_bullet.png"))
+		if (image.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/Pistol_bullet.png"))
 		{
 			image.createMaskFromColor(Color::White);
 			pistolBulletTextureLoaded = pistolBulletTexture.loadFromImage(image);
@@ -70,11 +70,6 @@ void StraightProjectile::update(float deltaTime)
 	}
 }
 
-StraightProjectile::~StraightProjectile()
-{
-}
+StraightProjectile::~StraightProjectile() {}
 
-BasicStraightProjectile::BasicStraightProjectile(float startX, float startY, bool facingRight, bool upward)
-	: StraightProjectile(startX, startY, facingRight, upward)
-{
-}
+BasicStraightProjectile::BasicStraightProjectile(float startX, float startY, bool facingRight, bool upward): StraightProjectile(startX, startY, facingRight, upward) {}

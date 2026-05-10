@@ -1,11 +1,11 @@
 #include "BallisticProjectile.h"
-
 #include "AudioManager.h"
 #include "Constants.h"
 
-
 using namespace std;
 using namespace sf;
+
+
 
 BallisticProjectile::BallisticProjectile()
 {

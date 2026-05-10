@@ -356,21 +356,21 @@ bool PlayerSoldier::loadMaskedTexture(Texture& targetTexture, const char* fileNa
 
 void PlayerSoldier::loadTransformationSprites()
 {
-	loadMaskedTexture(zombieWalkTexture, "Sprites/Clean/Zombie_walk.png");
-	loadMaskedTexture(zombieEmergeTexture, "Sprites/Clean/Zombie_emerge.png");
-	loadMaskedTexture(mummyIdleTexture, "Sprites/Clean/MummyWarrior_idle.png");
-	loadMaskedTexture(mummyWalkTexture, "Sprites/Clean/MummyWarrior_walk.png");
+	loadMaskedTexture(zombieWalkTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Zombie_walk.png");
+	loadMaskedTexture(zombieEmergeTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Zombie_emerge.png");
+	loadMaskedTexture(mummyIdleTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/MummyWarrior_idle.png");
+	loadMaskedTexture(mummyWalkTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/MummyWarrior_walk.png");
 }
 
 void PlayerSoldier::loadMarcoSprites()
 {
-	if (loadMaskedTexture(marcoIdleTorsoTexture, "Sprites/Clean/Marco_idle_torso.png") &&
-		loadMaskedTexture(marcoIdleLegsTexture, "Sprites/Clean/Marco_idle_legs.png") &&
-		loadMaskedTexture(marcoRunTorsoTexture, "Sprites/Clean/Marco_run_torso.png") &&
-		loadMaskedTexture(marcoRunLegsTexture, "Sprites/Clean/Marco_run_legs.png") &&
-		loadMaskedTexture(marcoFireTexture, "Sprites/Clean/Marco_fire.png") &&
-		loadMaskedTexture(marcoFaceUpTexture, "Sprites/Clean/Marco_faceUp.png") &&
-		loadMaskedTexture(marcoShootUpTexture, "Sprites/Clean/Marco_shootUp.png"))
+	if (loadMaskedTexture(marcoIdleTorsoTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Marco_idle_torso.png") &&
+		loadMaskedTexture(marcoIdleLegsTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Marco_idle_legs.png") &&
+		loadMaskedTexture(marcoRunTorsoTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Marco_run_torso.png") &&
+		loadMaskedTexture(marcoRunLegsTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Marco_run_legs.png") &&
+		loadMaskedTexture(marcoFireTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Marco_fire.png") &&
+		loadMaskedTexture(marcoFaceUpTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Marco_faceUp.png") &&
+		loadMaskedTexture(marcoShootUpTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Marco_shootUp.png"))
 	{
 		marcoSpritesLoaded = true;
 		usingSprite = false;
@@ -381,13 +381,13 @@ void PlayerSoldier::loadMarcoSprites()
 
 void PlayerSoldier::loadEriSprites()
 {
-	if (loadMaskedTexture(eriIdleTorsoTexture, "Sprites/Clean/Eri_idle_torso.png") &&
-		loadMaskedTexture(eriIdleLegsTexture, "Sprites/Clean/Eri_idle_legs.png") &&
-		loadMaskedTexture(eriRunTorsoTexture, "Sprites/Clean/Eri_run_torso.png") &&
-		loadMaskedTexture(eriRunLegsTexture, "Sprites/Clean/Eri_run_legs.png") &&
-		loadMaskedTexture(eriFireTexture, "Sprites/Clean/Eri_fire.png") &&
-		loadMaskedTexture(eriFaceUpTexture, "Sprites/Clean/Eri_faceUp.png") &&
-		loadMaskedTexture(eriShootUpTexture, "Sprites/Clean/Eri_shootUp.png"))
+	if (loadMaskedTexture(eriIdleTorsoTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Eri_idle_torso.png") &&
+		loadMaskedTexture(eriIdleLegsTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Eri_idle_legs.png") &&
+		loadMaskedTexture(eriRunTorsoTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Eri_run_torso.png") &&
+		loadMaskedTexture(eriRunLegsTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Eri_run_legs.png") &&
+		loadMaskedTexture(eriFireTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Eri_fire.png") &&
+		loadMaskedTexture(eriFaceUpTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Eri_faceUp.png") &&
+		loadMaskedTexture(eriShootUpTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Eri_shootUp.png"))
 	{
 		eriSpritesLoaded = true;
 		usingSprite = false;
@@ -398,13 +398,13 @@ void PlayerSoldier::loadEriSprites()
 
 void PlayerSoldier::loadTarmaSprites()
 {
-	if (loadMaskedTexture(tarmaIdleTorsoTexture, "Sprites/Clean/Tarma_idle_torso.png") &&
-		loadMaskedTexture(tarmaIdleLegsTexture, "Sprites/Clean/Tarma_idle_legs.png") &&
-		loadMaskedTexture(tarmaRunTorsoTexture, "Sprites/Clean/Tarma_run_torso.png") &&
-		loadMaskedTexture(tarmaRunLegsTexture, "Sprites/Clean/Tarma_run_legs.png") &&
-		loadMaskedTexture(tarmaFireTexture, "Sprites/Clean/Tarma_fire.png") &&
-		loadMaskedTexture(tarmaFaceUpTexture, "Sprites/Clean/Tarma_faceUp.png") &&
-		loadMaskedTexture(tarmaShootUpTexture, "Sprites/Clean/Tarma_shootUp.png"))
+	if (loadMaskedTexture(tarmaIdleTorsoTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Tarma_idle_torso.png") &&
+		loadMaskedTexture(tarmaIdleLegsTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Tarma_idle_legs.png") &&
+		loadMaskedTexture(tarmaRunTorsoTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Tarma_run_torso.png") &&
+		loadMaskedTexture(tarmaRunLegsTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Tarma_run_legs.png") &&
+		loadMaskedTexture(tarmaFireTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Tarma_fire.png") &&
+		loadMaskedTexture(tarmaFaceUpTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Tarma_faceUp.png") &&
+		loadMaskedTexture(tarmaShootUpTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Tarma_shootUp.png"))
 	{
 		tarmaSpritesLoaded = true;
 		usingSprite = false;
@@ -415,13 +415,13 @@ void PlayerSoldier::loadTarmaSprites()
 
 void PlayerSoldier::loadFioSprites()
 {
-	if (loadMaskedTexture(fioIdleTorsoTexture, "Sprites/Clean/Fio_idle_torso.png") &&
-		loadMaskedTexture(fioIdleLegsTexture, "Sprites/Clean/Fio_idle_legs.png") &&
-		loadMaskedTexture(fioRunTorsoTexture, "Sprites/Clean/Fio_run_torso.png") &&
-		loadMaskedTexture(fioRunLegsTexture, "Sprites/Clean/Fio_run_legs.png") &&
-		loadMaskedTexture(fioFireTexture, "Sprites/Clean/Fio_fire.png") &&
-		loadMaskedTexture(fioFaceUpTexture, "Sprites/Clean/Fio_faceUp.png") &&
-		loadMaskedTexture(fioShootUpTexture, "Sprites/Clean/Fio_shootUp.png"))
+	if (loadMaskedTexture(fioIdleTorsoTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Fio_idle_torso.png") &&
+		loadMaskedTexture(fioIdleLegsTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Fio_idle_legs.png") &&
+		loadMaskedTexture(fioRunTorsoTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Fio_run_torso.png") &&
+		loadMaskedTexture(fioRunLegsTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Fio_run_legs.png") &&
+		loadMaskedTexture(fioFireTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Fio_fire.png") &&
+		loadMaskedTexture(fioFaceUpTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Fio_faceUp.png") &&
+		loadMaskedTexture(fioShootUpTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Fio_shootUp.png"))
 	{
 		fioSpritesLoaded = true;
 		usingSprite = false;

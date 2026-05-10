@@ -1,11 +1,9 @@
 #include "Collectible.h"
-
 #include "Constants.h"
 #include "Level.h"
 #include "PlayerSoldier.h"
 
 #include <cstdlib>
-
 using namespace std;
 using namespace sf;
 
@@ -31,18 +29,15 @@ Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 
 	if (kind == COLLECTIBLE_FRUIT)
 	{
-		loadMaskedTexture("Sprites/Clean/fruit_item.png");
+		loadMaskedTexture("25I-0881_25I-0807_Assets/Sprites/Clean/fruit_item.png");
 	}
 	else if (kind == COLLECTIBLE_TURKEY)
 	{
-		loadMaskedTexture("Sprites/Clean/turkey_item.png");
-		// turkey has multiple frames so pickup feels alive on ground
+		loadMaskedTexture("25I-0881_25I-0807_Assets/Sprites/Clean/turkey_item.png");
+
 		static const IntRect TURKEY_FRAMES[] =
 		{
-			IntRect(1, 2, 26, 32), IntRect(32, 4, 26, 30), IntRect(63, 3, 26, 31),
-			IntRect(95, 3, 26, 31), IntRect(126, 2, 26, 32), IntRect(157, 2, 26, 32),
-			IntRect(188, 3, 26, 31), IntRect(218, 3, 26, 31), IntRect(249, 3, 27, 31),
-			IntRect(281, 3, 28, 31), IntRect(314, 4, 28, 30)
+			IntRect(1, 2, 26, 32), IntRect(32, 4, 26, 30), IntRect(63, 3, 26, 31), IntRect(95, 3, 26, 31), IntRect(126, 2, 26, 32), IntRect(157, 2, 26, 32), IntRect(188, 3, 26, 31), IntRect(218, 3, 26, 31), IntRect(249, 3, 27, 31), IntRect(281, 3, 28, 31), IntRect(314, 4, 28, 30)
 		};
 		animationFrames = TURKEY_FRAMES;
 		animationFrameCount = 11;
@@ -50,25 +45,19 @@ Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 	}
 	else if (kind == COLLECTIBLE_ROCKET_ITEM)
 	{
-		loadMaskedTexture("Sprites/Clean/rocket_item.png");
+		loadMaskedTexture("25I-0881_25I-0807_Assets/Sprites/Clean/rocket_item.png");
 	}
 	else if (kind == COLLECTIBLE_HMG_ITEM)
 	{
-		loadMaskedTexture("Sprites/Clean/HMG_item.png");
+		loadMaskedTexture("25I-0881_25I-0807_Assets/Sprites/Clean/HMG_item.png");
 	}
 	else
 	{
-		loadMaskedTexture("Sprites/Clean/crate.png");
+		loadMaskedTexture("25I-0881_25I-0807_Assets/Sprites/Clean/crate.png");
 		// crate frames are cropped by hand to avoid choppy visual edges
 		static const IntRect CRATE_FRAMES[] =
 		{
-			IntRect(3, 6, 32, 28),  
-			IntRect(40, 5, 32, 29),  
-			IntRect(77, 4, 32, 30),  
-			IntRect(114, 2, 32, 32),  
-			IntRect(152, 3, 32, 31),   
-			IntRect(190, 5, 32, 29),   
-			IntRect(228, 6, 32, 28),   
+			IntRect(3, 6, 32, 28),IntRect(40, 5, 32, 29),IntRect(77, 4, 32, 30), IntRect(114, 2, 32, 32), IntRect(152, 3, 32, 31), IntRect(190, 5, 32, 29),IntRect(228, 6, 32, 28) 
 		};
 		animationFrames = CRATE_FRAMES;
 		animationFrameCount = 6;

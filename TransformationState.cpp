@@ -1,5 +1,4 @@
 #include "TransformationState.h"
-
 #include "Soldier.h"
 
 using namespace std;
@@ -30,7 +29,7 @@ void ZombieTransformationState::enter(Soldier& soldier)
 
 void ZombieTransformationState::update(Soldier& soldier, float deltaTime)
 {
-	// state object keeps UML pattern in place for zombie form
+
 }
 
 void ZombieTransformationState::exit(Soldier& soldier)

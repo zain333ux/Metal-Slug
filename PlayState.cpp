@@ -33,7 +33,7 @@ namespace
 		const float worldWidth = level->getWorldWidth();
 		const float step = 160;
 
-		// nearby water search krte hein so mariner dry land par na aaye
+		// nearby water search so mariner dry land par na aaye
 		for (int offset = 0; offset < 40; offset += 1)
 		{
 			for (int side = 0; side < 2; side += 1)
@@ -96,7 +96,7 @@ void PlayState::initialize(Game& game)
 
 void PlayState::configureHud()
 {
-	hudFont.loadFromFile("Fonts/PressStart2P.ttf");
+	hudFont.loadFromFile("25I-0881_25I-0807_Assets/Fonts/PressStart2P.ttf");
 	hudText.setFont(hudFont);
 	hudText.setCharacterSize(18);
 	hudText.setFillColor(Color::White);
@@ -110,7 +110,7 @@ void PlayState::configureHud()
 
 void PlayState::loadCurrentLevel(Game& game)
 {
-	// level reload pe old entities clear hoti hein
+	// level reload pe old entities clear :P
 	game.getEntityManager().clear();
 	player = 0;
 	vehicle = 0;
@@ -167,7 +167,7 @@ void PlayState::loadCurrentLevel(Game& game)
 	Level* loadedLevel = game.getLevelManager().getCurrentLevel();
 	if (loadedLevel != 0)
 	{
-		// manager and player dono ko active level reference chahiye
+		// manager and player both need active level reference 
 		game.getEntityManager().setActiveLevel(loadedLevel);
 		player->setMovementMaxX(loadedLevel->getWorldWidth());
 		player->setPosition(120, loadedLevel->getGroundYAt(120) - player->getHeight());
@@ -190,7 +190,6 @@ void PlayState::spawnEnemy(Game& game, EnemyKind kind, float x, float y)
 	bool bossEnemy = kind == ENEMY_BOSS_1 || kind == ENEMY_BOSS_2 || kind == ENEMY_BOSS_3 || kind == ENEMY_ULTIMATE_BOSS;
 	if (!bossEnemy && !enemy->hasSpriteVisual())
 	{
-		// invisible enemy ko spawn nahi karte
 		delete enemy;
 		return;
 	}

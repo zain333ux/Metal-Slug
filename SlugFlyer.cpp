@@ -14,22 +14,21 @@
 using namespace std;
 using namespace sf;
 
-namespace
+
+bool pushSlugStrip(FrameRect* out, int& count, const int* widths, int n, int sheetH, int refW)
 {
-	bool pushSlugStrip(FrameRect* out, int& count, const int* widths, int n, int sheetH, int refW)
+	int xAcc = 0;
+	for (int i = 0; i < n; i += 1)
 	{
-		int xAcc = 0;
-		for (int i = 0; i < n; i += 1)
-		{
-			int ww = widths[i];
-			int ox = (refW - ww) / 2;
-			out[count] = FrameRect{xAcc, 0, ww, sheetH, ox, 0};
-			count += 1;
-			xAcc += ww;
-		}
-		return xAcc > 0;
+		int ww = widths[i];
+		int ox = (refW - ww) / 2;
+		out[count] = FrameRect{xAcc, 0, ww, sheetH, ox, 0};
+		count += 1;
+		xAcc += ww;
 	}
-} // namespace
+	return xAcc > 0;
+}
+
 
 SlugFlyer::SlugFlyer(float startX, float startY) : AerialVehicle(startX, startY)
 {

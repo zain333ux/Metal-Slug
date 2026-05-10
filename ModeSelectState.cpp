@@ -16,9 +16,9 @@ ModeSelectState::ModeSelectState()
 	previousDownKey = false;
 	previousSelectKey = false;
 
-	font.loadFromFile("Fonts/PressStart2P.ttf");
+	font.loadFromFile("25I-0881_25I-0807_Assets/Fonts/PressStart2P.ttf");
 
-	backgroundTexture.loadFromFile("Sprites/Clean/Game_Select_BG.jpg");
+	backgroundTexture.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/Game_Select_BG.jpg");
 	backgroundSprite.setTexture(backgroundTexture);
 
 	setupScreen();

@@ -26,7 +26,7 @@ static void applyEnemyRocketTexture(RectangleShape& body)
 	if (!enemyRocketTextureLoaded)
 	{
 		Image image;
-		if (image.loadFromFile("Sprites/Clean/Bazooka_bullet.png"))
+		if (image.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/Bazooka_bullet.png"))
 		{
 			image.createMaskFromColor(Color::White);
 			enemyRocketTextureLoaded = enemyRocketTexture.loadFromImage(image);
@@ -46,7 +46,7 @@ static bool loadBazookaExplosionTexture()
 	if (!bazookaExplosionTextureLoaded)
 	{
 		Image image;
-		if (image.loadFromFile("Sprites/Clean/Explosion.png"))
+		if (image.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/Explosion.png"))
 		{
 			image.createMaskFromColor(Color::White);
 			bazookaExplosionTextureLoaded = bazookaExplosionTexture.loadFromImage(image);

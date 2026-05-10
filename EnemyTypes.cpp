@@ -145,9 +145,9 @@ RebelSoldier::RebelSoldier()
 	setSpriteScale(2.25f);
 	usingSprite = false;
 
-	if (loadMaskedTexture(idleTexture, "Sprites/Clean/RebelSoldier_idle.png") &&
-		loadMaskedTexture(runTexture, "Sprites/Clean/RebelSoldier_run.png") &&
-		loadMaskedTexture(fireTexture, "Sprites/Clean/RebelSoldier_fire.png"))
+	if (loadMaskedTexture(idleTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/RebelSoldier_idle.png") &&
+		loadMaskedTexture(runTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/RebelSoldier_run.png") &&
+		loadMaskedTexture(fireTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/RebelSoldier_fire.png"))
 	{
 		usingSprite = true;
 		setRebelAnimation(0);
@@ -321,9 +321,9 @@ ShieldedSoldier::ShieldedSoldier()
 	body.setSize(Vector2f(width, height));
 	setSpriteScale(2.2f);
 
-	if (loadMaskedTexture(idleTexture, "Sprites/Clean/ShieldedSoldier_idle.png") &&
-		loadMaskedTexture(runTexture, "Sprites/Clean/ShieldedSoldier_run.png") &&
-		loadMaskedTexture(fireTexture, "Sprites/Clean/ShieldedSoldier_fire.png"))
+	if (loadMaskedTexture(idleTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/ShieldedSoldier_idle.png") &&
+		loadMaskedTexture(runTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/ShieldedSoldier_run.png") &&
+		loadMaskedTexture(fireTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/ShieldedSoldier_fire.png"))
 	{
 		usingSprite = true;
 		setShieldAnimation(0);
@@ -510,9 +510,9 @@ BazookaSoldier::BazookaSoldier()
 	body.setSize(Vector2f(width, height));
 	setSpriteScale(2.2f);
 
-	if (loadMaskedTexture(idleTexture, "Sprites/Clean/BazookaSoldier_idle.png") &&
-		loadMaskedTexture(runTexture, "Sprites/Clean/BazookaSoldier_run.png") &&
-		loadMaskedTexture(fireTexture, "Sprites/Clean/BazookaSoldier_fire.png"))
+	if (loadMaskedTexture(idleTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/BazookaSoldier_idle.png") &&
+		loadMaskedTexture(runTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/BazookaSoldier_run.png") &&
+		loadMaskedTexture(fireTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/BazookaSoldier_fire.png"))
 	{
 		usingSprite = true;
 		setBazookaAnimation(0);
@@ -747,9 +747,9 @@ GrenadeSoldier::GrenadeSoldier()
 	body.setSize(Vector2f(width, height));
 	setSpriteScale(2.3f);
 
-	if (loadMaskedTexture(idleTexture, "Sprites/Clean/GrenadeSoldier_idle.png") &&
-		loadMaskedTexture(runTexture, "Sprites/Clean/GrenadeSoldier_run.png") &&
-		loadMaskedTexture(fireTexture, "Sprites/Clean/GrenadeSoldier_fire.png"))
+	if (loadMaskedTexture(idleTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/GrenadeSoldier_idle.png") &&
+		loadMaskedTexture(runTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/GrenadeSoldier_run.png") &&
+		loadMaskedTexture(fireTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/GrenadeSoldier_fire.png"))
 	{
 		usingSprite = true;
 		setGrenadeAnimation(0);
@@ -974,7 +974,7 @@ ZombieEnemy::ZombieEnemy()
 	setSpriteScale(2.35f);
 	spriteFacesLeft = false;
 
-	if (loadMaskedTexture(walkTexture, "Sprites/Clean/Zombie_walk.png"))
+	if (loadMaskedTexture(walkTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Zombie_walk.png"))
 	{
 		usingSprite = true;
 		sprite.setTexture(walkTexture, true);
@@ -1011,8 +1011,8 @@ MummyEnemy::MummyEnemy()
 	body.setSize(Vector2f(width, height));
 	setSpriteScale(2.25f);
 
-	if (loadMaskedTexture(idleTexture, "Sprites/Clean/MummyWarrior_idle.png") &&
-		loadMaskedTexture(walkTexture, "Sprites/Clean/MummyWarrior_walk.png"))
+	if (loadMaskedTexture(idleTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/MummyWarrior_idle.png") &&
+		loadMaskedTexture(walkTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/MummyWarrior_walk.png"))
 	{
 		usingSprite = true;
 		updateMummyAnimation();
@@ -1121,11 +1121,11 @@ MartianInfantry::MartianInfantry(float startX, float startY)
 	setSpriteScale(2.05f);
 	setPosition(startX, startY);
 
-	if (loadMaskedTexture(idleTexture, "Sprites/Clean/Martian_idle.png") &&
-		loadMaskedTexture(walkTexture, "Sprites/Clean/Martian_walk.png") &&
-		loadMaskedTexture(fireTexture, "Sprites/Clean/Martian_fire.png") &&
-		loadMaskedTexture(deathTexture, "Sprites/Clean/Martian_death.png") &&
-		loadMaskedTexture(teleportTexture, "Sprites/Clean/Martian_teleport.png"))
+	if (loadMaskedTexture(idleTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Martian_idle.png") &&
+		loadMaskedTexture(walkTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Martian_walk.png") &&
+		loadMaskedTexture(fireTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Martian_fire.png") &&
+		loadMaskedTexture(deathTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Martian_death.png") &&
+		loadMaskedTexture(teleportTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/Martian_teleport.png"))
 	{
 		usingSprite = true;
 		setMartianAnimation(4);
@@ -1439,9 +1439,9 @@ MartianPod::MartianPod()
 	patrolLeft = 760;
 	patrolRight = 1180;
 
-	if (loadPodTexture(movementTexture, "Sprites/Clean/MartianPod_movement.png") &&
-		loadPodTexture(attackTexture, "Sprites/Clean/MartianPod_Bullet.png") &&
-		loadPodTexture(deathTexture, "Sprites/Clean/MartianPod_death.png"))
+	if (loadPodTexture(movementTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/MartianPod_movement.png") &&
+		loadPodTexture(attackTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/MartianPod_Bullet.png") &&
+		loadPodTexture(deathTexture, "25I-0881_25I-0807_Assets/Sprites/Clean/MartianPod_death.png"))
 	{
 		usingSprite = true;
 		attackSprite.setTexture(attackTexture);

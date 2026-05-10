@@ -41,9 +41,9 @@ void Level::load()
 	// level loads visual background first then collision helpers
 	loadBackground();
 
-	if (grassTexture.loadFromFile("Sprites/blocks/grass_block_side.png") &&
-		dirtTexture.loadFromFile("Sprites/blocks/dirt.png") &&
-		stoneTexture.loadFromFile("Sprites/blocks/stone.png"))
+	if (grassTexture.loadFromFile("25I-0881_25I-0807_Assets/Sprites/blocks/grass_block_side.png") &&
+		dirtTexture.loadFromFile("25I-0881_25I-0807_Assets/Sprites/blocks/dirt.png") &&
+		stoneTexture.loadFromFile("25I-0881_25I-0807_Assets/Sprites/blocks/stone.png"))
 	{
 		blocksLoaded = true;
 	}
@@ -60,18 +60,18 @@ bool Level::loadBackground()
 {
 	// survival and boss levels prefer full biome image when available
 	if (!campaignGenerated && levelNumber >= 1 && levelNumber <= 4 &&
-		loadFullBiomeBackground("Sprites/Clean/3biomes.png", "Sprites/Clean/CollisionFinal.png"))
+		loadFullBiomeBackground("25I-0881_25I-0807_Assets/Sprites/Clean/3biomes.png", "25I-0881_25I-0807_Assets/Sprites/Clean/CollisionFinal.png"))
 	{
 		return true;
 	}
 
 	if (!campaignGenerated && levelNumber >= 1 && levelNumber <= 3 &&
-		loadFullBiomeBackground("Sprites/Clean/full_biome-terrain.png", "Sprites/Clean/full_biome-collision.png"))
+		loadFullBiomeBackground("25I-0881_25I-0807_Assets/Sprites/Clean/full_biome-terrain.png", "25I-0881_25I-0807_Assets/Sprites/Clean/full_biome-collision.png"))
 	{
 		return true;
 	}
 
-	if (backgroundTexture.loadFromFile("Sprites/Clean/background_level1.png"))
+	if (backgroundTexture.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/background_level1.png"))
 	{
 		Vector2u textureSize = backgroundTexture.getSize();
 		backgroundTextureRect = IntRect(0, 0, static_cast<int>(textureSize.x), static_cast<int>(textureSize.y));

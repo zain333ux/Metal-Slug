@@ -14,7 +14,7 @@ static void applyEnemyPistolBulletTexture(RectangleShape& body)
 	if (!enemyPistolBulletTextureLoaded)
 	{
 		Image image;
-		if (image.loadFromFile("Sprites/Clean/Pistol_bullet.png"))
+		if (image.loadFromFile("25I-0881_25I-0807_Assets/Sprites/Clean/Pistol_bullet.png"))
 		{
 			image.createMaskFromColor(Color::White);
 			enemyPistolBulletTextureLoaded = enemyPistolBulletTexture.loadFromImage(image);
