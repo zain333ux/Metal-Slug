@@ -31,7 +31,7 @@ namespace
 	}
 } // namespace
 
-SlugFlyer::SlugFlyer(float startX, float startY) : Vehicle(startX, startY)
+SlugFlyer::SlugFlyer(float startX, float startY) : AerialVehicle(startX, startY)
 {
 	usingSprite = false;
 	usingCannonSprite = false;

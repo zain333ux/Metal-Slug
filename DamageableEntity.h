@@ -10,6 +10,7 @@ protected:
 
 public:
 	DamageableEntity();
+	virtual ~DamageableEntity() = 0;
 
 	virtual void takeDamage(int damage);
 	virtual void heal(int amount);

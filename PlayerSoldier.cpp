@@ -6,6 +6,7 @@
 #include "GrenadeProjectile.h"
 #include "MeleeHitbox.h"
 #include "RocketProjectile.h"
+#include "TransformationState.h"
 
 #include <SFML/Window/Keyboard.hpp>
 
@@ -247,6 +248,7 @@ static const IntRect PLAYER_MUMMY_IDLE_FRAMES[] =
 
 PlayerSoldier::PlayerSoldier()
 {
+	setWeapon(&weapon);
 	firing = false;
 	fireAnimationTimer = 0;
 	currentCharacter = 0;
@@ -462,6 +464,7 @@ void PlayerSoldier::respawn()
 	aimingUp = false;
 	damageTimer = 0;
 	transformationState = PLAYER_FORM_NORMAL;
+	setTransformation(new NormalTransformationState());
 	transformationTimer = 0;
 	transformationFrameTimer = 0;
 	transformationFrame = 0;
@@ -1019,6 +1022,7 @@ void PlayerSoldier::zombify()
 	}
 
 	transformationState = PLAYER_FORM_ZOMBIE_EMERGE;
+	setTransformation(new ZombieTransformationState());
 	transformationTimer = 10;
 	transformationFrame = 0;
 	transformationFrameTimer = 0;
@@ -1039,6 +1043,7 @@ void PlayerSoldier::mummify()
 	}
 
 	transformationState = PLAYER_FORM_MUMMY;
+	setTransformation(new MummyTransformationState());
 	transformationTimer = 10;
 	transformationFrame = 0;
 	transformationFrameTimer = 0;
@@ -1089,6 +1094,7 @@ void PlayerSoldier::updateTransformation(float deltaTime)
 	if (transformationTimer <= 0)
 	{
 		transformationState = PLAYER_FORM_NORMAL;
+		setTransformation(new NormalTransformationState());
 		transformationTimer = 0;
 		transformationFrame = 0;
 		transformationFrameTimer = 0;

@@ -197,7 +197,7 @@ void Boss::updateMinionBatch(EntityManager& entities)
 {
 	if (waitingForMinionBatchClear && entities.countActiveNonBossEnemies() == 0)
 	{
-		Collectible* crate = new Collectible(COLLECTIBLE_TURKEY, getCenterX() - 16, y - 32);
+		ItemCollectible* crate = new ItemCollectible(COLLECTIBLE_TURKEY, getCenterX() - 16, y - 32);
 		entities.addEntity(crate);
 		waitingForMinionBatchClear = false;
 		minionSpawnTimer = 7;

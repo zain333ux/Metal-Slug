@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Projectile.h"
+#include "StraightProjectile.h"
 
-class VehicleBullet : public Projectile
+class VehicleBullet : public StraightProjectile
 {
 private:
 	static bool textureLoaded;

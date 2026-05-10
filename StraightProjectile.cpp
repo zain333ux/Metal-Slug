@@ -28,6 +28,10 @@ static void applyPistolBulletTexture(RectangleShape& body)
 	}
 }
 
+StraightProjectile::StraightProjectile()
+{
+}
+
 StraightProjectile::StraightProjectile(float startX, float startY, bool facingRight)
 	: StraightProjectile(startX, startY, facingRight, false)
 {
@@ -64,4 +68,13 @@ void StraightProjectile::update(float deltaTime)
 	{
 		deactivate();
 	}
+}
+
+StraightProjectile::~StraightProjectile()
+{
+}
+
+BasicStraightProjectile::BasicStraightProjectile(float startX, float startY, bool facingRight, bool upward)
+	: StraightProjectile(startX, startY, facingRight, upward)
+{
 }

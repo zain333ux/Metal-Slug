@@ -88,6 +88,10 @@ Vehicle::Vehicle(float startX, float startY)
 	updateColors();
 }
 
+Vehicle::~Vehicle()
+{
+}
+
 void Vehicle::resetAnimation(VehicleAnimation& animation)
 {
 	animation.totalWidth = 0;
@@ -915,4 +919,36 @@ float Vehicle::getSeatX() const
 float Vehicle::getSeatY() const
 {
 	return y + height - 96;
+}
+
+GroundVehicle::GroundVehicle(float startX, float startY)
+	: Vehicle(startX, startY)
+{
+}
+
+GroundVehicle::~GroundVehicle()
+{
+}
+
+AerialVehicle::AerialVehicle(float startX, float startY)
+	: Vehicle(startX, startY)
+{
+}
+
+AerialVehicle::~AerialVehicle()
+{
+}
+
+AquaticVehicle::AquaticVehicle(float startX, float startY)
+	: Vehicle(startX, startY)
+{
+}
+
+AquaticVehicle::~AquaticVehicle()
+{
+}
+
+MetalSlug::MetalSlug(float startX, float startY)
+	: GroundVehicle(startX, startY)
+{
 }

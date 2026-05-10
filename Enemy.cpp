@@ -1,6 +1,7 @@
 #include "Enemy.h"
 
 #include "Constants.h"
+#include "EnemyAIState.h"
 #include "EnemyBullet.h"
 #include "Level.h"
 #include "PlayerSoldier.h"
@@ -51,6 +52,7 @@ Enemy::Enemy()
 	animationTimer = 0;
 	animationFrameDuration = 0.15f;
 	deathProcessed = false;
+	aiState = 0;
 	width = 52;
 	height = 96;
 	setPosition(900, 500);
@@ -59,6 +61,10 @@ Enemy::Enemy()
 	body.setOutlineThickness(2);
 	body.setFillColor(Color(210, 70, 70));
 	setSpriteScale(2.1f);
+}
+
+Enemy::~Enemy()
+{
 }
 
 void Enemy::setSpawnPosition(float newX, float newY)
@@ -77,6 +83,11 @@ void Enemy::setTarget(PlayerSoldier* newTarget)
 	target = newTarget;
 }
 
+void Enemy::setAIState(EnemyAIState* newState)
+{
+	aiState = newState;
+}
+
 void Enemy::update(float deltaTime)
 {
 	if (contactDamageTimer > 0)
@@ -93,7 +104,14 @@ void Enemy::update(float deltaTime)
 		inWater = activeLevel->isWaterInBounds(x + 4, x + width - 4, y + height * 0.45f, y + height + 10);
 	}
 
-	updateAI();
+	if (aiState != 0)
+	{
+		aiState->update(*this, deltaTime);
+	}
+	else
+	{
+		updateAI();
+	}
 	if (activeLevel != 0 && grounded && velocityX != 0)
 	{
 		float lookAheadX = velocityX > 0 ? x + width + 14 : x - 14;

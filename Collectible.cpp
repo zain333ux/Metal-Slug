@@ -103,6 +103,15 @@ Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 	updateVisualPosition();
 }
 
+Collectible::~Collectible()
+{
+}
+
+ItemCollectible::ItemCollectible(CollectibleKind newKind, float newX, float newY)
+	: Collectible(newKind, newX, newY)
+{
+}
+
 void Collectible::update(float deltaTime)
 {
 	if (!active)

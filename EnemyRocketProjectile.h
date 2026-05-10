@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Projectile.h"
+#include "BallisticProjectile.h"
 
-class EnemyRocketProjectile : public Projectile
+class EnemyRocketProjectile : public BallisticProjectile
 {
 private:
 	bool exploded;

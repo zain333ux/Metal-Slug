@@ -4,7 +4,7 @@
 #include "Vehicle.h"
 
 /// Player aerial slug: real sprite idle / shoot / land / takeoff; missiles use SpriteAnimation projectile.
-class SlugFlyer : public Vehicle
+class SlugFlyer : public AerialVehicle
 {
 private:
 	enum SlugFlyerVisualPhase

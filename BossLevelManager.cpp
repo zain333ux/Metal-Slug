@@ -112,7 +112,7 @@ void BossLevelManager::spawnPhaseVehicle(EntityManager& entities, LevelManager& 
 	if (currentPhase == BossPhase::GroundIronNokana)
 	{
 		float y = level != 0 ? level->getMainGroundYAt(startX + 320) - 96 : static_cast<float>(Constants::GROUND_Y) - 96;
-		Vehicle* metalSlug = new Vehicle(startX + 320, y);
+		MetalSlug* metalSlug = new MetalSlug(startX + 320, y);
 		metalSlug->setMovementMaxX(maxX);
 		metalSlug->setActiveLevel(level);
 		entities.addEntity(metalSlug);
@@ -134,7 +134,7 @@ void BossLevelManager::spawnPhaseVehicle(EntityManager& entities, LevelManager& 
 	else if (currentPhase == BossPhase::FinalMerged)
 	{
 		float y = level != 0 ? level->getMainGroundYAt(startX + 260) - 96 : static_cast<float>(Constants::GROUND_Y) - 96;
-		Vehicle* metalSlug = new Vehicle(startX + 260, y);
+		MetalSlug* metalSlug = new MetalSlug(startX + 260, y);
 		SlugMariner* mariner = new SlugMariner(startX + 760, 625);
 		SlugFlyer* flyer = new SlugFlyer(startX + 1240, 330);
 		metalSlug->setMovementMaxX(maxX);
@@ -176,7 +176,7 @@ void BossLevelManager::cleanupPhase(EntityManager& entities)
 	{
 		finalBosses[i] = 0;
 	}
-	entities.addEntity(new Collectible(COLLECTIBLE_TURKEY, phaseEndX(currentPhase) + 80, 650));
+	entities.addEntity(new ItemCollectible(COLLECTIBLE_TURKEY, phaseEndX(currentPhase) + 80, 650));
 }
 
 void BossLevelManager::advancePhase(EntityManager& entities, PlayerSoldier* player, LevelManager& level)

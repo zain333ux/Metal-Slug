@@ -7,6 +7,13 @@
 using namespace std;
 using namespace sf;
 
+BallisticProjectile::BallisticProjectile()
+{
+	gravityScale = 1;
+	exploded = false;
+	explosionTimer = 0;
+}
+
 BallisticProjectile::BallisticProjectile(float startX, float startY, float startVelocityX, float startVelocityY,
 	int newDamage, float newBlastRadius, float newGravityScale, bool playerOwnedProjectile)
 {
@@ -27,6 +34,10 @@ BallisticProjectile::BallisticProjectile(float startX, float startY, float start
 	body.setFillColor(Color(230, 130, 75));
 	body.setOutlineColor(Color::Black);
 	body.setOutlineThickness(1);
+}
+
+BallisticProjectile::~BallisticProjectile()
+{
 }
 
 void BallisticProjectile::explode()

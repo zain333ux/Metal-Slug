@@ -2,6 +2,7 @@
 
 #include "Constants.h"
 #include "Level.h"
+#include "TransformationState.h"
 
 
 using namespace std;
@@ -39,10 +40,28 @@ Soldier::Soldier()
 	body.setOutlineThickness(2);
 	body.setPosition(x, y);
 	spriteFacesLeft = false;
+	transformation = new NormalTransformationState();
+	activeWeapon = 0;
+	transformation->enter(*this);
+}
+
+Soldier::~Soldier()
+{
+	if (transformation != 0)
+	{
+		transformation->exit(*this);
+		delete transformation;
+		transformation = 0;
+	}
 }
 
 void Soldier::update(float deltaTime)
 {
+	if (transformation != 0)
+	{
+		transformation->update(*this, deltaTime);
+	}
+
 	bool wasInWater = false;
 	if (activeLevel != 0)
 	{
@@ -385,6 +404,33 @@ void Soldier::setMovementMaxX(float maxX)
 void Soldier::setActiveLevel(Level* level)
 {
 	activeLevel = level;
+}
+
+void Soldier::setTransformation(TransformationState* newTransformation)
+{
+	if (newTransformation == 0)
+	{
+		return;
+	}
+
+	if (transformation != 0)
+	{
+		transformation->exit(*this);
+		delete transformation;
+	}
+
+	transformation = newTransformation;
+	transformation->enter(*this);
+}
+
+void Soldier::setWeapon(Weapon* weapon)
+{
+	activeWeapon = weapon;
+}
+
+Weapon* Soldier::getWeapon() const
+{
+	return activeWeapon;
 }
 
 bool Soldier::isFacingRight() const

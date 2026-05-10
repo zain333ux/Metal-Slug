@@ -214,6 +214,11 @@ void Prisoner::setActiveLevel(Level* level)
 	activeLevel = level;
 }
 
+void Prisoner::interact()
+{
+	freePrisoner();
+}
+
 void Prisoner::freePrisoner()
 {
 	if (!canBeFreed())
@@ -238,5 +243,5 @@ Collectible* Prisoner::createCrateIfReady()
 	crateCreated = true;
 	float crateX = x + width + 12;
 	float crateY = y + height - 72;
-	return new Collectible(COLLECTIBLE_SUPPLY_CRATE, crateX, crateY);
+	return new ItemCollectible(COLLECTIBLE_SUPPLY_CRATE, crateX, crateY);
 }

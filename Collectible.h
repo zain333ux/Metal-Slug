@@ -32,6 +32,7 @@ private:
 
 public:
 	Collectible(CollectibleKind newKind, float newX, float newY);
+	virtual ~Collectible() = 0;
 
 	void update(float deltaTime);
 	void apply(PlayerSoldier& player);
@@ -41,4 +42,10 @@ public:
 private:
 	bool loadMaskedTexture(const char* fileName);
 	void updateVisualPosition();
+};
+
+class ItemCollectible : public Collectible
+{
+public:
+	ItemCollectible(CollectibleKind newKind, float newX, float newY);
 };

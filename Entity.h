@@ -17,7 +17,7 @@ protected:
 
 public:
 	Entity();
-	virtual ~Entity();
+	virtual ~Entity() = 0;
 
 	virtual void update(float deltaTime);
 	virtual void draw(sf::RenderWindow& window);

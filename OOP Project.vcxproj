@@ -95,6 +95,7 @@
     <ClCompile Include="EnemyDownwardBullet.cpp" />
     <ClCompile Include="EnemyGrenadeProjectile.cpp" />
     <ClCompile Include="EnemyRocketProjectile.cpp" />
+    <ClCompile Include="EnemyAIState.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyFactory.cpp" />
     <ClCompile Include="EnemySub.cpp" />
@@ -108,6 +109,7 @@
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="FlyingTara.cpp" />
     <ClCompile Include="GrenadeProjectile.cpp" />
+    <ClCompile Include="InteractableObject.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelProfile.cpp" />
     <ClCompile Include="LevelManager.cpp" />
@@ -129,6 +131,7 @@
     <ClCompile Include="StraightProjectile.cpp" />
     <ClCompile Include="SpriteAnimation.cpp" />
     <ClCompile Include="Submarine.cpp" />
+    <ClCompile Include="TransformationState.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="VehicleTextureManager.cpp" />
     <ClCompile Include="VehicleBullet.cpp" />
@@ -147,6 +150,7 @@
     <ClInclude Include="EnemyDownwardBullet.h" />
     <ClInclude Include="EnemyGrenadeProjectile.h" />
     <ClInclude Include="EnemyRocketProjectile.h" />
+    <ClInclude Include="EnemyAIState.h" />
     <ClInclude Include="DynamicArray.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyFactory.h" />
@@ -161,6 +165,7 @@
     <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="FlyingTara.h" />
     <ClInclude Include="GrenadeProjectile.h" />
+    <ClInclude Include="InteractableObject.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelProfile.h" />
     <ClInclude Include="LevelManager.h" />
@@ -181,6 +186,7 @@
     <ClInclude Include="StraightProjectile.h" />
     <ClInclude Include="VehicleSpecialProjectiles.h" />
     <ClInclude Include="Submarine.h" />
+    <ClInclude Include="TransformationState.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="VehicleTextureManager.h" />
     <ClInclude Include="VehicleBullet.h" />

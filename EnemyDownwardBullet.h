@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Projectile.h"
+#include "StraightProjectile.h"
 
 class Level;
 
-class EnemyDownwardBullet : public Projectile
+class EnemyDownwardBullet : public StraightProjectile
 {
 private:
 	Level* activeLevel;

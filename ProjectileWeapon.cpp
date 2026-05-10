@@ -14,6 +14,14 @@ ProjectileWeapon::ProjectileWeapon()
 	cooldown = Constants::PLAYER_FIRE_COOLDOWN;
 }
 
+ProjectileWeapon::~ProjectileWeapon()
+{
+}
+
+BasicProjectileWeapon::BasicProjectileWeapon()
+{
+}
+
 void ProjectileWeapon::fire(EntityManager& entityManager, float startX, float startY, bool facingRight)
 {
 	fire(entityManager, startX, startY, facingRight, false);
@@ -26,7 +34,7 @@ void ProjectileWeapon::fire(EntityManager& entityManager, float startX, float st
 		return;
 	}
 
-	StraightProjectile* projectile = new StraightProjectile(startX, startY, facingRight, upward);
+	BasicStraightProjectile* projectile = new BasicStraightProjectile(startX, startY, facingRight, upward);
 	entityManager.addEntity(projectile);
 	cooldownTimer = cooldown;
 }

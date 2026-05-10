@@ -51,7 +51,7 @@ protected:
 
 public:
 	Level(int newLevelNumber = 1, float newWorldWidth = 0.0f, bool newCampaignGenerated = false);
-	virtual ~Level();
+	virtual ~Level() = 0;
 
 	virtual void load();
 	virtual void update(float deltaTime);
@@ -71,4 +71,10 @@ public:
 	bool isAerialBiome(float x, float y) const;
 	bool isPlainsBiome(float x, float y) const;
 	bool isAquaticBiome(float x, float y) const;
+};
+
+class GameLevel : public Level
+{
+public:
+	GameLevel(int newLevelNumber = 1, float newWorldWidth = 0, bool newCampaignGenerated = false);
 };

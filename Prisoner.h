@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Entity.h"
+#include "InteractableObject.h"
 #include "SpriteAnimation.h"
 
 class Level;
 class Collectible;
 
-class Prisoner : public Entity
+class Prisoner : public InteractableObject
 {
 private:
 	enum PrisonerState
@@ -44,6 +44,7 @@ public:
 	void update(float deltaTime) override;
 	void draw(sf::RenderWindow& window) override;
 	void setActiveLevel(Level* level);
+	void interact() override;
 	void freePrisoner();
 	bool canBeFreed() const;
 	Collectible* createCrateIfReady();

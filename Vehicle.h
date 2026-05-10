@@ -42,7 +42,7 @@ protected:
 	float movementMaxX;
 	float damageFlashTimer;
 	Level* activeLevel;
-	ProjectileWeapon weapon;
+	BasicProjectileWeapon weapon;
 	VehicleAnimation normalIdleAnimation;
 	VehicleAnimation normalMoveAnimation;
 	VehicleAnimation normalShootAnimation;
@@ -97,6 +97,7 @@ protected:
 
 public:
 	Vehicle(float startX, float startY);
+	virtual ~Vehicle() = 0;
 
 	virtual void update(float deltaTime);
 	virtual void draw(sf::RenderWindow& window);
@@ -116,4 +117,31 @@ public:
 	int getMaxHealth() const;
 	float getSeatX() const;
 	float getSeatY() const;
+};
+
+class GroundVehicle : public Vehicle
+{
+public:
+	GroundVehicle(float startX, float startY);
+	virtual ~GroundVehicle() = 0;
+};
+
+class AerialVehicle : public Vehicle
+{
+public:
+	AerialVehicle(float startX, float startY);
+	virtual ~AerialVehicle() = 0;
+};
+
+class AquaticVehicle : public Vehicle
+{
+public:
+	AquaticVehicle(float startX, float startY);
+	virtual ~AquaticVehicle() = 0;
+};
+
+class MetalSlug : public GroundVehicle
+{
+public:
+	MetalSlug(float startX, float startY);
 };

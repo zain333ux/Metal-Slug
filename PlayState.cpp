@@ -121,13 +121,13 @@ void PlayState::loadCurrentLevel(Game& game)
 	if (mode == PLAY_MODE_CAMPAIGN)
 	{
 		LevelProfile* profile = LevelProfileFactory::createProfile(campaignProfileOption);
-		game.getLevelManager().loadLevel(new Level(1, profile->getWorldWidth(), true));
+		game.getLevelManager().loadLevel(new GameLevel(1, profile->getWorldWidth(), true));
 		delete profile;
 		spawnCampaignWave(game);
 	}
 	else if (currentLevel == 4)
 	{
-		game.getLevelManager().loadLevel(new Level(4, Constants::BOSS_WORLD_WIDTH, false));
+		game.getLevelManager().loadLevel(new GameLevel(4, Constants::BOSS_WORLD_WIDTH, false));
 	}
 	else
 	{
@@ -140,7 +140,7 @@ void PlayState::loadCurrentLevel(Game& game)
 		{
 			width = Constants::WORLD_WIDTH_LEVEL_3;
 		}
-		game.getLevelManager().loadLevel(new Level(currentLevel, width, false));
+		game.getLevelManager().loadLevel(new GameLevel(currentLevel, width, false));
 		spawnSurvivalWave(game);
 	}
 
@@ -392,7 +392,7 @@ void PlayState::spawnVehicle(Game& game)
 
 	if (!aquaticVehicleLevel)
 	{
-		vehicle = new Vehicle(vehicleX, vehicleY);
+		vehicle = new MetalSlug(vehicleX, vehicleY);
 		if (level != 0)
 		{
 			vehicle->setMovementMaxX(level->getWorldWidth());

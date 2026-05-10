@@ -10,6 +10,10 @@ DamageableEntity::DamageableEntity()
 	health = maxHealth;
 }
 
+DamageableEntity::~DamageableEntity()
+{
+}
+
 void DamageableEntity::takeDamage(int damage)
 {
 	if (damage <= 0)

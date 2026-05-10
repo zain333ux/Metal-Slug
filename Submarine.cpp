@@ -16,7 +16,7 @@ using namespace sf;
 
 // --- SlugMariner ---
 
-SlugMariner::SlugMariner(float startX, float startY) : Vehicle(startX, startY)
+SlugMariner::SlugMariner(float startX, float startY) : AquaticVehicle(startX, startY)
 {
 	usingSprite = false;
 	usingCannonSprite = false;

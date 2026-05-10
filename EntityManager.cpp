@@ -492,7 +492,7 @@ void EntityManager::spawnDropForEnemy(const Enemy& enemy)
 
 	float spawnX = enemy.getCenterX() - 12;
 	float spawnY = enemy.getY();
-	Collectible* drop = new Collectible(dropKind, spawnX, spawnY);
+	ItemCollectible* drop = new ItemCollectible(dropKind, spawnX, spawnY);
 	addEntity(drop);
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Projectile.h"
+#include "BallisticProjectile.h"
 
 enum MarinerMissileType
 {
@@ -9,7 +9,7 @@ enum MarinerMissileType
     MARINER_MISSILE_SURFACE
 };
 
-class MarinerMissile : public Projectile
+class MarinerMissile : public BallisticProjectile
 {
 private:
     MarinerMissileType missileType;

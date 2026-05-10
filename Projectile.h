@@ -21,6 +21,7 @@ protected:
 
 public:
 	Projectile();
+	virtual ~Projectile() = 0;
 
 	virtual void update(float deltaTime);
 	virtual void draw(sf::RenderWindow& window);

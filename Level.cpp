@@ -31,6 +31,11 @@ Level::~Level()
 {
 }
 
+GameLevel::GameLevel(int newLevelNumber, float newWorldWidth, bool newCampaignGenerated)
+	: Level(newLevelNumber, newWorldWidth, newCampaignGenerated)
+{
+}
+
 void Level::load()
 {
 	loadBackground();

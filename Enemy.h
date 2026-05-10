@@ -6,6 +6,7 @@ class Level;
 class PlayerSoldier;
 class Projectile;
 class Entity;
+class EnemyAIState;
 
 class Enemy : public DamageableEntity
 {
@@ -48,6 +49,7 @@ protected:
 	float animationTimer;
 	float animationFrameDuration;
 	bool deathProcessed;
+	EnemyAIState* aiState;
 
 	virtual void updateAI();
 	void moveLeft();
@@ -64,9 +66,11 @@ protected:
 
 public:
 	Enemy();
+	virtual ~Enemy() = 0;
 
 	virtual void setSpawnPosition(float newX, float newY);
 	void setTarget(PlayerSoldier* newTarget);
+	void setAIState(EnemyAIState* newState);
 	void update(float deltaTime);
 	virtual void draw(sf::RenderWindow& window) override;
 	void setMovementMaxX(float maxX);

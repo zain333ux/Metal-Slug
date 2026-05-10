@@ -27,6 +27,10 @@ Projectile::Projectile()
 	body.setOutlineThickness(1);
 }
 
+Projectile::~Projectile()
+{
+}
+
 void Projectile::update(float deltaTime)
 {
 	lifeTime -= deltaTime;

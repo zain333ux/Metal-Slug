@@ -3,6 +3,8 @@
 #include "DamageableEntity.h"
 
 class Level;
+class TransformationState;
+class Weapon;
 
 class Soldier : public DamageableEntity
 {
@@ -29,6 +31,8 @@ protected:
 	int currentAnimationFrame;
 	float animationTimer;
 	float animationFrameDuration;
+	TransformationState* transformation;
+	Weapon* activeWeapon;
 
 	void updateState(float deltaTime);
 	void updateDebugColor();
@@ -37,6 +41,7 @@ protected:
 
 public:
 	Soldier();
+	virtual ~Soldier() = 0;
 
 	virtual void update(float deltaTime);
 	virtual void draw(sf::RenderWindow& window) override;
@@ -52,6 +57,9 @@ public:
 	void playAnimation(int row, int startFrame, int frameCount, float frameDuration);
 	void setMovementMaxX(float maxX);
 	void setActiveLevel(Level* level);
+	void setTransformation(TransformationState* newTransformation);
+	void setWeapon(Weapon* weapon);
+	Weapon* getWeapon() const;
 
 	bool isFacingRight() const;
 	bool isGrounded() const;

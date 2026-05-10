@@ -3,6 +3,7 @@
 #include "BallisticProjectile.h"
 #include "Projectile.h"
 #include "SpriteAnimation.h"
+#include "StraightProjectile.h"
 
 /// Bradley arcing shell: forward rocket animation while rising, reversed while falling.
 class BradleyArcMissileProjectile : public BallisticProjectile
@@ -22,7 +23,7 @@ private:
 };
 
 /// Slug Flyer player rocket: launch/flame loop in flight, smoke once on impact.
-class SlugFlyerRocketProjectile : public Projectile
+class SlugFlyerRocketProjectile : public StraightProjectile
 {
 private:
 	enum Phase
@@ -75,7 +76,7 @@ public:
 };
 
 /// Straight enemy vehicle rocket for Submarine and Bradley.
-class EnemyStraightRocketProjectile : public Projectile
+class EnemyStraightRocketProjectile : public StraightProjectile
 {
 private:
 	SpriteAnimation rocketAnim;

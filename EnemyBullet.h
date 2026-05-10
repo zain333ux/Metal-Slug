@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Projectile.h"
+#include "StraightProjectile.h"
 
-class EnemyBullet : public Projectile
+class EnemyBullet : public StraightProjectile
 {
 public:
 	EnemyBullet(float startX, float startY, bool facingRight);

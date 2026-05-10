@@ -8,7 +8,7 @@ class EntityManager;
 class PlayerSoldier : public Soldier
 {
 private:
-	ProjectileWeapon weapon;
+	BasicProjectileWeapon weapon;
 	bool firing;
 	float fireAnimationTimer;
 	int currentCharacter;

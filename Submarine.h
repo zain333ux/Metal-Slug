@@ -5,7 +5,7 @@
 #include "Vehicle.h"
 
 /// Player aquatic vehicle (Slug Mariner) — scaled idle sprite only; avoids tank sprite stripping.
-class SlugMariner : public Vehicle
+class SlugMariner : public AquaticVehicle
 {
 private:
 	static constexpr float MARINER_VISUAL_SCALE_X = 0.65f;
