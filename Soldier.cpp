@@ -396,11 +396,3 @@ bool Soldier::isGrounded() const
 {
 	return grounded;
 }
-
-<<<<<<< HEAD
-bool Soldier::isInWater() const
-{
-	return inWater;
-}
-=======
->>>>>>> 6d77c54b1816a0bae93ea8c1ad344f5e135692cd

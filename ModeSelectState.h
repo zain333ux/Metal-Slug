@@ -1,6 +1,5 @@
 #pragma once
 #include "GameState.h"
-using namespace sf;
 
 class ModeSelectState : public GameState
 {
@@ -12,15 +11,15 @@ private:
 	bool previousDownKey;
 	bool previousSelectKey;
 
-	Font font;
-	Texture backgroundTexture;
-	Sprite backgroundSprite;
-	Text title;
-	Text survivalOption;
-	Text campaignOption;
-	Text bossLevelOption;
-	Text instructions;
-	Text message;
+	sf::Font font;
+	sf::Texture backgroundTexture;
+	sf::Sprite backgroundSprite;
+	sf::Text title;
+	sf::Text survivalOption;
+	sf::Text campaignOption;
+	sf::Text bossLevelOption;
+	sf::Text instructions;
+	sf::Text message;
 
 	void setupScreen();
 	void refreshOptions();
@@ -31,5 +30,5 @@ public:
 
 	void handleInput(Game& game);
 	void update(Game& game, float deltaTime);
-	void draw(Game& game, RenderWindow& window);
+	void draw(Game& game, sf::RenderWindow& window);
 };

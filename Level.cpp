@@ -715,24 +715,6 @@ void Level::drawWaterBlocks(RenderWindow& window)
 {
 	(void)window;
 	return;
-<<<<<<< HEAD
-
-	if (waterBlocks.getSize() == 0)
-	{
-		return;
-	}
-
-	RectangleShape waterBlock;
-	waterBlock.setFillColor(Color(30, 120, 220, 24));
-	for (int i = 0; i < waterBlocks.getSize(); i += 1)
-	{
-		const FloatRect& block = waterBlocks.get(i);
-		waterBlock.setPosition(block.left, block.top);
-		waterBlock.setSize(Vector2f(block.width, block.height));
-		window.draw(waterBlock);
-	}
-=======
->>>>>>> 6d77c54b1816a0bae93ea8c1ad344f5e135692cd
 }
 
 void Level::drawTileRow(RenderWindow& window, Texture& texture, int y)

@@ -54,14 +54,6 @@ void Entity::setVelocity(float newVelocityX, float newVelocityY)
 	velocityY = newVelocityY;
 }
 
-<<<<<<< HEAD
-void Entity::setSprite(const Sprite& newSprite)
-{
-	sprite = newSprite;
-}
-
-=======
->>>>>>> 6d77c54b1816a0bae93ea8c1ad344f5e135692cd
 void Entity::deactivate()
 {
 	active = false;

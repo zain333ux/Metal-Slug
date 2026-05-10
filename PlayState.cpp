@@ -275,17 +275,6 @@ void PlayState::spawnSurvivalWave(Game& game)
 	EnemyVehicleFactory::spawnEnemyVehiclesForSurvivalLevel(currentLevel, level, game.getEntityManager(), player);
 }
 
-<<<<<<< HEAD
-void PlayState::spawnBossWave(Game& game)
-{
-	spawnEnemy(game, ENEMY_BOSS_1, 900, 430);
-	spawnEnemy(game, ENEMY_BOSS_2, 1450, 360);
-	spawnEnemy(game, ENEMY_BOSS_3, 1900, 430);
-	spawnEnemy(game, ENEMY_ULTIMATE_BOSS, 2300, 430);
-}
-
-=======
->>>>>>> 6d77c54b1816a0bae93ea8c1ad344f5e135692cd
 void PlayState::spawnCampaignWave(Game& game)
 {
 	int activeEnemies = game.getEntityManager().countActiveEnemies();

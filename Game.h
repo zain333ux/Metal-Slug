@@ -3,13 +3,12 @@
 #include "EntityManager.h"
 #include "GameStateManager.h"
 #include "LevelManager.h"
-using namespace sf;
 
 
 class Game
 {
 private:
-	RenderWindow window;
+	sf::RenderWindow window;
 	bool running;
 	GameStateManager gameStateManager;
 	EntityManager entityManager;
@@ -31,6 +30,6 @@ public:
 	EntityManager& getEntityManager();
 	LevelManager& getLevelManager();
 	AudioManager& getAudioManager();
-	RenderWindow& getWindow();
+	sf::RenderWindow& getWindow();
 
 };
