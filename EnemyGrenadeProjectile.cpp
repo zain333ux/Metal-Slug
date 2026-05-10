@@ -1,5 +1,6 @@
 #include "EnemyGrenadeProjectile.h"
 
+#include "AudioManager.h"
 #include "Constants.h"
 
 static const sf::IntRect ENEMY_GRENADE_FRAMES[] =
@@ -101,6 +102,7 @@ void EnemyGrenadeProjectile::explode()
 	}
 
 	exploded = true;
+	AudioManager::playGlobalSound(SFX_EXPLOSION);
 	explosionTimer = 0.0f;
 	currentFrame = 0;
 	frameTimer = 0.0f;

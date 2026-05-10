@@ -1,5 +1,6 @@
 #include "VehicleSpecialProjectiles.h"
 
+#include "AudioManager.h"
 #include "Constants.h"
 #include "VehicleTextureManager.h"
 
@@ -176,6 +177,7 @@ SlugFlyerRocketProjectile::SlugFlyerRocketProjectile(float startX, float startY,
 void SlugFlyerRocketProjectile::beginSmokeAtImpact()
 {
 	phase = PHASE_SMOKE;
+	AudioManager::playGlobalSound(SFX_EXPLOSION);
 	setVelocity(0.0f, 0.0f);
 	damage = 0;
 	explosive = false;

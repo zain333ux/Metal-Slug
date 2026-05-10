@@ -1,4 +1,5 @@
 #pragma once
+#include "AudioManager.h"
 #include "EntityManager.h"
 #include "GameStateManager.h"
 #include "LevelManager.h"
@@ -13,6 +14,7 @@ private:
 	GameStateManager gameStateManager;
 	EntityManager entityManager;
 	LevelManager levelManager;
+	AudioManager audioManager;
 
 	void processEvents();
 	void update(float deltaTime);
@@ -28,6 +30,7 @@ public:
 
 	EntityManager& getEntityManager();
 	LevelManager& getLevelManager();
+	AudioManager& getAudioManager();
 	RenderWindow& getWindow();
 
 };

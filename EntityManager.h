@@ -9,6 +9,7 @@ class PlayerSoldier;
 class Level;
 class Vehicle;
 class Enemy;
+class AudioManager;
 
 class EntityManager
 {
@@ -16,6 +17,7 @@ private:
 	DynamicArray<Entity*> entities;
 	int pendingScore;
 	Level* activeLevel;
+	AudioManager* audioManager;
 	int destroyedFlyingTara;
 	int destroyedBradley;
 	int destroyedEnemySub;
@@ -34,6 +36,7 @@ public:
 	EntityManager();
 	~EntityManager();
 
+	void setAudioManager(AudioManager* manager);
 	void addEntity(Entity* entity);
 	void setActiveLevel(Level* level);
 	void updateAll(float deltaTime);

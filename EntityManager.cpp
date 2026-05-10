@@ -1,5 +1,6 @@
 #include "EntityManager.h"
 
+#include "AudioManager.h"
 #include "Enemy.h"
 #include "EnemyVehicle.h"
 #include "Collectible.h"
@@ -21,6 +22,7 @@ EntityManager::EntityManager()
 {
 	pendingScore = 0;
 	activeLevel = 0;
+	audioManager = 0;
 	destroyedFlyingTara = 0;
 	destroyedBradley = 0;
 	destroyedEnemySub = 0;
@@ -30,6 +32,11 @@ EntityManager::EntityManager()
 EntityManager::~EntityManager()
 {
 	clear();
+}
+
+void EntityManager::setAudioManager(AudioManager* manager)
+{
+	audioManager = manager;
 }
 
 void EntityManager::addEntity(Entity* entity)
@@ -55,6 +62,10 @@ void EntityManager::addEntity(Entity* entity)
 		if (projectile != 0)
 		{
 			projectile->setActiveLevel(activeLevel);
+			if (audioManager != 0 && !projectile->isMelee() && !projectile->isExplosive())
+			{
+				audioManager->playSound(SFX_BULLET_FIRE);
+			}
 		}
 		Collectible* collectible = dynamic_cast<Collectible*>(entity);
 		if (collectible != 0)
@@ -304,7 +315,7 @@ void EntityManager::checkProjectileVehicleCollisions()
 			if (projectile->getBounds().intersects(vehicle->getBounds()))
 			{
 				vehicle->takeDamage(projectile->getDamage());
-				projectile->deactivate();
+				projectile->onCollision();
 				break;
 			}
 		}
@@ -425,6 +436,10 @@ void EntityManager::checkPlayerCollectibleCollisions()
 			if (player->getBounds().intersects(collectible->getBounds()))
 			{
 				collectible->apply(*player);
+				if (audioManager != 0)
+				{
+					audioManager->playSound(SFX_COLLECT);
+				}
 			}
 		}
 	}

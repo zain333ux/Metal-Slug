@@ -140,6 +140,23 @@ void PlayState::loadCurrentLevel(Game& game)
 		spawnSurvivalWave(game);
 	}
 
+	if (mode == PLAY_MODE_CAMPAIGN || currentLevel == 1)
+	{
+		game.getAudioManager().playMusic(MUSIC_LEVEL1);
+	}
+	else if (currentLevel == 2)
+	{
+		game.getAudioManager().playMusic(MUSIC_LEVEL2);
+	}
+	else if (currentLevel == 3)
+	{
+		game.getAudioManager().playMusic(MUSIC_LEVEL3);
+	}
+	else if (currentLevel == 4)
+	{
+		game.getAudioManager().playMusic(MUSIC_BOSS);
+	}
+
 	Level* loadedLevel = game.getLevelManager().getCurrentLevel();
 	if (loadedLevel != 0)
 	{

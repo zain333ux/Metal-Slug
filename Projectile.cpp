@@ -1,4 +1,5 @@
 #include "Projectile.h"
+#include "AudioManager.h"
 #include "Constants.h"
 
 #include "Level.h"
@@ -45,6 +46,10 @@ void Projectile::draw(sf::RenderWindow& window)
 
 void Projectile::onCollision()
 {
+	if (explosive)
+	{
+		AudioManager::playGlobalSound(SFX_EXPLOSION);
+	}
 	deactivate();
 }
 

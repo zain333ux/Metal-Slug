@@ -9,21 +9,14 @@ ModeSelectState::ModeSelectState()
 {
 	selectedOption = 0;
 	showingCampaignMessage = false;
+	previousUpKey = false;
+	previousDownKey = false;
+	previousSelectKey = false;
 
 	font.loadFromFile("Fonts/PressStart2P.ttf");
 
 	backgroundTexture.loadFromFile("Sprites/Clean/Game_Select_BG.jpg");
 	backgroundSprite.setTexture(backgroundTexture);
-
-	menuMusic.openFromFile("Audio/menu_music.ogg");
-	menuMusic.setLoop(true);
-	menuMusic.setVolume(35.0f);
-	menuMusic.play();
-
-	moveSoundBuffer.loadFromFile("Audio/menu_move.wav");
-	moveSound.setBuffer(moveSoundBuffer);
-	moveSound.setVolume(65.0f);
-
 
 	setupScreen();
 	refreshOptions();
@@ -63,12 +56,6 @@ void ModeSelectState::setupScreen()
 	message.setCharacterSize(24);
 	message.setFillColor(Color(255, 120, 120));
 	message.setPosition(540.0f, 700.0f);
-}
-
-void ModeSelectState::playMoveSound()
-{
-	moveSound.play();
-
 }
 
 void ModeSelectState::refreshOptions()
@@ -114,7 +101,11 @@ void ModeSelectState::handleInput(Game& game)
 		return;
 	}
 
-	if (Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::W))
+	bool upKey = Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::W);
+	bool downKey = Keyboard::isKeyPressed(Keyboard::Down) || Keyboard::isKeyPressed(Keyboard::S);
+	bool selectKey = Keyboard::isKeyPressed(Keyboard::Return);
+
+	if (upKey && !previousUpKey)
 	{
 		selectedOption -= 1;
 		if (selectedOption < 0)
@@ -122,12 +113,10 @@ void ModeSelectState::handleInput(Game& game)
 			selectedOption = 2;
 		}
 		showingCampaignMessage = false;
-		playMoveSound();
+		game.getAudioManager().playSound(SFX_MENU_MOVE);
 		refreshOptions();
-		return;
 	}
-
-	if (Keyboard::isKeyPressed(sf::Keyboard::Down) || Keyboard::isKeyPressed(Keyboard::S))
+	else if (downKey && !previousDownKey)
 	{
 		selectedOption += 1;
 		if (selectedOption > 2)
@@ -135,16 +124,18 @@ void ModeSelectState::handleInput(Game& game)
 			selectedOption = 0;
 		}
 		showingCampaignMessage = false;
-		playMoveSound();
+		game.getAudioManager().playSound(SFX_MENU_MOVE);
 		refreshOptions();
-		return;
+	}
+	else if (selectKey && !previousSelectKey)
+	{
+		game.getAudioManager().playSound(SFX_MENU_SELECT);
+		startSelectedMode(game);
 	}
 
-	if (Keyboard::isKeyPressed(Keyboard::Return))
-	{
-		startSelectedMode(game);
-		return;
-	}
+	previousUpKey = upKey;
+	previousDownKey = downKey;
+	previousSelectKey = selectKey;
 }
 
 void ModeSelectState::startSelectedMode(Game& game)
@@ -172,8 +163,8 @@ void ModeSelectState::startSelectedMode(Game& game)
 
 void ModeSelectState::update(Game& game, float deltaTime)
 {
-	(void)game;
 	(void)deltaTime;
+	game.getAudioManager().playMusic(MUSIC_MENU);
 }
 
 void ModeSelectState::draw(Game& game, RenderWindow& window)

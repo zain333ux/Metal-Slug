@@ -13,6 +13,8 @@ void Game::initialize()
 {
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(Constants::FRAME_LIMIT);
+	audioManager.loadAll();
+	entityManager.setAudioManager(&audioManager);
 
 	gameStateManager.changeState(new ModeSelectState());
 	running = true;
@@ -78,6 +80,11 @@ EntityManager& Game::getEntityManager()
 LevelManager& Game::getLevelManager()
 {
 	return levelManager;
+}
+
+AudioManager& Game::getAudioManager()
+{
+	return audioManager;
 }
 
 RenderWindow& Game::getWindow()

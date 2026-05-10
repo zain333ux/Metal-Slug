@@ -84,6 +84,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Collectible.cpp" />
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossLevelManager.cpp" />
@@ -133,6 +134,7 @@
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Collectible.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossLevelManager.h" />

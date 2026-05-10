@@ -1,5 +1,4 @@
 #pragma once
-#include <SFML/Audio.hpp>
 #include "GameState.h"
 using namespace sf;
 
@@ -9,6 +8,9 @@ class ModeSelectState : public GameState
 private:
 	int selectedOption;
 	bool showingCampaignMessage;
+	bool previousUpKey;
+	bool previousDownKey;
+	bool previousSelectKey;
 
 	Font font;
 	Texture backgroundTexture;
@@ -20,12 +22,6 @@ private:
 	Text instructions;
 	Text message;
 
-	Music menuMusic;
-	SoundBuffer moveSoundBuffer;
-	Sound moveSound;
-
-
-	void playMoveSound();
 	void setupScreen();
 	void refreshOptions();
 	void startSelectedMode(Game& game);

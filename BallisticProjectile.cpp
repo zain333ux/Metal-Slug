@@ -1,5 +1,6 @@
 #include "BallisticProjectile.h"
 
+#include "AudioManager.h"
 #include "Constants.h"
 
 BallisticProjectile::BallisticProjectile(float startX, float startY, float startVelocityX, float startVelocityY,
@@ -38,6 +39,7 @@ void BallisticProjectile::explode()
 	}
 
 	exploded = true;
+	AudioManager::playGlobalSound(SFX_EXPLOSION);
 	explosionTimer = 0.12f;
 	velocityX = 0.0f;
 	velocityY = 0.0f;

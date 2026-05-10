@@ -1,5 +1,6 @@
 #include "RocketProjectile.h"
 
+#include "AudioManager.h"
 #include "Constants.h"
 
 static const sf::IntRect PLAYER_ROCKET_EXPLOSION_FRAMES[] =
@@ -146,6 +147,7 @@ void RocketProjectile::explode()
 	}
 
 	exploded = true;
+	AudioManager::playGlobalSound(SFX_EXPLOSION);
 	currentFrame = 0;
 	frameTimer = 0.0f;
 	velocityX = 0.0f;
