@@ -73,3 +73,17 @@ public:
 
 	virtual void draw(sf::RenderWindow& window) override;
 };
+
+/// Straight enemy vehicle rocket for Submarine and Bradley.
+class EnemyStraightRocketProjectile : public Projectile
+{
+private:
+	SpriteAnimation rocketAnim;
+	bool facingRight;
+
+public:
+	EnemyStraightRocketProjectile(float startX, float startY, bool newFacingRight);
+
+	virtual void update(float deltaTime) override;
+	virtual void draw(sf::RenderWindow& window) override;
+};

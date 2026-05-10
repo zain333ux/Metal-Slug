@@ -3,12 +3,20 @@
 #include "Constants.h"
 #include "Level.h"
 
+static const sf::IntRect MARTIAN_POD_PROJECTILE_FRAMES[] =
+{
+	sf::IntRect(20, 67, 60, 60),
+	sf::IntRect(92, 67, 60, 60),
+	sf::IntRect(164, 67, 60, 60),
+	sf::IntRect(236, 67, 60, 60)
+};
+
 EnemyDownwardBullet::EnemyDownwardBullet(float startX, float startY, Level* level)
 {
 	damage = 12;
 	lifeTime = 2.2f;
-	width = 18.0f;
-	height = 56.0f;
+	width = 30.0f;
+	height = 30.0f;
 	activeLevel = level;
 	setPlayerOwned(false);
 	setPosition(startX, startY);
@@ -30,8 +38,9 @@ EnemyDownwardBullet::EnemyDownwardBullet(float startX, float startY, Level* leve
 		if (bulletTexture.loadFromImage(image))
 		{
 			bulletSprite.setTexture(bulletTexture);
-			bulletSprite.setScale(0.65f, 0.65f);
-			bulletSprite.setTextureRect(sf::IntRect(964, 30, 24, 110));
+			bulletSprite.setColor(sf::Color::White);
+			bulletSprite.setScale(0.72f, 0.72f);
+			bulletSprite.setTextureRect(MARTIAN_POD_PROJECTILE_FRAMES[0]);
 			spriteLoaded = true;
 		}
 	}
@@ -64,12 +73,11 @@ void EnemyDownwardBullet::update(float deltaTime)
 		{
 			animationTimer = 0.0f;
 			currentFrame = (currentFrame + 1) % FRAME_COUNT;
-			int frameX = 964 + currentFrame * 32;
-			bulletSprite.setTextureRect(sf::IntRect(frameX, 30, 24, 110));
+			bulletSprite.setTextureRect(MARTIAN_POD_PROJECTILE_FRAMES[currentFrame]);
 		}
 
 		sf::FloatRect bounds = bulletSprite.getGlobalBounds();
-		bulletSprite.setPosition(x + width * 0.5f - bounds.width * 0.5f, y - 8.0f);
+		bulletSprite.setPosition(x + width * 0.5f - bounds.width * 0.5f, y + height * 0.5f - bounds.height * 0.5f);
 	}
 }
 

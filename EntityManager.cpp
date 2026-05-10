@@ -5,6 +5,7 @@
 #include "Collectible.h"
 #include "Level.h"
 #include "PlayerSoldier.h"
+#include "Prisoner.h"
 #include "Projectile.h"
 #include "ScoreManager.h"
 #include "Soldier.h"
@@ -59,6 +60,11 @@ void EntityManager::addEntity(Entity* entity)
 		{
 			collectible->setActiveLevel(activeLevel);
 		}
+		Prisoner* prisoner = dynamic_cast<Prisoner*>(entity);
+		if (prisoner != 0)
+		{
+			prisoner->setActiveLevel(activeLevel);
+		}
 		entities.pushBack(entity);
 	}
 }
@@ -93,6 +99,11 @@ void EntityManager::setActiveLevel(Level* level)
 		{
 			collectible->setActiveLevel(activeLevel);
 		}
+		Prisoner* prisoner = dynamic_cast<Prisoner*>(entities.get(i));
+		if (prisoner != 0)
+		{
+			prisoner->setActiveLevel(activeLevel);
+		}
 	}
 }
 
@@ -126,7 +137,22 @@ void EntityManager::updateAll(float deltaTime)
 		}
 	}
 
+	originalSize = entities.getSize();
+	for (int i = 0; i < originalSize; i += 1)
+	{
+		Prisoner* prisoner = dynamic_cast<Prisoner*>(entities.get(i));
+		if (prisoner != 0 && prisoner->isActive())
+		{
+			Collectible* crate = prisoner->createCrateIfReady();
+			if (crate != 0)
+			{
+				addEntity(crate);
+			}
+		}
+	}
+
 	checkProjectileEnemyCollisions();
+	checkProjectilePrisonerCollisions();
 	checkProjectileVehicleCollisions();
 	checkProjectilePlayerCollisions();
 	checkEnemyVehicleCollisions();
@@ -219,6 +245,38 @@ void EntityManager::checkProjectileEnemyCollisions()
 			if (projectile->isExplosive())
 			{
 				pendingScore += ScoreManager::multiKillBonus(killedByThisProjectile);
+			}
+		}
+	}
+}
+
+void EntityManager::checkProjectilePrisonerCollisions()
+{
+	for (int i = 0; i < entities.getSize(); i += 1)
+	{
+		Projectile* projectile = dynamic_cast<Projectile*>(entities.get(i));
+		if (projectile == 0 || !projectile->isActive() || !projectile->isPlayerOwned())
+		{
+			continue;
+		}
+		if (projectile->shouldIgnorePlayerProjectileVsEnemyChecks())
+		{
+			continue;
+		}
+
+		for (int j = 0; j < entities.getSize(); j += 1)
+		{
+			Prisoner* prisoner = dynamic_cast<Prisoner*>(entities.get(j));
+			if (prisoner == 0 || !prisoner->isActive() || !prisoner->canBeFreed())
+			{
+				continue;
+			}
+
+			if (projectile->getBounds().intersects(prisoner->getBounds()))
+			{
+				prisoner->freePrisoner();
+				projectile->onCollision();
+				break;
 			}
 		}
 	}
@@ -327,7 +385,18 @@ void EntityManager::checkEnemyPlayerCollisions()
 
 			if (enemy->getBounds().intersects(player->getBounds()) && enemy->canDealContactDamage())
 			{
-				player->takeDamage(enemy->getContactDamage());
+				if (dynamic_cast<ZombieEnemy*>(enemy) != 0)
+				{
+					player->zombify();
+				}
+				else if (dynamic_cast<MummyEnemy*>(enemy) != 0)
+				{
+					player->mummify();
+				}
+				else
+				{
+					player->takeDamage(enemy->getContactDamage());
+				}
 				enemy->restartContactDamageCooldown();
 			}
 		}
@@ -409,7 +478,7 @@ void EntityManager::spawnDropForEnemy(const Enemy& enemy)
 	{
 		return;
 	}
-	// std::cout << "Drop roll=" << roll << " type=" << static_cast<int>(dropKind) << std::endl;
+
 
 	float spawnX = enemy.getCenterX() - 12.0f;
 	float spawnY = enemy.getY();

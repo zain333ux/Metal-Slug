@@ -672,7 +672,7 @@ void Vehicle::takeDamage(int damage)
 
 bool Vehicle::canMount(const PlayerSoldier& player) const
 {
-	if (occupied || isDead() || player.isDead() || player.isRidingVehicle())
+	if (occupied || isDead() || player.isDead() || player.isRidingVehicle() || !player.canUseVehicle())
 	{
 		return false;
 	}

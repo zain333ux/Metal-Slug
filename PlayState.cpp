@@ -8,6 +8,7 @@
 #include "Level.h"
 #include "LevelProfile.h"
 #include "PlayerSoldier.h"
+#include "Prisoner.h"
 #include "DeveloperMode.h"
 #include "ModeSelectState.h"
 #include "Vehicle.h"
@@ -165,7 +166,7 @@ void PlayState::spawnEnemy(Game& game, EnemyKind kind, float x, float y)
 	}
 
 	Level* level = game.getLevelManager().getCurrentLevel();
-	bool flyingEnemy = kind == ENEMY_BOSS_2;
+	bool flyingEnemy = kind == ENEMY_MARTIAN || kind == ENEMY_BOSS_2;
 	if (level != 0 && !flyingEnemy)
 	{
 		enemy->setPosition(x, level->getGroundYAt(x) - enemy->getHeight());
@@ -186,8 +187,39 @@ void PlayState::spawnEnemyAt(Game& game, EnemyKind kind, float x, float y)
 	game.getEntityManager().addEntity(enemy);
 }
 
+void PlayState::spawnSurvivalPrisoner(Game& game)
+{
+	if (mode != PLAY_MODE_SURVIVAL || currentLevel < 1 || currentLevel > 3)
+	{
+		return;
+	}
+
+	Level* level = game.getLevelManager().getCurrentLevel();
+	if (level == 0)
+	{
+		return;
+	}
+
+	float prisonerX = 2480.0f;
+	if (currentLevel == 2)
+	{
+		prisonerX = 3180.0f;
+	}
+	else if (currentLevel == 3)
+	{
+		prisonerX = 3820.0f;
+	}
+
+	float groundY = level->getGroundYAt(prisonerX);
+	Prisoner* prisoner = new Prisoner(prisonerX, groundY);
+	prisoner->setActiveLevel(level);
+	game.getEntityManager().addEntity(prisoner);
+}
+
 void PlayState::spawnSurvivalWave(Game& game)
 {
+	spawnSurvivalPrisoner(game);
+
 	float base = static_cast<float>(currentLevel - 1) * 160.0f;
 	if (currentLevel == 1)
 	{
@@ -197,6 +229,8 @@ void PlayState::spawnSurvivalWave(Game& game)
 		spawnEnemy(game, ENEMY_GRENADE, 1360.0f, 500.0f);
 		spawnEnemy(game, ENEMY_BAZOOKA, 1740.0f, 500.0f);
 		spawnEnemy(game, ENEMY_GRENADE, 1900.0f, 519.0f);
+		spawnEnemy(game, ENEMY_ZOMBIE, 2040.0f, 500.0f);
+		spawnEnemy(game, ENEMY_MUMMY, 2160.0f, 500.0f);
 		spawnEnemy(game, ENEMY_SHIELDED, 2280.0f, 500.0f);
 		spawnEnemy(game, ENEMY_GRENADE, 2760.0f, 500.0f);
 		spawnEnemy(game, ENEMY_MARTIAN, 3260.0f, 360.0f);
@@ -208,6 +242,8 @@ void PlayState::spawnSurvivalWave(Game& game)
 	spawnEnemy(game, ENEMY_SHIELDED, 2180.0f + base, 500.0f);
 	spawnEnemy(game, ENEMY_BAZOOKA, 2500.0f + base, 500.0f);
 	spawnEnemy(game, ENEMY_GRENADE, 2800.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_ZOMBIE, 2920.0f + base, 500.0f);
+	spawnEnemy(game, ENEMY_MUMMY, 3020.0f + base, 500.0f);
 	spawnEnemy(game, ENEMY_SHIELDED, 3080.0f + base, 500.0f);
 	spawnEnemy(game, ENEMY_BAZOOKA, 3320.0f + base, 500.0f);
 	spawnEnemy(game, ENEMY_MARTIAN, 3480.0f + base, 360.0f);
@@ -251,6 +287,14 @@ void PlayState::spawnCampaignWave(Game& game)
 		else if (campaignKills > 10 && i == 1)
 		{
 			spawnEnemy(game, ENEMY_GRENADE, x + 320.0f, 500.0f);
+		}
+		else if (campaignKills > 7 && i == 2)
+		{
+			spawnEnemy(game, ENEMY_MUMMY, x + 240.0f, 500.0f);
+		}
+		else if (campaignKills > 3 && i == 0)
+		{
+			spawnEnemy(game, ENEMY_ZOMBIE, x, 500.0f);
 		}
 		else if (campaignKills > 5 && i == 1)
 		{
@@ -382,7 +426,7 @@ void PlayState::spawnVehicle(Game& game)
 
 void PlayState::handleVehicleInteraction(Game& game)
 {
-	if (player == 0 || !player->isActive() || player->isDead())
+	if (player == 0 || !player->isActive() || player->isDead() || !player->canUseVehicle())
 	{
 		previousVehicleKey = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
 		return;

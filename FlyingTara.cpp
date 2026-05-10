@@ -20,7 +20,7 @@ FlyingTara::FlyingTara()
 
 {
 
-	maxHealth = 3;
+	maxHealth = 8;
 
 	health = maxHealth;
 

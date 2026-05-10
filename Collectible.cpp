@@ -4,6 +4,8 @@
 #include "Level.h"
 #include "PlayerSoldier.h"
 
+#include <cstdlib>
+
 Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 {
 	kind = newKind;
@@ -46,9 +48,28 @@ Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 	{
 		loadMaskedTexture("Sprites/Clean/rocket_item.png");
 	}
-	else
+	else if (kind == COLLECTIBLE_HMG_ITEM)
 	{
 		loadMaskedTexture("Sprites/Clean/HMG_item.png");
+	}
+	else
+	{
+		loadMaskedTexture("Sprites/Clean/crate.png");
+		static const sf::IntRect CRATE_FRAMES[] =
+		{
+			sf::IntRect(3, 6, 32, 28),  
+			sf::IntRect(40, 5, 32, 29),  
+			sf::IntRect(77, 4, 32, 30),  
+			sf::IntRect(114, 2, 32, 32),  
+			sf::IntRect(152, 3, 32, 31),   
+			sf::IntRect(190, 5, 32, 29),   
+			sf::IntRect(228, 6, 32, 28),   
+		};
+		animationFrames = CRATE_FRAMES;
+		animationFrameCount = 6;
+		animationFrameDuration = 0.12f;
+		width = 88.0f;
+		height = 72.0f;
 	}
 
 	if (!spriteLoaded)
@@ -62,9 +83,13 @@ Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 		{
 			fallbackBody.setFillColor(sf::Color(210, 140, 80));
 		}
-		else
+		else if (kind == COLLECTIBLE_ROCKET_ITEM || kind == COLLECTIBLE_HMG_ITEM)
 		{
 			fallbackBody.setFillColor(sf::Color(170, 170, 210));
+		}
+		else
+		{
+			fallbackBody.setFillColor(sf::Color(170, 110, 60));
 		}
 	}
 
@@ -135,9 +160,22 @@ void Collectible::apply(PlayerSoldier& player)
 	{
 		player.addRocketAmmo(4);
 	}
-	else
+	else if (kind == COLLECTIBLE_HMG_ITEM)
 	{
 		player.addHmgAmmo(100);
+	}
+	else //crate
+	{
+		player.addGrenades(5);
+		player.heal(30);
+		if (std::rand() % 2 == 0)
+		{
+			player.addRocketAmmo(4);
+		}
+		else
+		{
+			player.addHmgAmmo(100);
+		}
 	}
 
 	deactivate();
@@ -173,7 +211,15 @@ CollectibleKind Collectible::getKind() const
 
 bool Collectible::loadMaskedTexture(const char* fileName)
 {
-	if (!texture.loadFromFile(fileName))
+	sf::Image image;
+	if (!image.loadFromFile(fileName))
+	{
+		spriteLoaded = false;
+		return false;
+	}
+	image.createMaskFromColor(sf::Color::White);
+	image.createMaskFromColor(sf::Color(255, 0, 255));
+	if (!texture.loadFromImage(image))
 	{
 		spriteLoaded = false;
 		return false;
@@ -193,6 +239,14 @@ void Collectible::updateVisualPosition()
 	float spriteScale = 2.0f;
 	itemSprite.setScale(spriteScale, spriteScale);
 	sf::FloatRect bounds = itemSprite.getLocalBounds();
+	if (animationFrames != 0 && animationFrameCount > 1)
+	{
+		itemSprite.setPosition(x + width * 0.5f - bounds.width * spriteScale * 0.5f,
+			y + height - bounds.height * spriteScale);
+		fallbackBody.setSize(sf::Vector2f(width, height));
+		return;
+	}
+
 	if (bounds.height > 0.0f)
 	{
 		width = bounds.width * spriteScale;

@@ -113,6 +113,7 @@
     <ClCompile Include="M15ABradley.cpp" />
     <ClCompile Include="PlayState.cpp" />
     <ClCompile Include="PlayerSoldier.cpp" />
+    <ClCompile Include="Prisoner.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="ProjectileWeapon.cpp" />
     <ClCompile Include="RocketProjectile.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="ModeSelectState.h" />
     <ClInclude Include="PlayState.h" />
     <ClInclude Include="PlayerSoldier.h" />
+    <ClInclude Include="Prisoner.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="ProjectileWeapon.h" />
     <ClInclude Include="RocketProjectile.h" />
