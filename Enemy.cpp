@@ -46,6 +46,7 @@ Enemy::Enemy()
 	currentAnimationFrame = 0;
 	animationTimer = 0.0f;
 	animationFrameDuration = 0.15f;
+	deathProcessed = false;
 	width = 52.0f;
 	height = 96.0f;
 	setPosition(900.0f, 500.0f);
@@ -511,4 +512,14 @@ const char* Enemy::getEnemyName() const
 bool Enemy::hasSpriteVisual() const
 {
 	return usingSprite;
+}
+
+bool Enemy::hasProcessedDeath() const
+{
+	return deathProcessed;
+}
+
+void Enemy::markDeathProcessed()
+{
+	deathProcessed = true;
 }

@@ -108,7 +108,7 @@ static const sf::IntRect MARTIAN_DEATH_FRAMES[] =
 
 RebelSoldier::RebelSoldier()
 {
-	maxHealth = 2;
+	maxHealth = 20;
 	health = maxHealth;
 	scoreValue = 50;
 	contactDamage = 6;
@@ -291,7 +291,7 @@ const char* RebelSoldier::getEnemyName() const
 
 ShieldedSoldier::ShieldedSoldier()
 {
-	maxHealth = 5;
+	maxHealth = 50;
 	health = maxHealth;
 	scoreValue = 75;
 	contactDamage = 12;
@@ -478,7 +478,7 @@ const char* ShieldedSoldier::getEnemyName() const
 
 BazookaSoldier::BazookaSoldier()
 {
-	maxHealth = 2;
+	maxHealth = 20;
 	health = maxHealth;
 	scoreValue = 100;
 	contactDamage = 12;
@@ -715,7 +715,7 @@ const char* BazookaSoldier::getEnemyName() const
 
 GrenadeSoldier::GrenadeSoldier()
 {
-	maxHealth = 2;
+	maxHealth = 20;
 	health = maxHealth;
 	scoreValue = 100;
 	contactDamage = 10;
@@ -986,7 +986,7 @@ const char* MummyEnemy::getEnemyName() const
 
 MartianInfantry::MartianInfantry(float startX, float startY)
 {
-	maxHealth = 20;
+	maxHealth = 40;
 	health = maxHealth;
 	scoreValue = 200;
 	contactDamage = 0;
@@ -1299,7 +1299,7 @@ const char* MartianInfantry::getEnemyName() const
 
 MartianPod::MartianPod()
 {
-	maxHealth = 30;
+	maxHealth = 40;
 	health = maxHealth;
 	scoreValue = 0;
 	contactDamage = 0;

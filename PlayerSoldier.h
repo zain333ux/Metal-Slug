@@ -15,6 +15,7 @@ private:
 	int lives[4];
 	int grenades[4];
 	int rockets[4];
+	int hmgBullets[4];
 	float meleeTimer;
 	float grenadeTimer;
 	float rocketTimer;
@@ -46,6 +47,76 @@ private:
 	sf::Texture marcoShootUpTexture;
 	sf::Sprite marcoTorsoSprite;
 	sf::Sprite marcoLegsSprite;
+
+	bool eriSpritesLoaded;
+	int eriTorsoState;
+	int eriLegState;
+	const sf::IntRect* eriTorsoFrames;
+	const sf::IntRect* eriLegFrames;
+	int eriTorsoFrameCount;
+	int eriLegFrameCount;
+	int eriTorsoFrame;
+	int eriLegFrame;
+	float eriTorsoTimer;
+	float eriLegTimer;
+	float eriTorsoFrameDuration;
+	float eriLegFrameDuration;
+	sf::Texture eriIdleTorsoTexture;
+	sf::Texture eriIdleLegsTexture;
+	sf::Texture eriRunTorsoTexture;
+	sf::Texture eriRunLegsTexture;
+	sf::Texture eriFireTexture;
+	sf::Texture eriFaceUpTexture;
+	sf::Texture eriShootUpTexture;
+	sf::Sprite eriTorsoSprite;
+	sf::Sprite eriLegsSprite;
+
+	bool tarmaSpritesLoaded;
+	int tarmaTorsoState;
+	int tarmaLegState;
+	const sf::IntRect* tarmaTorsoFrames;
+	const sf::IntRect* tarmaLegFrames;
+	int tarmaTorsoFrameCount;
+	int tarmaLegFrameCount;
+	int tarmaTorsoFrame;
+	int tarmaLegFrame;
+	float tarmaTorsoTimer;
+	float tarmaLegTimer;
+	float tarmaTorsoFrameDuration;
+	float tarmaLegFrameDuration;
+	sf::Texture tarmaIdleTorsoTexture;
+	sf::Texture tarmaIdleLegsTexture;
+	sf::Texture tarmaRunTorsoTexture;
+	sf::Texture tarmaRunLegsTexture;
+	sf::Texture tarmaFireTexture;
+	sf::Texture tarmaFaceUpTexture;
+	sf::Texture tarmaShootUpTexture;
+	sf::Sprite tarmaTorsoSprite;
+	sf::Sprite tarmaLegsSprite;
+
+	bool fioSpritesLoaded;
+	int fioTorsoState;
+	int fioLegState;
+	const sf::IntRect* fioTorsoFrames;
+	const sf::IntRect* fioLegFrames;
+	int fioTorsoFrameCount;
+	int fioLegFrameCount;
+	int fioTorsoFrame;
+	int fioLegFrame;
+	float fioTorsoTimer;
+	float fioLegTimer;
+	float fioTorsoFrameDuration;
+	float fioLegFrameDuration;
+	sf::Texture fioIdleTorsoTexture;
+	sf::Texture fioIdleLegsTexture;
+	sf::Texture fioRunTorsoTexture;
+	sf::Texture fioRunLegsTexture;
+	sf::Texture fioFireTexture;
+	sf::Texture fioFaceUpTexture;
+	sf::Texture fioShootUpTexture;
+	sf::Sprite fioTorsoSprite;
+	sf::Sprite fioLegsSprite;
+
 	bool ridingVehicle;
 	bool pilotHiddenWhileInsideVehicle;
 
@@ -59,6 +130,24 @@ private:
 	void updateMarcoLayeredAnimation(float deltaTime);
 	void updateMarcoSpritePositions();
 
+	void loadEriSprites();
+	void setEriTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void setEriLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void updateEriLayeredAnimation(float deltaTime);
+	void updateEriSpritePositions();
+
+	void loadTarmaSprites();
+	void setTarmaTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void setTarmaLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void updateTarmaLayeredAnimation(float deltaTime);
+	void updateTarmaSpritePositions();
+
+	void loadFioSprites();
+	void setFioTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void setFioLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void updateFioLayeredAnimation(float deltaTime);
+	void updateFioSpritePositions();
+
 public:
 	PlayerSoldier();
 
@@ -69,6 +158,8 @@ public:
 	void handleWeaponInput(EntityManager& entityManager, float deltaTime);
 	void switchCharacter();
 	void refillDemoInventory();
+	void addRocketAmmo(int amount);
+	void addHmgAmmo(int amount);
 	void setRidingVehicle(bool riding);
 	void setPilotHiddenForVehicle(bool hide);
 	void handleVehicleDestruction();
@@ -80,4 +171,5 @@ public:
 	int getLives() const;
 	int getGrenades() const;
 	int getRockets() const;
+	int getHmgBullets() const;
 };

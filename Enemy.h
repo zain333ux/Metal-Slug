@@ -47,6 +47,7 @@ protected:
 	int currentAnimationFrame;
 	float animationTimer;
 	float animationFrameDuration;
+	bool deathProcessed;
 
 	virtual void updateAI();
 	void moveLeft();
@@ -81,4 +82,6 @@ public:
 	bool isFacingRight() const;
 	bool isGrounded() const;
 	bool hasSpriteVisual() const;
+	bool hasProcessedDeath() const;
+	void markDeathProcessed();
 };

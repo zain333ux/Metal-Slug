@@ -45,7 +45,6 @@ private:
 	void spawnBossWave(Game& game);
 	void spawnCampaignWave(Game& game);
 	void updateCampaignSpawning(Game& game, float deltaTime);
-	void spawnPickups(Game& game);
 	void spawnVehicle(Game& game);
 	void handleVehicleInteraction(Game& game);
 	void syncPlayerWithVehicle();
