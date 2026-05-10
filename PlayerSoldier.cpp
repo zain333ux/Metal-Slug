@@ -9,242 +9,246 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
-static const sf::IntRect MARCO_IDLE_TORSO_FRAMES[] =
+
+using namespace std;
+using namespace sf;
+
+static const IntRect MARCO_IDLE_TORSO_FRAMES[] =
 {
-	sf::IntRect(5, 4, 29, 29), sf::IntRect(39, 4, 29, 29), sf::IntRect(73, 4, 30, 28), sf::IntRect(108, 4, 29, 27)
+	IntRect(5, 4, 29, 29), IntRect(39, 4, 29, 29), IntRect(73, 4, 30, 28), IntRect(108, 4, 29, 27)
 };
 
-static const sf::IntRect MARCO_IDLE_LEG_FRAMES[] =
+static const IntRect MARCO_IDLE_LEG_FRAMES[] =
 {
-	sf::IntRect(3, 7, 21, 16)
+	IntRect(3, 7, 21, 16)
 };
 
-static const sf::IntRect MARCO_RUN_TORSO_FRAMES[] =
+static const IntRect MARCO_RUN_TORSO_FRAMES[] =
 {
-	sf::IntRect(7, 3, 32, 28), sf::IntRect(44, 3, 30, 29), sf::IntRect(79, 3, 28, 28), sf::IntRect(112, 3, 27, 27),
-	sf::IntRect(144, 3, 29, 28), sf::IntRect(178, 3, 30, 28), sf::IntRect(213, 3, 32, 29), sf::IntRect(251, 3, 32, 29),
-	sf::IntRect(288, 3, 32, 28), sf::IntRect(325, 3, 31, 27), sf::IntRect(361, 3, 31, 28), sf::IntRect(397, 3, 31, 28)
+	IntRect(7, 3, 32, 28), IntRect(44, 3, 30, 29), IntRect(79, 3, 28, 28), IntRect(112, 3, 27, 27),
+	IntRect(144, 3, 29, 28), IntRect(178, 3, 30, 28), IntRect(213, 3, 32, 29), IntRect(251, 3, 32, 29),
+	IntRect(288, 3, 32, 28), IntRect(325, 3, 31, 27), IntRect(361, 3, 31, 28), IntRect(397, 3, 31, 28)
 };
 
-static const sf::IntRect MARCO_RUN_LEG_FRAMES[] =
+static const IntRect MARCO_RUN_LEG_FRAMES[] =
 {
-	sf::IntRect(3, 5, 21, 20), sf::IntRect(29, 5, 28, 20), sf::IntRect(62, 5, 31, 16), sf::IntRect(98, 5, 19, 20),
-	sf::IntRect(122, 5, 15, 20), sf::IntRect(142, 5, 16, 20), sf::IntRect(163, 5, 21, 20), sf::IntRect(189, 5, 26, 20),
-	sf::IntRect(220, 5, 31, 16), sf::IntRect(256, 5, 20, 20), sf::IntRect(281, 5, 15, 20), sf::IntRect(301, 5, 18, 20)
+	IntRect(3, 5, 21, 20), IntRect(29, 5, 28, 20), IntRect(62, 5, 31, 16), IntRect(98, 5, 19, 20),
+	IntRect(122, 5, 15, 20), IntRect(142, 5, 16, 20), IntRect(163, 5, 21, 20), IntRect(189, 5, 26, 20),
+	IntRect(220, 5, 31, 16), IntRect(256, 5, 20, 20), IntRect(281, 5, 15, 20), IntRect(301, 5, 18, 20)
 };
 
-static const sf::IntRect MARCO_FIRE_FRAMES[] =
+static const IntRect MARCO_FIRE_FRAMES[] =
 {
-	sf::IntRect(3, 3, 50, 23), sf::IntRect(58, 3, 51, 23), sf::IntRect(114, 3, 52, 23)
+	IntRect(3, 3, 50, 23), IntRect(58, 3, 51, 23), IntRect(114, 3, 52, 23)
 };
 
-static const sf::IntRect MARCO_FACE_UP_FRAMES[] =
+static const IntRect MARCO_FACE_UP_FRAMES[] =
 {
-	sf::IntRect(0, 0, 34, 32), sf::IntRect(34, 0, 34, 32), sf::IntRect(68, 0, 34, 32), sf::IntRect(102, 0, 34, 32)
+	IntRect(0, 0, 34, 32), IntRect(34, 0, 34, 32), IntRect(68, 0, 34, 32), IntRect(102, 0, 34, 32)
 };
 
-static const sf::IntRect MARCO_SHOOT_UP_FRAMES[] =
+static const IntRect MARCO_SHOOT_UP_FRAMES[] =
 {
-	sf::IntRect(0, 0, 27, 72), sf::IntRect(27, 0, 27, 72), sf::IntRect(54, 0, 27, 72), sf::IntRect(81, 0, 27, 72)
+	IntRect(0, 0, 27, 72), IntRect(27, 0, 27, 72), IntRect(54, 0, 27, 72), IntRect(81, 0, 27, 72)
 };
 
-static const float MARCO_IDLE_TORSO_ORIGIN_X[] = { 10.0f, 10.0f, 10.0f, 10.0f };
-static const float MARCO_IDLE_TORSO_ORIGIN_Y[] = { 25.0f, 25.0f, 25.0f, 25.0f };
-static const float MARCO_RUN_TORSO_ORIGIN_X[] = { 12.0f, 11.0f, 10.0f, 9.5f, 10.5f, 11.0f, 12.0f, 12.0f, 12.0f, 11.5f, 11.5f, 11.5f };
-static const float MARCO_RUN_TORSO_ORIGIN_Y[] = { 27.0f, 28.0f, 27.0f, 26.0f, 27.0f, 27.0f, 28.0f, 28.0f, 27.0f, 26.0f, 27.0f, 27.0f };
-static const float MARCO_FIRE_ORIGIN_X[] = { 11.0f, 11.0f, 11.0f };
-static const float MARCO_FIRE_ORIGIN_Y[] = { 24.0f, 24.0f, 24.0f };
-static const float MARCO_FACE_UP_ORIGIN_X[] = { 13.0f, 13.0f, 13.0f, 13.0f };
-static const float MARCO_FACE_UP_ORIGIN_Y[] = { 30.0f, 30.0f, 30.0f, 30.0f };
+static const float MARCO_IDLE_TORSO_ORIGIN_X[] = { 10, 10, 10, 10 };
+static const float MARCO_IDLE_TORSO_ORIGIN_Y[] = { 25, 25, 25, 25 };
+static const float MARCO_RUN_TORSO_ORIGIN_X[] = { 12, 11, 10, 9.5f, 10.5f, 11, 12, 12, 12, 11.5f, 11.5f, 11.5f };
+static const float MARCO_RUN_TORSO_ORIGIN_Y[] = { 27, 28, 27, 26, 27, 27, 28, 28, 27, 26, 27, 27 };
+static const float MARCO_FIRE_ORIGIN_X[] = { 11, 11, 11 };
+static const float MARCO_FIRE_ORIGIN_Y[] = { 24, 24, 24 };
+static const float MARCO_FACE_UP_ORIGIN_X[] = { 13, 13, 13, 13 };
+static const float MARCO_FACE_UP_ORIGIN_Y[] = { 30, 30, 30, 30 };
 static const float MARCO_SHOOT_UP_ORIGIN_X[] = { 13.5f, 13.5f, 13.5f, 13.5f };
-static const float MARCO_SHOOT_UP_ORIGIN_Y[] = { 70.0f, 70.0f, 70.0f, 70.0f };
-static const float MARCO_IDLE_LEG_ORIGIN_X[] = { 10.0f };
-static const float MARCO_IDLE_LEG_ORIGIN_Y[] = { 15.0f };
-static const float MARCO_RUN_LEG_ORIGIN_X[] = { 10.5f, 14.0f, 15.5f, 9.5f, 7.5f, 8.0f, 10.5f, 13.0f, 15.5f, 10.0f, 7.5f, 9.0f };
-static const float MARCO_RUN_LEG_ORIGIN_Y[] = { 19.0f, 19.0f, 15.0f, 19.0f, 19.0f, 19.0f, 19.0f, 19.0f, 15.0f, 19.0f, 19.0f, 19.0f };
+static const float MARCO_SHOOT_UP_ORIGIN_Y[] = { 70, 70, 70, 70 };
+static const float MARCO_IDLE_LEG_ORIGIN_X[] = { 10 };
+static const float MARCO_IDLE_LEG_ORIGIN_Y[] = { 15 };
+static const float MARCO_RUN_LEG_ORIGIN_X[] = { 10.5f, 14, 15.5f, 9.5f, 7.5f, 8, 10.5f, 13, 15.5f, 10, 7.5f, 9 };
+static const float MARCO_RUN_LEG_ORIGIN_Y[] = { 19, 19, 15, 19, 19, 19, 19, 19, 15, 19, 19, 19 };
 
 // Tarma Animation Constants
-static const sf::IntRect TARMA_IDLE_TORSO_FRAMES[] =
+static const IntRect TARMA_IDLE_TORSO_FRAMES[] =
 {
-	sf::IntRect(4, 4, 32, 26), sf::IntRect(40, 4, 32, 26), sf::IntRect(76, 4, 32, 26), sf::IntRect(112, 4, 32, 26)
+	IntRect(4, 4, 32, 26), IntRect(40, 4, 32, 26), IntRect(76, 4, 32, 26), IntRect(112, 4, 32, 26)
 };
 
-static const sf::IntRect TARMA_IDLE_LEG_FRAMES[] =
+static const IntRect TARMA_IDLE_LEG_FRAMES[] =
 {
-	sf::IntRect(3, 2, 22, 18)
+	IntRect(3, 2, 22, 18)
 };
 
-static const sf::IntRect TARMA_RUN_TORSO_FRAMES[] =
+static const IntRect TARMA_RUN_TORSO_FRAMES[] =
 {
-	sf::IntRect(1,   3, 32, 28), sf::IntRect(43,  2, 30, 29), sf::IntRect(82,  2, 28, 28), sf::IntRect(119, 2, 27, 27),
-	sf::IntRect(154, 2, 29, 28), sf::IntRect(192, 2, 30, 28), sf::IntRect(232, 3, 32, 28), sf::IntRect(273, 2, 32, 29),
-	sf::IntRect(313, 2, 32, 28), sf::IntRect(353, 3, 31, 27), sf::IntRect(392, 3, 31, 28), sf::IntRect(430, 3, 31, 28)
+	IntRect(1,   3, 32, 28), IntRect(43,  2, 30, 29), IntRect(82,  2, 28, 28), IntRect(119, 2, 27, 27),
+	IntRect(154, 2, 29, 28), IntRect(192, 2, 30, 28), IntRect(232, 3, 32, 28), IntRect(273, 2, 32, 29),
+	IntRect(313, 2, 32, 28), IntRect(353, 3, 31, 27), IntRect(392, 3, 31, 28), IntRect(430, 3, 31, 28)
 };
 
-static const sf::IntRect TARMA_RUN_LEG_FRAMES[] =
+static const IntRect TARMA_RUN_LEG_FRAMES[] =
 {
-	sf::IntRect(4,   3, 21, 20), sf::IntRect(40,  3, 28, 20), sf::IntRect(78,  3, 31, 16), sf::IntRect(120, 3, 19, 20),
-	sf::IntRect(157, 3, 15, 20), sf::IntRect(194, 3, 16, 20), sf::IntRect(232, 3, 21, 20), sf::IntRect(268, 3, 26, 20),
-	sf::IntRect(310, 3, 31, 16), sf::IntRect(353, 3, 20, 20), sf::IntRect(394, 3, 15, 20), sf::IntRect(430, 3, 18, 20)
+	IntRect(4,   3, 21, 20), IntRect(40,  3, 28, 20), IntRect(78,  3, 31, 16), IntRect(120, 3, 19, 20),
+	IntRect(157, 3, 15, 20), IntRect(194, 3, 16, 20), IntRect(232, 3, 21, 20), IntRect(268, 3, 26, 20),
+	IntRect(310, 3, 31, 16), IntRect(353, 3, 20, 20), IntRect(394, 3, 15, 20), IntRect(430, 3, 18, 20)
 };
 
-static const sf::IntRect TARMA_FIRE_FRAMES[] =
+static const IntRect TARMA_FIRE_FRAMES[] =
 {
-	sf::IntRect(4, 3, 50, 23), sf::IntRect(60, 3, 51, 23), sf::IntRect(116, 3, 52, 23)
+	IntRect(4, 3, 50, 23), IntRect(60, 3, 51, 23), IntRect(116, 3, 52, 23)
 };
 
-static const sf::IntRect TARMA_FACE_UP_FRAMES[] =
+static const IntRect TARMA_FACE_UP_FRAMES[] =
 {
-	sf::IntRect(0, 0, 33, 31), sf::IntRect(33, 0, 33, 31), sf::IntRect(66, 0, 33, 31), sf::IntRect(99, 0, 33, 31)
+	IntRect(0, 0, 33, 31), IntRect(33, 0, 33, 31), IntRect(66, 0, 33, 31), IntRect(99, 0, 33, 31)
 };
 
-static const sf::IntRect TARMA_SHOOT_UP_FRAMES[] =
+static const IntRect TARMA_SHOOT_UP_FRAMES[] =
 {
-	sf::IntRect(0, 0, 29, 69), sf::IntRect(29, 0, 29, 69), sf::IntRect(58, 0, 29, 69), sf::IntRect(87, 0, 29, 69)
+	IntRect(0, 0, 29, 69), IntRect(29, 0, 29, 69), IntRect(58, 0, 29, 69), IntRect(87, 0, 29, 69)
 };
 
-static const float TARMA_IDLE_TORSO_ORIGIN_X[] = { 7.0f, 6.0f, 6.0f, 7.0f };
+static const float TARMA_IDLE_TORSO_ORIGIN_X[] = { 7, 6, 6, 7 };
 static const float TARMA_IDLE_TORSO_ORIGIN_Y[] = { 22.5f, 22.5f, 22.5f, 22.5f };
-static const float TARMA_RUN_TORSO_ORIGIN_X[] = { 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f, 11.0f };
-static const float TARMA_RUN_TORSO_ORIGIN_Y[] = { 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f };
-static const float TARMA_FIRE_ORIGIN_X[] = { 9.0f, 9.0f, 9.0f };
+static const float TARMA_RUN_TORSO_ORIGIN_X[] = { 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11 };
+static const float TARMA_RUN_TORSO_ORIGIN_Y[] = { 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25 };
+static const float TARMA_FIRE_ORIGIN_X[] = { 9, 9, 9 };
 static const float TARMA_FIRE_ORIGIN_Y[] = { 22.5f, 22.5f, 22.5f };
-static const float TARMA_FACE_UP_ORIGIN_X[] = { 11.0f, 12.0f, 13.0f, 14.0f };
-static const float TARMA_FACE_UP_ORIGIN_Y[] = { 29.0f, 29.0f, 29.0f, 29.0f };
+static const float TARMA_FACE_UP_ORIGIN_X[] = { 11, 12, 13, 14 };
+static const float TARMA_FACE_UP_ORIGIN_Y[] = { 29, 29, 29, 29 };
 static const float TARMA_SHOOT_UP_ORIGIN_X[] = { 14.5f, 14.5f, 14.5f, 14.5f };
-static const float TARMA_SHOOT_UP_ORIGIN_Y[] = { 67.0f, 67.0f, 67.0f, 67.0f };
-static const float TARMA_IDLE_LEG_ORIGIN_X[] = { 10.0f };
-static const float TARMA_IDLE_LEG_ORIGIN_Y[] = { 15.0f };
-static const float TARMA_RUN_LEG_ORIGIN_X[] = { 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f };
-static const float TARMA_RUN_LEG_ORIGIN_Y[] = { 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f, 17.0f };
+static const float TARMA_SHOOT_UP_ORIGIN_Y[] = { 67, 67, 67, 67 };
+static const float TARMA_IDLE_LEG_ORIGIN_X[] = { 10 };
+static const float TARMA_IDLE_LEG_ORIGIN_Y[] = { 15 };
+static const float TARMA_RUN_LEG_ORIGIN_X[] = { 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13 };
+static const float TARMA_RUN_LEG_ORIGIN_Y[] = { 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17 };
 
 // Eri Animation Constants
-static const sf::IntRect ERI_IDLE_TORSO_FRAMES[] =
+static const IntRect ERI_IDLE_TORSO_FRAMES[] =
 {
-	sf::IntRect(5, 4, 29, 29), sf::IntRect(39, 4, 29, 29), sf::IntRect(73, 4, 30, 28), sf::IntRect(108, 4, 29, 27)
+	IntRect(5, 4, 29, 29), IntRect(39, 4, 29, 29), IntRect(73, 4, 30, 28), IntRect(108, 4, 29, 27)
 };
 
-static const sf::IntRect ERI_IDLE_LEG_FRAMES[] =
+static const IntRect ERI_IDLE_LEG_FRAMES[] =
 {
-	sf::IntRect(2, 7, 21, 21)
+	IntRect(2, 7, 21, 21)
 };
 
-static const sf::IntRect ERI_RUN_TORSO_FRAMES[] =
+static const IntRect ERI_RUN_TORSO_FRAMES[] =
 {
-	sf::IntRect(5, 3, 32, 28), sf::IntRect(40, 3, 30, 29), sf::IntRect(75, 3, 28, 28), sf::IntRect(110, 3, 27, 27),
-	sf::IntRect(145, 3, 29, 28), sf::IntRect(180, 3, 30, 28), sf::IntRect(215, 3, 32, 29), sf::IntRect(250, 3, 32, 29),
-	sf::IntRect(285, 3, 32, 28), sf::IntRect(320, 3, 31, 27), sf::IntRect(355, 3, 31, 28), sf::IntRect(390, 3, 31, 28)
+	IntRect(5, 3, 32, 28), IntRect(40, 3, 30, 29), IntRect(75, 3, 28, 28), IntRect(110, 3, 27, 27),
+	IntRect(145, 3, 29, 28), IntRect(180, 3, 30, 28), IntRect(215, 3, 32, 29), IntRect(250, 3, 32, 29),
+	IntRect(285, 3, 32, 28), IntRect(320, 3, 31, 27), IntRect(355, 3, 31, 28), IntRect(390, 3, 31, 28)
 };
 
-static const sf::IntRect ERI_RUN_LEG_FRAMES[] =
+static const IntRect ERI_RUN_LEG_FRAMES[] =
 {
-	sf::IntRect(4,   3, 24, 25), sf::IntRect(32,  2, 18, 26), sf::IntRect(55,  2, 20, 26), sf::IntRect(80,  2, 22, 26),
-	sf::IntRect(109, 2, 25, 25), sf::IntRect(142, 3, 27, 23), sf::IntRect(174, 2, 25, 26), sf::IntRect(203, 2, 17, 26),
-	sf::IntRect(226, 3, 18, 25), sf::IntRect(250, 3, 21, 25), sf::IntRect(277, 4, 26, 23), sf::IntRect(308, 4, 30, 25)
+	IntRect(4,   3, 24, 25), IntRect(32,  2, 18, 26), IntRect(55,  2, 20, 26), IntRect(80,  2, 22, 26),
+	IntRect(109, 2, 25, 25), IntRect(142, 3, 27, 23), IntRect(174, 2, 25, 26), IntRect(203, 2, 17, 26),
+	IntRect(226, 3, 18, 25), IntRect(250, 3, 21, 25), IntRect(277, 4, 26, 23), IntRect(308, 4, 30, 25)
 };
 
-static const sf::IntRect ERI_FIRE_FRAMES[] =
+static const IntRect ERI_FIRE_FRAMES[] =
 {
-	sf::IntRect(3, 3, 50, 23), sf::IntRect(61, 3, 51, 23), sf::IntRect(119, 3, 52, 23)
+	IntRect(3, 3, 50, 23), IntRect(61, 3, 51, 23), IntRect(119, 3, 52, 23)
 };
 
-static const sf::IntRect ERI_FACE_UP_FRAMES[] =
+static const IntRect ERI_FACE_UP_FRAMES[] =
 {
-	sf::IntRect(2, 0, 36, 32), sf::IntRect(36, 0, 36, 32), sf::IntRect(72, 0, 36, 32), sf::IntRect(108, 0, 38, 32)
+	IntRect(2, 0, 36, 32), IntRect(36, 0, 36, 32), IntRect(72, 0, 36, 32), IntRect(108, 0, 38, 32)
 };
 
-static const sf::IntRect ERI_SHOOT_UP_FRAMES[] =
+static const IntRect ERI_SHOOT_UP_FRAMES[] =
 {
-	sf::IntRect(0, 0, 27, 72), sf::IntRect(28, 0, 27, 72), sf::IntRect(56, 0, 27, 72), sf::IntRect(84, 0, 27, 72)
+	IntRect(0, 0, 27, 72), IntRect(28, 0, 27, 72), IntRect(56, 0, 27, 72), IntRect(84, 0, 27, 72)
 };
 
-static const float ERI_IDLE_TORSO_ORIGIN_X[] = { 10.0f, 11.0f, 13.0f, 12.0f };
-static const float ERI_IDLE_TORSO_ORIGIN_Y[] = { 20.0f, 20.0f, 20.0f, 20.0f };
-static const float ERI_RUN_TORSO_ORIGIN_X[] = { 12.0f, 11.0f, 10.0f, 9.5f, 10.5f, 11.0f, 12.0f, 12.0f, 12.0f, 11.5f, 11.5f, 11.5f };
-static const float ERI_RUN_TORSO_ORIGIN_Y[] = { 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f };
-static const float ERI_FIRE_ORIGIN_X[] = { 11.0f, 11.0f, 11.0f };
-static const float ERI_FIRE_ORIGIN_Y[] = { 21.0f, 21.0f, 21.0f };
-static const float ERI_FACE_UP_ORIGIN_X[] = { 14.0f, 18.0f, 19.0f, 20.0f };
-static const float ERI_FACE_UP_ORIGIN_Y[] = { 27.0f, 27.0f, 27.0f, 27.0f };
+static const float ERI_IDLE_TORSO_ORIGIN_X[] = { 10, 11, 13, 12 };
+static const float ERI_IDLE_TORSO_ORIGIN_Y[] = { 20, 20, 20, 20 };
+static const float ERI_RUN_TORSO_ORIGIN_X[] = { 12, 11, 10, 9.5f, 10.5f, 11, 12, 12, 12, 11.5f, 11.5f, 11.5f };
+static const float ERI_RUN_TORSO_ORIGIN_Y[] = { 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25 };
+static const float ERI_FIRE_ORIGIN_X[] = { 11, 11, 11 };
+static const float ERI_FIRE_ORIGIN_Y[] = { 21, 21, 21 };
+static const float ERI_FACE_UP_ORIGIN_X[] = { 14, 18, 19, 20 };
+static const float ERI_FACE_UP_ORIGIN_Y[] = { 27, 27, 27, 27 };
 static const float ERI_SHOOT_UP_ORIGIN_X[] = { 13.5f, 13.5f, 13.5f, 13.5f };
-static const float ERI_SHOOT_UP_ORIGIN_Y[] = { 66.0f, 66.0f, 66.0f, 66.0f };
-static const float ERI_IDLE_LEG_ORIGIN_X[] = { 10.0f };
-static const float ERI_IDLE_LEG_ORIGIN_Y[] = { 15.0f };
-static const float ERI_RUN_LEG_ORIGIN_X[] = { 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f };
-static const float ERI_RUN_LEG_ORIGIN_Y[] = { 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f };
+static const float ERI_SHOOT_UP_ORIGIN_Y[] = { 66, 66, 66, 66 };
+static const float ERI_IDLE_LEG_ORIGIN_X[] = { 10 };
+static const float ERI_IDLE_LEG_ORIGIN_Y[] = { 15 };
+static const float ERI_RUN_LEG_ORIGIN_X[] = { 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13 };
+static const float ERI_RUN_LEG_ORIGIN_Y[] = { 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22 };
 
 // Fio — frame rects from Sprites/Clean/Fio_*.png (tight alpha bounds); pivots at foot mid-x / bottom row
-static const sf::IntRect FIO_IDLE_TORSO_FRAMES[] =
+static const IntRect FIO_IDLE_TORSO_FRAMES[] =
 {
-	sf::IntRect(3, 4, 28, 26), sf::IntRect(36, 4, 28, 26), sf::IntRect(69, 4, 28, 26), sf::IntRect(102, 4, 28, 26)
+	IntRect(3, 4, 28, 26), IntRect(36, 4, 28, 26), IntRect(69, 4, 28, 26), IntRect(102, 4, 28, 26)
 };
 
-static const sf::IntRect FIO_IDLE_LEG_FRAMES[] =
+static const IntRect FIO_IDLE_LEG_FRAMES[] =
 {
-	sf::IntRect(6, 4, 20, 24)
+	IntRect(6, 4, 20, 24)
 };
 
-static const sf::IntRect FIO_RUN_TORSO_FRAMES[] =
+static const IntRect FIO_RUN_TORSO_FRAMES[] =
 {
-	sf::IntRect(3, 3, 27, 26), sf::IntRect(35, 4, 27, 26), sf::IntRect(67, 5, 27, 26), sf::IntRect(99, 4, 27, 26),
-	sf::IntRect(131, 3, 27, 26), sf::IntRect(163, 3, 28, 26), sf::IntRect(196, 4, 28, 26), sf::IntRect(229, 5, 28, 26),
-	sf::IntRect(262, 5, 29, 26), sf::IntRect(296, 6, 28, 26), sf::IntRect(329, 4, 26, 27), sf::IntRect(360, 4, 27, 27)
+	IntRect(3, 3, 27, 26), IntRect(35, 4, 27, 26), IntRect(67, 5, 27, 26), IntRect(99, 4, 27, 26),
+	IntRect(131, 3, 27, 26), IntRect(163, 3, 28, 26), IntRect(196, 4, 28, 26), IntRect(229, 5, 28, 26),
+	IntRect(262, 5, 29, 26), IntRect(296, 6, 28, 26), IntRect(329, 4, 26, 27), IntRect(360, 4, 27, 27)
 };
 
-static const sf::IntRect FIO_RUN_LEG_FRAMES[] =
+static const IntRect FIO_RUN_LEG_FRAMES[] =
 {
-	sf::IntRect(3, 5, 22, 26), sf::IntRect(30, 5, 25, 25), sf::IntRect(60, 6, 27, 23), sf::IntRect(92, 5, 25, 26),
-	sf::IntRect(122, 5, 17, 26), sf::IntRect(144, 6, 18, 25), sf::IntRect(167, 6, 21, 25), sf::IntRect(193, 6, 26, 23),
-	sf::IntRect(224, 6, 30, 25), sf::IntRect(259, 6, 24, 25), sf::IntRect(288, 5, 18, 26), sf::IntRect(311, 5, 20, 26)
+	IntRect(3, 5, 22, 26), IntRect(30, 5, 25, 25), IntRect(60, 6, 27, 23), IntRect(92, 5, 25, 26),
+	IntRect(122, 5, 17, 26), IntRect(144, 6, 18, 25), IntRect(167, 6, 21, 25), IntRect(193, 6, 26, 23),
+	IntRect(224, 6, 30, 25), IntRect(259, 6, 24, 25), IntRect(288, 5, 18, 26), IntRect(311, 5, 20, 26)
 };
 
-static const sf::IntRect FIO_FIRE_FRAMES[] =
+static const IntRect FIO_FIRE_FRAMES[] =
 {
-	sf::IntRect(3, 4, 48, 19), sf::IntRect(56, 4, 58, 19), sf::IntRect(114, 3, 49, 20)
+	IntRect(3, 4, 48, 19), IntRect(56, 4, 58, 19), IntRect(114, 3, 49, 20)
 };
 
-static const sf::IntRect FIO_FACE_UP_FRAMES[] =
+static const IntRect FIO_FACE_UP_FRAMES[] =
 {
-	sf::IntRect(3, 4, 24, 23), sf::IntRect(32, 4, 24, 23), sf::IntRect(61, 4, 25, 23), sf::IntRect(91, 4, 25, 23)
+	IntRect(3, 4, 24, 23), IntRect(32, 4, 24, 23), IntRect(61, 4, 25, 23), IntRect(91, 4, 25, 23)
 };
 
-static const sf::IntRect FIO_SHOOT_UP_FRAMES[] =
+static const IntRect FIO_SHOOT_UP_FRAMES[] =
 {
-	sf::IntRect(8, 10, 22, 59), sf::IntRect(32, 7, 22, 62), sf::IntRect(51, 5, 27, 64), sf::IntRect(75, 36, 28, 33)
+	IntRect(8, 10, 22, 59), IntRect(32, 7, 22, 62), IntRect(51, 5, 27, 64), IntRect(75, 36, 28, 33)
 };
 
 static const float FIO_IDLE_TORSO_ORIGIN_X[] = { 11.5f, 11.5f, 11.5f, 11.5f };
-static const float FIO_IDLE_TORSO_ORIGIN_Y[] = { 26.0f, 26.0f, 26.0f, 26.0f };
-static const float FIO_RUN_TORSO_ORIGIN_X[] = { 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.5f, 13.5f, 13.5f, 14.0f, 13.5f, 12.5f, 13.0f };
-static const float FIO_RUN_TORSO_ORIGIN_Y[] = { 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 27.0f, 27.0f };
-static const float FIO_FIRE_ORIGIN_X[] = { 10.0f, 11.0f, 10.0f };
-static const float FIO_FIRE_ORIGIN_Y[] = { 23.0f, 23.0f, 23.0f };
+static const float FIO_IDLE_TORSO_ORIGIN_Y[] = { 26, 26, 26, 26 };
+static const float FIO_RUN_TORSO_ORIGIN_X[] = { 13, 13, 13, 13, 13, 13.5f, 13.5f, 13.5f, 14, 13.5f, 12.5f, 13 };
+static const float FIO_RUN_TORSO_ORIGIN_Y[] = { 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 27, 27 };
+static const float FIO_FIRE_ORIGIN_X[] = { 10, 11, 10 };
+static const float FIO_FIRE_ORIGIN_Y[] = { 23, 23, 23 };
 static const float FIO_FACE_UP_ORIGIN_X[] = { 8.5f, 8.5f, 8.5f, 8.5f };
-static const float FIO_FACE_UP_ORIGIN_Y[] = { 26.0f, 26.0f, 26.0f, 26.0f };
-static const float FIO_SHOOT_UP_ORIGIN_X[] = { 9.0f, 9.0f, 10.0f, 11.0f };
-static const float FIO_SHOOT_UP_ORIGIN_Y[] = { 64.0f, 65.0f, 66.0f, 66.0f };
+static const float FIO_FACE_UP_ORIGIN_Y[] = { 26, 26, 26, 26 };
+static const float FIO_SHOOT_UP_ORIGIN_X[] = { 9, 9, 10, 11 };
+static const float FIO_SHOOT_UP_ORIGIN_Y[] = { 64, 65, 66, 66 };
 static const float FIO_IDLE_LEG_ORIGIN_X[] = { 9.5f };
-static const float FIO_IDLE_LEG_ORIGIN_Y[] = { 24.0f };
-static const float FIO_RUN_LEG_ORIGIN_X[] = { 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f };
-static const float FIO_RUN_LEG_ORIGIN_Y[] = { 26.0f, 25.0f, 23.0f, 26.0f, 26.0f, 25.0f, 25.0f, 23.0f, 25.0f, 25.0f, 26.0f, 26.0f };
+static const float FIO_IDLE_LEG_ORIGIN_Y[] = { 24 };
+static const float FIO_RUN_LEG_ORIGIN_X[] = { 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15 };
+static const float FIO_RUN_LEG_ORIGIN_Y[] = { 26, 25, 23, 26, 26, 25, 25, 23, 25, 25, 26, 26 };
 
 static const int PLAYER_FORM_NORMAL = 0;
 static const int PLAYER_FORM_ZOMBIE_EMERGE = 1;
 static const int PLAYER_FORM_ZOMBIE = 2;
 static const int PLAYER_FORM_MUMMY = 3;
 
-static const sf::IntRect PLAYER_MUMMY_IDLE_FRAMES[] =
+static const IntRect PLAYER_MUMMY_IDLE_FRAMES[] =
 {
-	sf::IntRect(0, 0, 30, 45),   // frame 0
-	sf::IntRect(30, 0, 30, 45),   // frame 1
-	sf::IntRect(60, 0, 30, 45),   // frame 2
-	sf::IntRect(90, 0, 30, 45),   // frame 3
+	IntRect(0, 0, 30, 45),   // frame 0
+	IntRect(30, 0, 30, 45),   // frame 1
+	IntRect(60, 0, 30, 45),   // frame 2
+	IntRect(90, 0, 30, 45),   // frame 3
 };
 
 PlayerSoldier::PlayerSoldier()
 {
 	firing = false;
-	fireAnimationTimer = 0.0f;
+	fireAnimationTimer = 0;
 	currentCharacter = 0;
 	for (int i = 0; i < 4; i += 1)
 	{
@@ -253,10 +257,10 @@ PlayerSoldier::PlayerSoldier()
 		rockets[i] = 0;
 		hmgBullets[i] = 0;
 	}
-	meleeTimer = 0.0f;
-	grenadeTimer = 0.0f;
-	rocketTimer = 0.0f;
-	damageTimer = 0.0f;
+	meleeTimer = 0;
+	grenadeTimer = 0;
+	rocketTimer = 0;
+	damageTimer = 0;
 	aimingUp = false;
 	previousSwitchKey = false;
 	previousMeleeKey = false;
@@ -271,8 +275,8 @@ PlayerSoldier::PlayerSoldier()
 	marcoLegFrameCount = 1;
 	marcoTorsoFrame = 0;
 	marcoLegFrame = 0;
-	marcoTorsoTimer = 0.0f;
-	marcoLegTimer = 0.0f;
+	marcoTorsoTimer = 0;
+	marcoLegTimer = 0;
 	marcoTorsoFrameDuration = 0.12f;
 	marcoLegFrameDuration = 0.09f;
 
@@ -285,8 +289,8 @@ PlayerSoldier::PlayerSoldier()
 	eriLegFrameCount = 1;
 	eriTorsoFrame = 0;
 	eriLegFrame = 0;
-	eriTorsoTimer = 0.0f;
-	eriLegTimer = 0.0f;
+	eriTorsoTimer = 0;
+	eriLegTimer = 0;
 	eriTorsoFrameDuration = 0.12f;
 	eriLegFrameDuration = 0.09f;
 
@@ -299,8 +303,8 @@ PlayerSoldier::PlayerSoldier()
 	tarmaLegFrameCount = 1;
 	tarmaTorsoFrame = 0;
 	tarmaLegFrame = 0;
-	tarmaTorsoTimer = 0.0f;
-	tarmaLegTimer = 0.0f;
+	tarmaTorsoTimer = 0;
+	tarmaLegTimer = 0;
 	tarmaTorsoFrameDuration = 0.12f;
 	tarmaLegFrameDuration = 0.09f;
 
@@ -313,18 +317,18 @@ PlayerSoldier::PlayerSoldier()
 	fioLegFrameCount = 1;
 	fioTorsoFrame = 0;
 	fioLegFrame = 0;
-	fioTorsoTimer = 0.0f;
-	fioLegTimer = 0.0f;
+	fioTorsoTimer = 0;
+	fioLegTimer = 0;
 	fioTorsoFrameDuration = 0.12f;
 	fioLegFrameDuration = 0.09f;
 
 	ridingVehicle = false;
 	pilotHiddenWhileInsideVehicle = false;
 	transformationState = PLAYER_FORM_NORMAL;
-	transformationTimer = 0.0f;
-	transformationFrameTimer = 0.0f;
+	transformationTimer = 0;
+	transformationFrameTimer = 0;
 	transformationFrame = 0;
-	setPosition(120.0f, 500.0f);
+	setPosition(120, 500);
 	setSpriteScale(2.2f);
 	loadMarcoSprites();
 	loadEriSprites();
@@ -334,16 +338,16 @@ PlayerSoldier::PlayerSoldier()
 	applyCharacterStats();
 }
 
-bool PlayerSoldier::loadMaskedTexture(sf::Texture& targetTexture, const char* fileName)
+bool PlayerSoldier::loadMaskedTexture(Texture& targetTexture, const char* fileName)
 {
-	sf::Image image;
+	Image image;
 	if (!image.loadFromFile(fileName))
 	{
 		return false;
 	}
 
-	image.createMaskFromColor(sf::Color::White);
-	image.createMaskFromColor(sf::Color(255, 0, 255));
+	image.createMaskFromColor(Color::White);
+	image.createMaskFromColor(Color(255, 0, 255));
 	return targetTexture.loadFromImage(image);
 }
 
@@ -430,7 +434,7 @@ void PlayerSoldier::takeDamage(int damage)
 		return;
 	}
 
-	if (damage <= 0 || isDead() || ridingVehicle || damageTimer > 0.0f)
+	if (damage <= 0 || isDead() || ridingVehicle || damageTimer > 0)
 	{
 		return;
 	}
@@ -450,16 +454,16 @@ void PlayerSoldier::takeDamage(int damage)
 void PlayerSoldier::respawn()
 {
 	health = maxHealth;
-	setPosition(120.0f, 500.0f);
-	setVelocity(0.0f, 0.0f);
+	setPosition(120, 500);
+	setVelocity(0, 0);
 	facingRight = true;
 	firing = false;
-	fireAnimationTimer = 0.0f;
+	fireAnimationTimer = 0;
 	aimingUp = false;
-	damageTimer = 0.0f;
+	damageTimer = 0;
 	transformationState = PLAYER_FORM_NORMAL;
-	transformationTimer = 0.0f;
-	transformationFrameTimer = 0.0f;
+	transformationTimer = 0;
+	transformationFrameTimer = 0;
 	transformationFrame = 0;
 	marcoTorsoState = -1;
 	marcoLegState = -1;
@@ -557,51 +561,51 @@ void PlayerSoldier::handleInput()
 		{
 			return;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		if (Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A))
 		{
 			moveLeft();
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::D))
 		{
 			moveRight();
 		}
 		return;
 	}
 
-	aimingUp = sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+	aimingUp = Keyboard::isKeyPressed(Keyboard::W) || Keyboard::isKeyPressed(Keyboard::Up);
 
-	bool switchKey = sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
+	bool switchKey = Keyboard::isKeyPressed(Keyboard::Z);
 	if (switchKey && !previousSwitchKey)
 	{
 		switchCharacter();
 	}
 	previousSwitchKey = switchKey;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A))
 	{
 		moveLeft();
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::D))
 	{
 		moveRight();
 	}
 
 	if (inWater)
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) ||
-			sf::Keyboard::isKeyPressed(sf::Keyboard::W) ||
-			sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		if (Keyboard::isKeyPressed(Keyboard::Space) ||
+			Keyboard::isKeyPressed(Keyboard::W) ||
+			Keyboard::isKeyPressed(Keyboard::Up))
 		{
 			velocityY = -jumpSpeed * 0.45f;
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
-			sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		else if (Keyboard::isKeyPressed(Keyboard::S) ||
+			Keyboard::isKeyPressed(Keyboard::Down))
 		{
 			velocityY += jumpSpeed * 0.015f;
 		}
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	else if (Keyboard::isKeyPressed(Keyboard::Space))
 	{
 		jump();
 	}
@@ -609,19 +613,19 @@ void PlayerSoldier::handleInput()
 
 void PlayerSoldier::update(float deltaTime)
 {
-	if (meleeTimer > 0.0f)
+	if (meleeTimer > 0)
 	{
 		meleeTimer -= deltaTime;
 	}
-	if (grenadeTimer > 0.0f)
+	if (grenadeTimer > 0)
 	{
 		grenadeTimer -= deltaTime;
 	}
-	if (rocketTimer > 0.0f)
+	if (rocketTimer > 0)
 	{
 		rocketTimer -= deltaTime;
 	}
-	if (damageTimer > 0.0f)
+	if (damageTimer > 0)
 	{
 		damageTimer -= deltaTime;
 	}
@@ -637,7 +641,7 @@ void PlayerSoldier::update(float deltaTime)
 	if (ridingVehicle)
 	{
 		stopMoving();
-		setVelocity(0.0f, 0.0f);
+		setVelocity(0, 0);
 		return;
 	}
 
@@ -647,11 +651,11 @@ void PlayerSoldier::update(float deltaTime)
 
 	if (isDead())
 	{
-		body.setFillColor(sf::Color(90, 90, 90));
+		body.setFillColor(Color(90, 90, 90));
 	}
-	else if (damageTimer > 0.0f)
+	else if (damageTimer > 0)
 	{
-		body.setFillColor(sf::Color(255, 90, 90));
+		body.setFillColor(Color(255, 90, 90));
 	}
 }
 
@@ -684,7 +688,7 @@ void PlayerSoldier::updatePlayerAnimation(float deltaTime)
 		return;
 	}
 
-	if (fireAnimationTimer > 0.0f)
+	if (fireAnimationTimer > 0)
 	{
 		fireAnimationTimer -= deltaTime;
 		playAnimation(Constants::PLAYER_ANIM_FIRE, 3, 0.08f);
@@ -723,39 +727,39 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 
 	if (isZombieForm())
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+		if (Keyboard::isKeyPressed(Keyboard::LControl) || Keyboard::isKeyPressed(Keyboard::J))
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+			if (Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A))
 			{
 				facingRight = false;
 			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			else if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::D))
 			{
 				facingRight = true;
 			}
 			float bulletX = facingRight ? x + width : x;
-			weapon.fire(entityManager, bulletX, y + 38.0f, facingRight, false);
+			weapon.fire(entityManager, bulletX, y + 38, facingRight, false);
 		}
 		return;
 	}
 
 	if (isMummyForm())
 	{
-		bool meleeKey = sf::Keyboard::isKeyPressed(sf::Keyboard::K);
-		if (meleeKey && !previousMeleeKey && meleeTimer <= 0.0f)
+		bool meleeKey = Keyboard::isKeyPressed(Keyboard::K);
+		if (meleeKey && !previousMeleeKey && meleeTimer <= 0)
 		{
 			float hitX = facingRight ? x + width : x;
-			MeleeHitbox* hitbox = new MeleeHitbox(hitX, y + 18.0f, facingRight, !grounded);
+			MeleeHitbox* hitbox = new MeleeHitbox(hitX, y + 18, facingRight, !grounded);
 			entityManager.addEntity(hitbox);
 			meleeTimer = Constants::MELEE_COOLDOWN;
 		}
 		previousMeleeKey = meleeKey;
-		previousGrenadeKey = sf::Keyboard::isKeyPressed(sf::Keyboard::G);
-		previousRocketKey = sf::Keyboard::isKeyPressed(sf::Keyboard::R);
+		previousGrenadeKey = Keyboard::isKeyPressed(Keyboard::G);
+		previousRocketKey = Keyboard::isKeyPressed(Keyboard::R);
 		return;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+	if (Keyboard::isKeyPressed(Keyboard::LControl) || Keyboard::isKeyPressed(Keyboard::J))
 	{
 		bool canFireWeapon = weapon.canFire();
 		if (canFireWeapon)
@@ -764,11 +768,11 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 			fireAnimationTimer = 0.24f;
 		}
 
-		if (!aimingUp && (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A)))
+		if (!aimingUp && (Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A)))
 		{
 			facingRight = false;
 		}
-		else if (!aimingUp && (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)))
+		else if (!aimingUp && (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::D)))
 		{
 			facingRight = true;
 		}
@@ -776,14 +780,14 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 		float bulletX = x;
 		if (aimingUp)
 		{
-			bulletX = x + width / 2.0f - 8.0f;
+			bulletX = x + width / 2 - 8;
 		}
 		else if (facingRight)
 		{
 			bulletX = x + width;
 		}
 
-		float bulletY = aimingUp ? y + 6.0f : y + 38.0f;
+		float bulletY = aimingUp ? y + 6 : y + 38;
 
 		if (canFireWeapon)
 		{
@@ -819,24 +823,24 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 		}
 	}
 
-	bool meleeKey = sf::Keyboard::isKeyPressed(sf::Keyboard::K);
-	if (meleeKey && !previousMeleeKey && meleeTimer <= 0.0f)
+	bool meleeKey = Keyboard::isKeyPressed(Keyboard::K);
+	if (meleeKey && !previousMeleeKey && meleeTimer <= 0)
 	{
 		float hitX = facingRight ? x + width : x;
-		MeleeHitbox* hitbox = new MeleeHitbox(hitX, y + 18.0f, facingRight, !grounded);
+		MeleeHitbox* hitbox = new MeleeHitbox(hitX, y + 18, facingRight, !grounded);
 		entityManager.addEntity(hitbox);
 		meleeTimer = Constants::MELEE_COOLDOWN;
 		fireAnimationTimer = 0.18f;
 	}
 	previousMeleeKey = meleeKey;
 
-	bool grenadeKey = sf::Keyboard::isKeyPressed(sf::Keyboard::G);
-	if (grenadeKey && !previousGrenadeKey && grenadeTimer <= 0.0f)
+	bool grenadeKey = Keyboard::isKeyPressed(Keyboard::G);
+	if (grenadeKey && !previousGrenadeKey && grenadeTimer <= 0)
 	{
 		if (grenades[currentCharacter] > 0 || DeveloperMode::isEnabled())
 		{
 			float grenadeX = facingRight ? x + width : x;
-			float grenadeY = y + 30.0f;
+			float grenadeY = y + 30;
 			GrenadeProjectile* grenade = new GrenadeProjectile(grenadeX, grenadeY, facingRight, !grounded);
 			entityManager.addEntity(grenade);
 			if (!DeveloperMode::isEnabled())
@@ -921,7 +925,7 @@ void PlayerSoldier::setRidingVehicle(bool riding)
 		stopMoving();
 		aimingUp = false;
 		firing = false;
-		fireAnimationTimer = 0.0f;
+		fireAnimationTimer = 0;
 	}
 }
 
@@ -952,7 +956,7 @@ float PlayerSoldier::getVehicleFireCooldownMultiplier() const
 		return 0.75f;
 	}
 
-	return 1.0f;
+	return 1;
 }
 
 float PlayerSoldier::getVehicleDurabilityMultiplier() const
@@ -962,7 +966,7 @@ float PlayerSoldier::getVehicleDurabilityMultiplier() const
 		return 1.2f;
 	}
 
-	return 1.0f;
+	return 1;
 }
 
 bool PlayerSoldier::survivesVehicleDestruction() const
@@ -1015,15 +1019,15 @@ void PlayerSoldier::zombify()
 	}
 
 	transformationState = PLAYER_FORM_ZOMBIE_EMERGE;
-	transformationTimer = 10.0f;
+	transformationTimer = 10;
 	transformationFrame = 0;
-	transformationFrameTimer = 0.0f;
+	transformationFrameTimer = 0;
 	stopMoving();
 	aimingUp = false;
 	firing = false;
-	fireAnimationTimer = 0.0f;
+	fireAnimationTimer = 0;
 	transformationSprite.setTexture(zombieEmergeTexture, true);
-	transformationSprite.setTextureRect(sf::IntRect(0, 0, 49, 41));
+	transformationSprite.setTextureRect(IntRect(0, 0, 49, 41));
 	updateTransformationSpritePosition();
 }
 
@@ -1035,15 +1039,15 @@ void PlayerSoldier::mummify()
 	}
 
 	transformationState = PLAYER_FORM_MUMMY;
-	transformationTimer = 10.0f;
+	transformationTimer = 10;
 	transformationFrame = 0;
-	transformationFrameTimer = 0.0f;
+	transformationFrameTimer = 0;
 	stopMoving();
 	aimingUp = false;
 	firing = false;
-	fireAnimationTimer = 0.0f;
+	fireAnimationTimer = 0;
 	transformationSprite.setTexture(mummyIdleTexture, true);
-	transformationSprite.setTextureRect(sf::IntRect(0, 0, 40, 45));
+	transformationSprite.setTextureRect(IntRect(0, 0, 40, 45));
 	updateTransformationSpritePosition();
 }
 
@@ -1082,12 +1086,12 @@ void PlayerSoldier::updateTransformation(float deltaTime)
 	}
 
 	transformationTimer -= deltaTime;
-	if (transformationTimer <= 0.0f)
+	if (transformationTimer <= 0)
 	{
 		transformationState = PLAYER_FORM_NORMAL;
-		transformationTimer = 0.0f;
+		transformationTimer = 0;
 		transformationFrame = 0;
-		transformationFrameTimer = 0.0f;
+		transformationFrameTimer = 0;
 		applyCharacterStats();
 	}
 }
@@ -1130,8 +1134,8 @@ void PlayerSoldier::updateTransformationAnimation(float deltaTime)
 		if (currentState != Constants::SOLDIER_STATE_RUNNING)
 		{
 			transformationFrame = 0;
-			transformationFrameTimer = 0.0f;
-			transformationSprite.setTextureRect(sf::IntRect(0, 0, frameWidthLocal, frameHeightLocal));
+			transformationFrameTimer = 0;
+			transformationSprite.setTextureRect(IntRect(0, 0, frameWidthLocal, frameHeightLocal));
 			updateTransformationSpritePosition();
 			return;
 		}
@@ -1140,7 +1144,7 @@ void PlayerSoldier::updateTransformationAnimation(float deltaTime)
 	transformationFrameTimer += deltaTime;
 	if (transformationFrameTimer >= frameDuration)
 	{
-		transformationFrameTimer = 0.0f;
+		transformationFrameTimer = 0;
 		transformationFrame += 1;
 		if (transformationFrame >= frameCount)
 		{
@@ -1148,9 +1152,9 @@ void PlayerSoldier::updateTransformationAnimation(float deltaTime)
 			{
 				transformationState = PLAYER_FORM_ZOMBIE;
 				transformationFrame = 0;
-				transformationFrameTimer = 0.0f;
+				transformationFrameTimer = 0;
 				transformationSprite.setTexture(zombieWalkTexture, true);
-				transformationSprite.setTextureRect(sf::IntRect(0, 0, 45, 41));
+				transformationSprite.setTextureRect(IntRect(0, 0, 45, 41));
 				updateTransformationSpritePosition();
 				return;
 			}
@@ -1171,7 +1175,7 @@ void PlayerSoldier::updateTransformationAnimation(float deltaTime)
 	}
 	else
 	{
-		transformationSprite.setTextureRect(sf::IntRect(transformationFrame * frameWidthLocal, 0, frameWidthLocal, frameHeightLocal));
+		transformationSprite.setTextureRect(IntRect(transformationFrame * frameWidthLocal, 0, frameWidthLocal, frameHeightLocal));
 	}
 	updateTransformationSpritePosition();
 }
@@ -1193,17 +1197,17 @@ void PlayerSoldier::updateTransformationSpritePosition()
 		transformationSprite.setScale(scale, scale);
 	}
 
-	sf::FloatRect bounds = transformationSprite.getGlobalBounds();
-	float drawX = x + width / 2.0f - bounds.width / 2.0f;
+	FloatRect bounds = transformationSprite.getGlobalBounds();
+	float drawX = x + width / 2 - bounds.width / 2;
 	if (drawFlipped)
 	{
-		drawX = x + width / 2.0f + bounds.width / 2.0f;
+		drawX = x + width / 2 + bounds.width / 2;
 	}
 	float drawY = y + height - bounds.height;
 	transformationSprite.setPosition(drawX, drawY);
 }
 
-void PlayerSoldier::setMarcoTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+void PlayerSoldier::setMarcoTorsoAnimation(int newState, const IntRect* frames, int frameCount, float frameDuration, Texture& texture)
 {
 	if (marcoTorsoState == newState)
 	{
@@ -1214,14 +1218,14 @@ void PlayerSoldier::setMarcoTorsoAnimation(int newState, const sf::IntRect* fram
 	marcoTorsoFrames = frames;
 	marcoTorsoFrameCount = frameCount;
 	marcoTorsoFrame = 0;
-	marcoTorsoTimer = 0.0f;
+	marcoTorsoTimer = 0;
 	marcoTorsoFrameDuration = frameDuration;
 	marcoTorsoSprite.setTexture(texture, true);
 	marcoTorsoSprite.setTextureRect(marcoTorsoFrames[0]);
 	updateMarcoSpritePositions();
 }
 
-void PlayerSoldier::setMarcoLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+void PlayerSoldier::setMarcoLegAnimation(int newState, const IntRect* frames, int frameCount, float frameDuration, Texture& texture)
 {
 	if (marcoLegState == newState)
 	{
@@ -1232,7 +1236,7 @@ void PlayerSoldier::setMarcoLegAnimation(int newState, const sf::IntRect* frames
 	marcoLegFrames = frames;
 	marcoLegFrameCount = frameCount;
 	marcoLegFrame = 0;
-	marcoLegTimer = 0.0f;
+	marcoLegTimer = 0;
 	marcoLegFrameDuration = frameDuration;
 	marcoLegsSprite.setTexture(texture, true);
 	marcoLegsSprite.setTextureRect(marcoLegFrames[0]);
@@ -1244,7 +1248,7 @@ void PlayerSoldier::updateMarcoLayeredAnimation(float deltaTime)
 	bool running = currentState == Constants::SOLDIER_STATE_RUNNING;
 	bool airborne = currentState == Constants::SOLDIER_STATE_JUMPING || currentState == Constants::SOLDIER_STATE_FALLING;
 
-	if (fireAnimationTimer > 0.0f)
+	if (fireAnimationTimer > 0)
 	{
 		fireAnimationTimer -= deltaTime;
 	}
@@ -1262,7 +1266,7 @@ void PlayerSoldier::updateMarcoLayeredAnimation(float deltaTime)
 		setMarcoLegAnimation(0, MARCO_IDLE_LEG_FRAMES, 1, 0.16f, marcoIdleLegsTexture);
 	}
 
-	if (aimingUp && fireAnimationTimer > 0.0f)
+	if (aimingUp && fireAnimationTimer > 0)
 	{
 		setMarcoTorsoAnimation(4, MARCO_SHOOT_UP_FRAMES, 4, 0.08f, marcoShootUpTexture);
 	}
@@ -1270,7 +1274,7 @@ void PlayerSoldier::updateMarcoLayeredAnimation(float deltaTime)
 	{
 		setMarcoTorsoAnimation(3, MARCO_FACE_UP_FRAMES, 4, 0.12f, marcoFaceUpTexture);
 	}
-	else if (fireAnimationTimer > 0.0f)
+	else if (fireAnimationTimer > 0)
 	{
 		setMarcoTorsoAnimation(2, MARCO_FIRE_FRAMES, 3, 0.08f, marcoFireTexture);
 	}
@@ -1290,7 +1294,7 @@ void PlayerSoldier::updateMarcoLayeredAnimation(float deltaTime)
 		marcoTorsoTimer += deltaTime;
 		if (marcoTorsoFrameCount > 1 && marcoTorsoTimer >= marcoTorsoFrameDuration)
 		{
-			marcoTorsoTimer = 0.0f;
+			marcoTorsoTimer = 0;
 			marcoTorsoFrame += 1;
 			if (marcoTorsoFrame >= marcoTorsoFrameCount)
 			{
@@ -1303,7 +1307,7 @@ void PlayerSoldier::updateMarcoLayeredAnimation(float deltaTime)
 	marcoLegTimer += deltaTime;
 	if (marcoLegFrameCount > 1 && marcoLegTimer >= marcoLegFrameDuration)
 	{
-		marcoLegTimer = 0.0f;
+		marcoLegTimer = 0;
 		marcoLegFrame += 1;
 		if (marcoLegFrame >= marcoLegFrameCount)
 		{
@@ -1341,7 +1345,7 @@ void PlayerSoldier::updateMarcoSpritePositions()
 		marcoTorsoSprite.setScale(scale, scale);
 	}
 
-	float centerX = x + width / 2.0f;
+	float centerX = x + width / 2;
 	float legOriginX = MARCO_IDLE_LEG_ORIGIN_X[0];
 	float legOriginY = MARCO_IDLE_LEG_ORIGIN_Y[0];
 	if (marcoLegState == 1)
@@ -1377,12 +1381,12 @@ void PlayerSoldier::updateMarcoSpritePositions()
 	marcoTorsoSprite.setOrigin(torsoOriginX, torsoOriginY);
 
 	float legAnchorY = y + height;
-	float torsoOffsetY = 12.0f;
+	float torsoOffsetY = 12;
 	marcoLegsSprite.setPosition(centerX, legAnchorY);
 	marcoTorsoSprite.setPosition(centerX, legAnchorY - torsoOffsetY * scale);
 }
 
-void PlayerSoldier::setEriTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+void PlayerSoldier::setEriTorsoAnimation(int newState, const IntRect* frames, int frameCount, float frameDuration, Texture& texture)
 {
 	if (eriTorsoState == newState)
 	{
@@ -1393,14 +1397,14 @@ void PlayerSoldier::setEriTorsoAnimation(int newState, const sf::IntRect* frames
 	eriTorsoFrames = frames;
 	eriTorsoFrameCount = frameCount;
 	eriTorsoFrame = 0;
-	eriTorsoTimer = 0.0f;
+	eriTorsoTimer = 0;
 	eriTorsoFrameDuration = frameDuration;
 	eriTorsoSprite.setTexture(texture, true);
 	eriTorsoSprite.setTextureRect(eriTorsoFrames[0]);
 	updateEriSpritePositions();
 }
 
-void PlayerSoldier::setEriLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+void PlayerSoldier::setEriLegAnimation(int newState, const IntRect* frames, int frameCount, float frameDuration, Texture& texture)
 {
 	if (eriLegState == newState)
 	{
@@ -1411,7 +1415,7 @@ void PlayerSoldier::setEriLegAnimation(int newState, const sf::IntRect* frames, 
 	eriLegFrames = frames;
 	eriLegFrameCount = frameCount;
 	eriLegFrame = 0;
-	eriLegTimer = 0.0f;
+	eriLegTimer = 0;
 	eriLegFrameDuration = frameDuration;
 	eriLegsSprite.setTexture(texture, true);
 	eriLegsSprite.setTextureRect(eriLegFrames[0]);
@@ -1423,7 +1427,7 @@ void PlayerSoldier::updateEriLayeredAnimation(float deltaTime)
 	bool running = currentState == Constants::SOLDIER_STATE_RUNNING;
 	bool airborne = currentState == Constants::SOLDIER_STATE_JUMPING || currentState == Constants::SOLDIER_STATE_FALLING;
 
-	if (fireAnimationTimer > 0.0f)
+	if (fireAnimationTimer > 0)
 	{
 		fireAnimationTimer -= deltaTime;
 	}
@@ -1441,7 +1445,7 @@ void PlayerSoldier::updateEriLayeredAnimation(float deltaTime)
 		setEriLegAnimation(0, ERI_IDLE_LEG_FRAMES, 1, 0.16f, eriIdleLegsTexture);
 	}
 
-	if (aimingUp && fireAnimationTimer > 0.0f)
+	if (aimingUp && fireAnimationTimer > 0)
 	{
 		setEriTorsoAnimation(4, ERI_SHOOT_UP_FRAMES, 4, 0.08f, eriShootUpTexture);
 	}
@@ -1449,7 +1453,7 @@ void PlayerSoldier::updateEriLayeredAnimation(float deltaTime)
 	{
 		setEriTorsoAnimation(3, ERI_FACE_UP_FRAMES, 4, 0.12f, eriFaceUpTexture);
 	}
-	else if (fireAnimationTimer > 0.0f)
+	else if (fireAnimationTimer > 0)
 	{
 		setEriTorsoAnimation(2, ERI_FIRE_FRAMES, 3, 0.08f, eriFireTexture);
 	}
@@ -1469,7 +1473,7 @@ void PlayerSoldier::updateEriLayeredAnimation(float deltaTime)
 		eriTorsoTimer += deltaTime;
 		if (eriTorsoFrameCount > 1 && eriTorsoTimer >= eriTorsoFrameDuration)
 		{
-			eriTorsoTimer = 0.0f;
+			eriTorsoTimer = 0;
 			eriTorsoFrame += 1;
 			if (eriTorsoFrame >= eriTorsoFrameCount)
 			{
@@ -1482,7 +1486,7 @@ void PlayerSoldier::updateEriLayeredAnimation(float deltaTime)
 	eriLegTimer += deltaTime;
 	if (eriLegFrameCount > 1 && eriLegTimer >= eriLegFrameDuration)
 	{
-		eriLegTimer = 0.0f;
+		eriLegTimer = 0;
 		eriLegFrame += 1;
 		if (eriLegFrame >= eriLegFrameCount)
 		{
@@ -1520,7 +1524,7 @@ void PlayerSoldier::updateEriSpritePositions()
 		eriTorsoSprite.setScale(scale, scale);
 	}
 
-	float centerX = x + width / 2.0f;
+	float centerX = x + width / 2;
 	float legOriginX = ERI_IDLE_LEG_ORIGIN_X[0];
 	float legOriginY = ERI_IDLE_LEG_ORIGIN_Y[0];
 	if (eriLegState == 1)
@@ -1556,12 +1560,12 @@ void PlayerSoldier::updateEriSpritePositions()
 	eriTorsoSprite.setOrigin(torsoOriginX, torsoOriginY);
 
 	float legAnchorY = y + height;
-	float torsoOffsetY = 12.0f;
+	float torsoOffsetY = 12;
 	eriLegsSprite.setPosition(centerX, legAnchorY);
 	eriTorsoSprite.setPosition(centerX, legAnchorY - torsoOffsetY * scale);
 }
 
-void PlayerSoldier::setTarmaTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+void PlayerSoldier::setTarmaTorsoAnimation(int newState, const IntRect* frames, int frameCount, float frameDuration, Texture& texture)
 {
 	if (tarmaTorsoState == newState)
 	{
@@ -1572,14 +1576,14 @@ void PlayerSoldier::setTarmaTorsoAnimation(int newState, const sf::IntRect* fram
 	tarmaTorsoFrames = frames;
 	tarmaTorsoFrameCount = frameCount;
 	tarmaTorsoFrame = 0;
-	tarmaTorsoTimer = 0.0f;
+	tarmaTorsoTimer = 0;
 	tarmaTorsoFrameDuration = frameDuration;
 	tarmaTorsoSprite.setTexture(texture, true);
 	tarmaTorsoSprite.setTextureRect(tarmaTorsoFrames[0]);
 	updateTarmaSpritePositions();
 }
 
-void PlayerSoldier::setTarmaLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+void PlayerSoldier::setTarmaLegAnimation(int newState, const IntRect* frames, int frameCount, float frameDuration, Texture& texture)
 {
 	if (tarmaLegState == newState)
 	{
@@ -1590,7 +1594,7 @@ void PlayerSoldier::setTarmaLegAnimation(int newState, const sf::IntRect* frames
 	tarmaLegFrames = frames;
 	tarmaLegFrameCount = frameCount;
 	tarmaLegFrame = 0;
-	tarmaLegTimer = 0.0f;
+	tarmaLegTimer = 0;
 	tarmaLegFrameDuration = frameDuration;
 	tarmaLegsSprite.setTexture(texture, true);
 	tarmaLegsSprite.setTextureRect(tarmaLegFrames[0]);
@@ -1602,7 +1606,7 @@ void PlayerSoldier::updateTarmaLayeredAnimation(float deltaTime)
 	bool running = currentState == Constants::SOLDIER_STATE_RUNNING;
 	bool airborne = currentState == Constants::SOLDIER_STATE_JUMPING || currentState == Constants::SOLDIER_STATE_FALLING;
 
-	if (fireAnimationTimer > 0.0f)
+	if (fireAnimationTimer > 0)
 	{
 		fireAnimationTimer -= deltaTime;
 	}
@@ -1620,7 +1624,7 @@ void PlayerSoldier::updateTarmaLayeredAnimation(float deltaTime)
 		setTarmaLegAnimation(0, TARMA_IDLE_LEG_FRAMES, 1, 0.16f, tarmaIdleLegsTexture);
 	}
 
-	if (aimingUp && fireAnimationTimer > 0.0f)
+	if (aimingUp && fireAnimationTimer > 0)
 	{
 		setTarmaTorsoAnimation(4, TARMA_SHOOT_UP_FRAMES, 4, 0.08f, tarmaShootUpTexture);
 	}
@@ -1628,7 +1632,7 @@ void PlayerSoldier::updateTarmaLayeredAnimation(float deltaTime)
 	{
 		setTarmaTorsoAnimation(3, TARMA_FACE_UP_FRAMES, 4, 0.12f, tarmaFaceUpTexture);
 	}
-	else if (fireAnimationTimer > 0.0f)
+	else if (fireAnimationTimer > 0)
 	{
 		setTarmaTorsoAnimation(2, TARMA_FIRE_FRAMES, 3, 0.08f, tarmaFireTexture);
 	}
@@ -1648,7 +1652,7 @@ void PlayerSoldier::updateTarmaLayeredAnimation(float deltaTime)
 		tarmaTorsoTimer += deltaTime;
 		if (tarmaTorsoFrameCount > 1 && tarmaTorsoTimer >= tarmaTorsoFrameDuration)
 		{
-			tarmaTorsoTimer = 0.0f;
+			tarmaTorsoTimer = 0;
 			tarmaTorsoFrame += 1;
 			if (tarmaTorsoFrame >= tarmaTorsoFrameCount)
 			{
@@ -1661,7 +1665,7 @@ void PlayerSoldier::updateTarmaLayeredAnimation(float deltaTime)
 	tarmaLegTimer += deltaTime;
 	if (tarmaLegFrameCount > 1 && tarmaLegTimer >= tarmaLegFrameDuration)
 	{
-		tarmaLegTimer = 0.0f;
+		tarmaLegTimer = 0;
 		tarmaLegFrame += 1;
 		if (tarmaLegFrame >= tarmaLegFrameCount)
 		{
@@ -1699,7 +1703,7 @@ void PlayerSoldier::updateTarmaSpritePositions()
 		tarmaTorsoSprite.setScale(scale, scale);
 	}
 
-	float centerX = x + width / 2.0f;
+	float centerX = x + width / 2;
 	float legOriginX = TARMA_IDLE_LEG_ORIGIN_X[0];
 	float legOriginY = TARMA_IDLE_LEG_ORIGIN_Y[0];
 	if (tarmaLegState == 1)
@@ -1735,12 +1739,12 @@ void PlayerSoldier::updateTarmaSpritePositions()
 	tarmaTorsoSprite.setOrigin(torsoOriginX, torsoOriginY);
 
 	float legAnchorY = y + height;
-	float torsoOffsetY = 12.0f;
+	float torsoOffsetY = 12;
 	tarmaLegsSprite.setPosition(centerX, legAnchorY);
 	tarmaTorsoSprite.setPosition(centerX, legAnchorY - torsoOffsetY * scale);
 }
 
-void PlayerSoldier::setFioTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+void PlayerSoldier::setFioTorsoAnimation(int newState, const IntRect* frames, int frameCount, float frameDuration, Texture& texture)
 {
 	if (fioTorsoState == newState)
 	{
@@ -1751,14 +1755,14 @@ void PlayerSoldier::setFioTorsoAnimation(int newState, const sf::IntRect* frames
 	fioTorsoFrames = frames;
 	fioTorsoFrameCount = frameCount;
 	fioTorsoFrame = 0;
-	fioTorsoTimer = 0.0f;
+	fioTorsoTimer = 0;
 	fioTorsoFrameDuration = frameDuration;
 	fioTorsoSprite.setTexture(texture, true);
 	fioTorsoSprite.setTextureRect(fioTorsoFrames[0]);
 	updateFioSpritePositions();
 }
 
-void PlayerSoldier::setFioLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+void PlayerSoldier::setFioLegAnimation(int newState, const IntRect* frames, int frameCount, float frameDuration, Texture& texture)
 {
 	if (fioLegState == newState)
 	{
@@ -1769,7 +1773,7 @@ void PlayerSoldier::setFioLegAnimation(int newState, const sf::IntRect* frames, 
 	fioLegFrames = frames;
 	fioLegFrameCount = frameCount;
 	fioLegFrame = 0;
-	fioLegTimer = 0.0f;
+	fioLegTimer = 0;
 	fioLegFrameDuration = frameDuration;
 	fioLegsSprite.setTexture(texture, true);
 	fioLegsSprite.setTextureRect(fioLegFrames[0]);
@@ -1781,7 +1785,7 @@ void PlayerSoldier::updateFioLayeredAnimation(float deltaTime)
 	bool running = currentState == Constants::SOLDIER_STATE_RUNNING;
 	bool airborne = currentState == Constants::SOLDIER_STATE_JUMPING || currentState == Constants::SOLDIER_STATE_FALLING;
 
-	if (fireAnimationTimer > 0.0f)
+	if (fireAnimationTimer > 0)
 	{
 		fireAnimationTimer -= deltaTime;
 	}
@@ -1799,7 +1803,7 @@ void PlayerSoldier::updateFioLayeredAnimation(float deltaTime)
 		setFioLegAnimation(0, FIO_IDLE_LEG_FRAMES, 1, 0.16f, fioIdleLegsTexture);
 	}
 
-	if (aimingUp && fireAnimationTimer > 0.0f)
+	if (aimingUp && fireAnimationTimer > 0)
 	{
 		setFioTorsoAnimation(4, FIO_SHOOT_UP_FRAMES, 4, 0.08f, fioShootUpTexture);
 	}
@@ -1807,7 +1811,7 @@ void PlayerSoldier::updateFioLayeredAnimation(float deltaTime)
 	{
 		setFioTorsoAnimation(3, FIO_FACE_UP_FRAMES, 4, 0.12f, fioFaceUpTexture);
 	}
-	else if (fireAnimationTimer > 0.0f)
+	else if (fireAnimationTimer > 0)
 	{
 		setFioTorsoAnimation(2, FIO_FIRE_FRAMES, 3, 0.08f, fioFireTexture);
 	}
@@ -1827,7 +1831,7 @@ void PlayerSoldier::updateFioLayeredAnimation(float deltaTime)
 		fioTorsoTimer += deltaTime;
 		if (fioTorsoFrameCount > 1 && fioTorsoTimer >= fioTorsoFrameDuration)
 		{
-			fioTorsoTimer = 0.0f;
+			fioTorsoTimer = 0;
 			fioTorsoFrame += 1;
 			if (fioTorsoFrame >= fioTorsoFrameCount)
 			{
@@ -1840,7 +1844,7 @@ void PlayerSoldier::updateFioLayeredAnimation(float deltaTime)
 	fioLegTimer += deltaTime;
 	if (fioLegFrameCount > 1 && fioLegTimer >= fioLegFrameDuration)
 	{
-		fioLegTimer = 0.0f;
+		fioLegTimer = 0;
 		fioLegFrame += 1;
 		if (fioLegFrame >= fioLegFrameCount)
 		{
@@ -1878,7 +1882,7 @@ void PlayerSoldier::updateFioSpritePositions()
 		fioTorsoSprite.setScale(scale, scale);
 	}
 
-	float centerX = x + width / 2.0f;
+	float centerX = x + width / 2;
 	float legOriginX = FIO_IDLE_LEG_ORIGIN_X[0];
 	float legOriginY = FIO_IDLE_LEG_ORIGIN_Y[0];
 	if (fioLegState == 1)
@@ -1914,19 +1918,19 @@ void PlayerSoldier::updateFioSpritePositions()
 	fioTorsoSprite.setOrigin(torsoOriginX, torsoOriginY);
 
 	float legAnchorY = y + height;
-	float torsoOffsetY = 12.0f;
+	float torsoOffsetY = 12;
 	fioLegsSprite.setPosition(centerX, legAnchorY);
 	fioTorsoSprite.setPosition(centerX, legAnchorY - torsoOffsetY * scale);
 }
 
-void PlayerSoldier::draw(sf::RenderWindow& window)
+void PlayerSoldier::draw(RenderWindow& window)
 {
 	if (!visible || (pilotHiddenWhileInsideVehicle && ridingVehicle))
 	{
 		return;
 	}
 
-	sf::Color playerTint = damageTimer > 0.0f ? sf::Color(255, 120, 120) : sf::Color::White;
+	Color playerTint = damageTimer > 0 ? Color(255, 120, 120) : Color::White;
 
 	if (isTransformed())
 	{
@@ -1967,21 +1971,21 @@ void PlayerSoldier::draw(sf::RenderWindow& window)
 		if (maxHealth > 0)
 		{
 			float healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
-			if (healthRatio < 0.0f)
+			if (healthRatio < 0)
 			{
-				healthRatio = 0.0f;
+				healthRatio = 0;
 			}
 
-			sf::RectangleShape healthBack;
-			healthBack.setPosition(x, y - 12.0f);
-			healthBack.setSize(sf::Vector2f(width, 6.0f));
-			healthBack.setFillColor(sf::Color(80, 20, 20));
+			RectangleShape healthBack;
+			healthBack.setPosition(x, y - 12);
+			healthBack.setSize(Vector2f(width, 6));
+			healthBack.setFillColor(Color(80, 20, 20));
 			window.draw(healthBack);
 
-			sf::RectangleShape healthFront;
-			healthFront.setPosition(x, y - 12.0f);
-			healthFront.setSize(sf::Vector2f(width * healthRatio, 6.0f));
-			healthFront.setFillColor(sf::Color(60, 220, 90));
+			RectangleShape healthFront;
+			healthFront.setPosition(x, y - 12);
+			healthFront.setSize(Vector2f(width * healthRatio, 6));
+			healthFront.setFillColor(Color(60, 220, 90));
 			window.draw(healthFront);
 		}
 		return;

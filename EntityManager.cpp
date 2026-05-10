@@ -18,6 +18,10 @@
 #include <cstdlib>
 #include <ctime>
 
+
+using namespace std;
+using namespace sf;
+
 EntityManager::EntityManager()
 {
 	pendingScore = 0;
@@ -26,7 +30,7 @@ EntityManager::EntityManager()
 	destroyedFlyingTara = 0;
 	destroyedBradley = 0;
 	destroyedEnemySub = 0;
-	std::srand(static_cast<unsigned int>(std::time(0)));
+	srand(static_cast<unsigned int>(time(0)));
 }
 
 EntityManager::~EntityManager()
@@ -43,39 +47,14 @@ void EntityManager::addEntity(Entity* entity)
 {
 	if (entity != 0)
 	{
-		Soldier* soldier = dynamic_cast<Soldier*>(entity);
-		if (soldier != 0)
-		{
-			soldier->setActiveLevel(activeLevel);
-		}
-		Enemy* enemy = dynamic_cast<Enemy*>(entity);
-		if (enemy != 0)
-		{
-			enemy->setActiveLevel(activeLevel);
-		}
-		Vehicle* vehicle = dynamic_cast<Vehicle*>(entity);
-		if (vehicle != 0)
-		{
-			vehicle->setActiveLevel(activeLevel);
-		}
+		assignActiveLevel(entity);
 		Projectile* projectile = dynamic_cast<Projectile*>(entity);
 		if (projectile != 0)
 		{
-			projectile->setActiveLevel(activeLevel);
 			if (audioManager != 0 && !projectile->isMelee() && !projectile->isExplosive())
 			{
 				audioManager->playSound(SFX_BULLET_FIRE);
 			}
-		}
-		Collectible* collectible = dynamic_cast<Collectible*>(entity);
-		if (collectible != 0)
-		{
-			collectible->setActiveLevel(activeLevel);
-		}
-		Prisoner* prisoner = dynamic_cast<Prisoner*>(entity);
-		if (prisoner != 0)
-		{
-			prisoner->setActiveLevel(activeLevel);
 		}
 		entities.pushBack(entity);
 	}
@@ -86,36 +65,51 @@ void EntityManager::setActiveLevel(Level* level)
 	activeLevel = level;
 	for (int i = 0; i < entities.getSize(); i += 1)
 	{
-		Soldier* soldier = dynamic_cast<Soldier*>(entities.get(i));
-		if (soldier != 0)
-		{
-			soldier->setActiveLevel(activeLevel);
-		}
-		Enemy* enemy = dynamic_cast<Enemy*>(entities.get(i));
-		if (enemy != 0)
-		{
-			enemy->setActiveLevel(activeLevel);
-		}
-		Vehicle* vehicle = dynamic_cast<Vehicle*>(entities.get(i));
-		if (vehicle != 0)
-		{
-			vehicle->setActiveLevel(activeLevel);
-		}
-		Projectile* projectile = dynamic_cast<Projectile*>(entities.get(i));
-		if (projectile != 0)
-		{
-			projectile->setActiveLevel(activeLevel);
-		}
-		Collectible* collectible = dynamic_cast<Collectible*>(entities.get(i));
-		if (collectible != 0)
-		{
-			collectible->setActiveLevel(activeLevel);
-		}
-		Prisoner* prisoner = dynamic_cast<Prisoner*>(entities.get(i));
-		if (prisoner != 0)
-		{
-			prisoner->setActiveLevel(activeLevel);
-		}
+		assignActiveLevel(entities.get(i));
+	}
+}
+
+void EntityManager::assignActiveLevel(Entity* entity)
+{
+	if (entity == 0)
+	{
+		return;
+	}
+
+	Soldier* soldier = dynamic_cast<Soldier*>(entity);
+	if (soldier != 0)
+	{
+		soldier->setActiveLevel(activeLevel);
+	}
+
+	Enemy* enemy = dynamic_cast<Enemy*>(entity);
+	if (enemy != 0)
+	{
+		enemy->setActiveLevel(activeLevel);
+	}
+
+	Vehicle* vehicle = dynamic_cast<Vehicle*>(entity);
+	if (vehicle != 0)
+	{
+		vehicle->setActiveLevel(activeLevel);
+	}
+
+	Projectile* projectile = dynamic_cast<Projectile*>(entity);
+	if (projectile != 0)
+	{
+		projectile->setActiveLevel(activeLevel);
+	}
+
+	Collectible* collectible = dynamic_cast<Collectible*>(entity);
+	if (collectible != 0)
+	{
+		collectible->setActiveLevel(activeLevel);
+	}
+
+	Prisoner* prisoner = dynamic_cast<Prisoner*>(entity);
+	if (prisoner != 0)
+	{
+		prisoner->setActiveLevel(activeLevel);
 	}
 }
 
@@ -215,7 +209,7 @@ void EntityManager::checkProjectileEnemyCollisions()
 
 						float dx = nearbyEnemy->getCenterX() - centerX;
 						float dy = nearbyEnemy->getCenterY() - centerY;
-						float distance = std::sqrt(dx * dx + dy * dy);
+						float distance = sqrt(dx * dx + dy * dy);
 						if (distance <= projectile->getBlastRadius())
 						{
 							bool damageApplied = nearbyEnemy->applyProjectileHit(*projectile);
@@ -472,7 +466,7 @@ void EntityManager::handleEnemyKilled(Enemy* enemy)
 
 void EntityManager::spawnDropForEnemy(const Enemy& enemy)
 {
-	int roll = std::rand() % 100;
+	int roll = rand() % 100;
 	CollectibleKind dropKind;
 	if (roll < 5)
 	{
@@ -496,13 +490,13 @@ void EntityManager::spawnDropForEnemy(const Enemy& enemy)
 	}
 
 
-	float spawnX = enemy.getCenterX() - 12.0f;
+	float spawnX = enemy.getCenterX() - 12;
 	float spawnY = enemy.getY();
 	Collectible* drop = new Collectible(dropKind, spawnX, spawnY);
 	addEntity(drop);
 }
 
-void EntityManager::drawAll(sf::RenderWindow& window)
+void EntityManager::drawAll(RenderWindow& window)
 {
 	for (int i = 0; i < entities.getSize(); i += 1)
 	{

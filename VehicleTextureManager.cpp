@@ -2,6 +2,10 @@
 
 #include <cstdio>
 
+
+using namespace std;
+using namespace sf;
+
 VehicleTextureManager::VehicleTextureManager()
 {
 	int n = static_cast<int>(VehicleTextureId::COUNT_);
@@ -38,13 +42,13 @@ bool VehicleTextureManager::tryLoad(int id, const char* path)
 
 	if (!warned[id])
 	{
-		std::printf("[VehicleTextureManager] Failed to load: %s\n", path);
+		printf("[VehicleTextureManager] Failed to load: %s\n", path);
 		warned[id] = true;
 	}
 	return false;
 }
 
-const sf::Texture* VehicleTextureManager::getTexture(VehicleTextureId id)
+const Texture* VehicleTextureManager::getTexture(VehicleTextureId id)
 {
 	int i = static_cast<int>(id);
 	switch (id)

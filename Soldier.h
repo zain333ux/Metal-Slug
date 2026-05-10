@@ -48,14 +48,11 @@ public:
 	bool loadSpriteSheet(const char* fileName);
 	void setSpriteFrame(int left, int top, int frameWidth, int frameHeight);
 	void setSpriteScale(float scale);
-	void setSpriteFacesLeft(bool facesLeft);
 	void playAnimation(int row, int frameCount, float frameDuration);
 	void playAnimation(int row, int startFrame, int frameCount, float frameDuration);
 	void setMovementMaxX(float maxX);
 	void setActiveLevel(Level* level);
 
-	int getCurrentState() const;
 	bool isFacingRight() const;
 	bool isGrounded() const;
-	bool isInWater() const;
 };

@@ -7,6 +7,10 @@
 
 #include <cmath>
 
+
+using namespace std;
+using namespace sf;
+
 Enemy::Enemy()
 {
 	maxHealth = 30;
@@ -16,23 +20,23 @@ Enemy::Enemy()
 	moveSpeed = Constants::ENEMY_MOVE_SPEED;
 	facingRight = false;
 	grounded = false;
-	movementMaxX = Constants::WORLD_WIDTH_LEVEL_3 + 2200.0f;
+	movementMaxX = Constants::WORLD_WIDTH_LEVEL_3 + 2200;
 	activeLevel = 0;
 	stopDistance = Constants::ENEMY_STOP_DISTANCE;
-	contactDamageCooldown = 1.0f;
-	contactDamageTimer = 0.0f;
-	patrolLeft = 720.0f;
-	patrolRight = 1080.0f;
+	contactDamageCooldown = 1;
+	contactDamageTimer = 0;
+	patrolLeft = 720;
+	patrolRight = 1080;
 	patrolDirection = -1;
-	detectionRange = 520.0f;
-	attackRange = 82.0f;
-	shootingRange = 420.0f;
+	detectionRange = 520;
+	attackRange = 82;
+	shootingRange = 420;
 	pistolCooldown = 1.25f;
 	pistolTimer = 0.4f;
 	pistolEquipped = false;
 	queuedShot = false;
 	target = 0;
-	fallbackColor = sf::Color(210, 70, 70);
+	fallbackColor = Color(210, 70, 70);
 	canMoveInAir = false;
 	inWater = false;
 	usingSprite = false;
@@ -44,27 +48,27 @@ Enemy::Enemy()
 	animationStartFrame = 0;
 	animationFrameCount = 1;
 	currentAnimationFrame = 0;
-	animationTimer = 0.0f;
+	animationTimer = 0;
 	animationFrameDuration = 0.15f;
 	deathProcessed = false;
-	width = 52.0f;
-	height = 96.0f;
-	setPosition(900.0f, 500.0f);
-	body.setSize(sf::Vector2f(width, height));
-	body.setOutlineColor(sf::Color::Black);
-	body.setOutlineThickness(2.0f);
-	body.setFillColor(sf::Color(210, 70, 70));
+	width = 52;
+	height = 96;
+	setPosition(900, 500);
+	body.setSize(Vector2f(width, height));
+	body.setOutlineColor(Color::Black);
+	body.setOutlineThickness(2);
+	body.setFillColor(Color(210, 70, 70));
 	setSpriteScale(2.1f);
 }
 
 void Enemy::setSpawnPosition(float newX, float newY)
 {
 	setPosition(newX, newY);
-	patrolLeft = newX - 180.0f;
-	patrolRight = newX + 180.0f;
-	if (patrolLeft < 0.0f)
+	patrolLeft = newX - 180;
+	patrolRight = newX + 180;
+	if (patrolLeft < 0)
 	{
-		patrolLeft = 0.0f;
+		patrolLeft = 0;
 	}
 }
 
@@ -75,29 +79,29 @@ void Enemy::setTarget(PlayerSoldier* newTarget)
 
 void Enemy::update(float deltaTime)
 {
-	if (contactDamageTimer > 0.0f)
+	if (contactDamageTimer > 0)
 	{
 		contactDamageTimer -= deltaTime;
 	}
-	if (pistolTimer > 0.0f)
+	if (pistolTimer > 0)
 	{
 		pistolTimer -= deltaTime;
 	}
 
 	if (activeLevel != 0)
 	{
-		inWater = activeLevel->isWaterInBounds(x + 4.0f, x + width - 4.0f, y + height * 0.45f, y + height + 10.0f);
+		inWater = activeLevel->isWaterInBounds(x + 4, x + width - 4, y + height * 0.45f, y + height + 10);
 	}
 
 	updateAI();
-	if (activeLevel != 0 && grounded && velocityX != 0.0f)
+	if (activeLevel != 0 && grounded && velocityX != 0)
 	{
-		float lookAheadX = velocityX > 0.0f ? x + width + 14.0f : x - 14.0f;
+		float lookAheadX = velocityX > 0 ? x + width + 14 : x - 14;
 		float nextGroundY = activeLevel->getGroundYAt(lookAheadX);
 		float currentBottom = y + height;
-		if (nextGroundY > currentBottom + 34.0f)
+		if (nextGroundY > currentBottom + 34)
 		{
-			velocityX = 0.0f;
+			velocityX = 0;
 			patrolDirection *= -1;
 		}
 	}
@@ -115,9 +119,9 @@ void Enemy::update(float deltaTime)
 		velocityX *= 0.75f;
 	}
 	velocityY += gravity * deltaTime;
-	if (wasInWater && velocityY > 150.0f)
+	if (wasInWater && velocityY > 150)
 	{
-		velocityY = 150.0f;
+		velocityY = 150;
 	}
 
 	float previousBottom = y + height;
@@ -130,20 +134,20 @@ void Enemy::update(float deltaTime)
 	}
 
 	inWater = activeLevel != 0 &&
-		activeLevel->isWaterInBounds(x + 4.0f, x + width - 4.0f, y + height * 0.45f, y + height + 10.0f);
+		activeLevel->isWaterInBounds(x + 4, x + width - 4, y + height * 0.45f, y + height + 10);
 
-	if (y + height >= landingY - 8.0f && velocityY >= 0.0f)
+	if (y + height >= landingY - 8 && velocityY >= 0)
 	{
 		y = landingY - height;
-		velocityY = 0.0f;
+		velocityY = 0;
 		grounded = true;
 	}
 	else if (y + height >= landingY)
 	{
 		y = landingY - height;
-		if (velocityY > 0.0f)
+		if (velocityY > 0)
 		{
-			velocityY = 0.0f;
+			velocityY = 0;
 		}
 		grounded = true;
 	}
@@ -155,22 +159,22 @@ void Enemy::update(float deltaTime)
 	if (activeLevel != 0 && y + height > activeLevel->getWorldHeight())
 	{
 		y = activeLevel->getWorldHeight() - height;
-		velocityY = 0.0f;
+		velocityY = 0;
 		grounded = true;
 	}
 
-	if (y < 0.0f)
+	if (y < 0)
 	{
-		y = 0.0f;
-		if (velocityY < 0.0f)
+		y = 0;
+		if (velocityY < 0)
 		{
-			velocityY = 0.0f;
+			velocityY = 0;
 		}
 	}
 
-	if (x < 0.0f)
+	if (x < 0)
 	{
-		x = 0.0f;
+		x = 0;
 	}
 	if (x + width > movementMaxX)
 	{
@@ -185,7 +189,7 @@ void Enemy::update(float deltaTime)
 	}
 }
 
-void Enemy::draw(sf::RenderWindow& window)
+void Enemy::draw(RenderWindow& window)
 {
 	if (!visible)
 	{
@@ -204,21 +208,21 @@ void Enemy::draw(sf::RenderWindow& window)
 	if (maxHealth > 0)
 	{
 		float healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
-		if (healthRatio < 0.0f)
+		if (healthRatio < 0)
 		{
-			healthRatio = 0.0f;
+			healthRatio = 0;
 		}
 
-		sf::RectangleShape healthBack;
-		healthBack.setPosition(x, y - 12.0f);
-		healthBack.setSize(sf::Vector2f(width, 6.0f));
-		healthBack.setFillColor(sf::Color(80, 20, 20));
+		RectangleShape healthBack;
+		healthBack.setPosition(x, y - 12);
+		healthBack.setSize(Vector2f(width, 6));
+		healthBack.setFillColor(Color(80, 20, 20));
 		window.draw(healthBack);
 
-		sf::RectangleShape healthFront;
-		healthFront.setPosition(x, y - 12.0f);
-		healthFront.setSize(sf::Vector2f(width * healthRatio, 6.0f));
-		healthFront.setFillColor(sf::Color(60, 220, 90));
+		RectangleShape healthFront;
+		healthFront.setPosition(x, y - 12);
+		healthFront.setSize(Vector2f(width * healthRatio, 6));
+		healthFront.setFillColor(Color(60, 220, 90));
 		window.draw(healthFront);
 	}
 }
@@ -239,12 +243,12 @@ void Enemy::updateAI()
 
 	float distanceX = target->getCenterX() - getCenterX();
 	float distanceY = target->getCenterY() - getCenterY();
-	float absoluteDistanceX = std::abs(distanceX);
-	bool canSeePlayer = absoluteDistanceX <= detectionRange && std::abs(distanceY) < 150.0f;
+	float absoluteDistanceX = abs(distanceX);
+	bool canSeePlayer = absoluteDistanceX <= detectionRange && abs(distanceY) < 150;
 
 	if (canSeePlayer)
 	{
-		if (distanceX > 0.0f)
+		if (distanceX > 0)
 		{
 			facingRight = true;
 		}
@@ -253,7 +257,7 @@ void Enemy::updateAI()
 			facingRight = false;
 		}
 
-		if (pistolEquipped && absoluteDistanceX <= shootingRange && pistolTimer <= 0.0f)
+		if (pistolEquipped && absoluteDistanceX <= shootingRange && pistolTimer <= 0)
 		{
 			queuedShot = true;
 			pistolTimer = pistolCooldown;
@@ -303,8 +307,8 @@ Projectile* Enemy::createProjectileIfReady()
 	}
 
 	queuedShot = false;
-	float bulletX = facingRight ? x + width : x - 18.0f;
-	float bulletY = y + 42.0f;
+	float bulletX = facingRight ? x + width : x - 18;
+	float bulletY = y + 42;
 	return new EnemyBullet(bulletX, bulletY, facingRight);
 }
 
@@ -327,7 +331,7 @@ void Enemy::moveRight()
 
 void Enemy::stopMoving()
 {
-	velocityX = 0.0f;
+	velocityX = 0;
 }
 
 bool Enemy::loadSpriteSheet(const char* fileName)
@@ -345,15 +349,15 @@ bool Enemy::loadSpriteSheet(const char* fileName)
 	return true;
 }
 
-bool Enemy::loadMaskedTexture(sf::Texture& targetTexture, const char* fileName)
+bool Enemy::loadMaskedTexture(Texture& targetTexture, const char* fileName)
 {
-	sf::Image image;
+	Image image;
 	if (!image.loadFromFile(fileName))
 	{
 		return false;
 	}
 
-	image.createMaskFromColor(sf::Color::White);
+	image.createMaskFromColor(Color::White);
 	return targetTexture.loadFromImage(image);
 }
 
@@ -361,13 +365,13 @@ void Enemy::setSpriteFrame(int left, int top, int newFrameWidth, int newFrameHei
 {
 	frameWidth = newFrameWidth;
 	frameHeight = newFrameHeight;
-	sprite.setTextureRect(sf::IntRect(left, top, frameWidth, frameHeight));
+	sprite.setTextureRect(IntRect(left, top, frameWidth, frameHeight));
 	updateVisualPosition();
 }
 
 void Enemy::setSpriteScale(float scale)
 {
-	if (scale <= 0.0f)
+	if (scale <= 0)
 	{
 		return;
 	}
@@ -388,7 +392,7 @@ void Enemy::playAnimation(int row, int startFrame, int frameCount, float frameDu
 	{
 		frameCount = 1;
 	}
-	if (frameDuration <= 0.0f)
+	if (frameDuration <= 0)
 	{
 		frameDuration = 0.15f;
 	}
@@ -406,7 +410,7 @@ void Enemy::playAnimation(int row, int startFrame, int frameCount, float frameDu
 	animationStartFrame = startFrame;
 	animationFrameCount = frameCount;
 	currentAnimationFrame = 0;
-	animationTimer = 0.0f;
+	animationTimer = 0;
 	animationFrameDuration = frameDuration;
 	setSpriteFrame(animationStartFrame * frameWidth, animationRow * frameHeight, frameWidth, frameHeight);
 }
@@ -435,11 +439,11 @@ void Enemy::updateVisualPosition()
 		sprite.setScale(spriteScale, spriteScale);
 	}
 
-	sf::FloatRect spriteBounds = sprite.getGlobalBounds();
-	float spriteX = x + width / 2.0f - spriteBounds.width / 2.0f;
+	FloatRect spriteBounds = sprite.getGlobalBounds();
+	float spriteX = x + width / 2 - spriteBounds.width / 2;
 	if (drawFlipped)
 	{
-		spriteX = x + width / 2.0f + spriteBounds.width / 2.0f;
+		spriteX = x + width / 2 + spriteBounds.width / 2;
 	}
 	float spriteY = y + height - spriteBounds.height;
 	sprite.setPosition(spriteX, spriteY);
@@ -455,7 +459,7 @@ void Enemy::updateAnimation(float deltaTime)
 	animationTimer += deltaTime;
 	if (animationTimer >= animationFrameDuration)
 	{
-		animationTimer = 0.0f;
+		animationTimer = 0;
 		currentAnimationFrame += 1;
 		if (currentAnimationFrame >= animationFrameCount)
 		{
@@ -496,7 +500,7 @@ int Enemy::getContactDamage() const
 
 bool Enemy::canDealContactDamage() const
 {
-	return contactDamageTimer <= 0.0f;
+	return contactDamageTimer <= 0;
 }
 
 void Enemy::restartContactDamageCooldown()

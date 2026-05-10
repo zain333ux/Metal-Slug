@@ -3,42 +3,45 @@
 #include "Constants.h"
 #include "Level.h"
 
-static const sf::IntRect MARTIAN_POD_PROJECTILE_FRAMES[] =
+using namespace std;
+using namespace sf;
+
+static const IntRect MARTIAN_POD_PROJECTILE_FRAMES[] =
 {
-	sf::IntRect(20, 67, 60, 60),
-	sf::IntRect(92, 67, 60, 60),
-	sf::IntRect(164, 67, 60, 60),
-	sf::IntRect(236, 67, 60, 60)
+	IntRect(20, 67, 60, 60),
+	IntRect(92, 67, 60, 60),
+	IntRect(164, 67, 60, 60),
+	IntRect(236, 67, 60, 60)
 };
 
 EnemyDownwardBullet::EnemyDownwardBullet(float startX, float startY, Level* level)
 {
 	damage = 12;
 	lifeTime = 2.2f;
-	width = 30.0f;
-	height = 30.0f;
+	width = 30;
+	height = 30;
 	activeLevel = level;
 	setPlayerOwned(false);
 	setPosition(startX, startY);
-	setVelocity(0.0f, 520.0f);
+	setVelocity(0, 520);
 	spriteLoaded = false;
-	animationTimer = 0.0f;
+	animationTimer = 0;
 	currentFrame = 0;
 
-	body.setSize(sf::Vector2f(width, height));
-	body.setFillColor(sf::Color::Transparent);
-	body.setOutlineThickness(0.0f);
+	body.setSize(Vector2f(width, height));
+	body.setFillColor(Color::Transparent);
+	body.setOutlineThickness(0);
 
-	sf::Image image;
+	Image image;
 	if (image.loadFromFile("Sprites/Clean/MartianPod_Bullet.png") ||
 		image.loadFromFile("Sprites/Clean/MartianPod_bullet.png"))
 	{
-		image.createMaskFromColor(sf::Color(255, 0, 255));
-		image.createMaskFromColor(sf::Color::White);
+		image.createMaskFromColor(Color(255, 0, 255));
+		image.createMaskFromColor(Color::White);
 		if (bulletTexture.loadFromImage(image))
 		{
 			bulletSprite.setTexture(bulletTexture);
-			bulletSprite.setColor(sf::Color::White);
+			bulletSprite.setColor(Color::White);
 			bulletSprite.setScale(0.72f, 0.72f);
 			bulletSprite.setTextureRect(MARTIAN_POD_PROJECTILE_FRAMES[0]);
 			spriteLoaded = true;
@@ -71,17 +74,17 @@ void EnemyDownwardBullet::update(float deltaTime)
 		animationTimer += deltaTime;
 		if (animationTimer >= 0.06f)
 		{
-			animationTimer = 0.0f;
+			animationTimer = 0;
 			currentFrame = (currentFrame + 1) % FRAME_COUNT;
 			bulletSprite.setTextureRect(MARTIAN_POD_PROJECTILE_FRAMES[currentFrame]);
 		}
 
-		sf::FloatRect bounds = bulletSprite.getGlobalBounds();
+		FloatRect bounds = bulletSprite.getGlobalBounds();
 		bulletSprite.setPosition(x + width * 0.5f - bounds.width * 0.5f, y + height * 0.5f - bounds.height * 0.5f);
 	}
 }
 
-void EnemyDownwardBullet::draw(sf::RenderWindow& window)
+void EnemyDownwardBullet::draw(RenderWindow& window)
 {
 	if (!visible)
 	{

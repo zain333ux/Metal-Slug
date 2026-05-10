@@ -39,6 +39,5 @@ public:
 	void startBossLevel(EntityManager& entities, PlayerSoldier* player, LevelManager& level);
 	void update(float deltaTime, EntityManager& entities, PlayerSoldier* player, LevelManager& level);
 	bool isCompleted() const;
-	BossPhase getCurrentPhase() const;
 	void appendHudText(std::string& text) const;
 };

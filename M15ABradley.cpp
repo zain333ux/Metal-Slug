@@ -15,6 +15,10 @@
 #include <cmath>
 
 
+using namespace std;
+using namespace sf;
+
+
 
 M15ABradley::M15ABradley()
 
@@ -28,21 +32,21 @@ M15ABradley::M15ABradley()
 
 	contactDamage = 18;
 
-	width = 128.0f;
+	width = 128;
 
-	height = 84.0f;
+	height = 84;
 
-	moveSpeed = 60.0f;
+	moveSpeed = 60;
 
-	detectionRange = 980.0f;
+	detectionRange = 980;
 
 	attackCooldown = 2.4f;
 
-	preferredRange = 500.0f;
+	preferredRange = 500;
 
-	fallbackColor = sf::Color(145, 135, 95);
+	fallbackColor = Color(145, 135, 95);
 
-	body.setSize(sf::Vector2f(width, height));
+	body.setSize(Vector2f(width, height));
 
 	usingSprite = false;
 
@@ -60,7 +64,7 @@ void M15ABradley::buildSprites()
 
 {
 
-	const sf::Texture* idleTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::BradleyIdle);
+	const Texture* idleTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::BradleyIdle);
 
 	if (idleTex == nullptr)
 
@@ -112,7 +116,7 @@ void M15ABradley::update(float deltaTime)
 
 	{
 
-		body.setFillColor(sf::Color::Transparent);
+		body.setFillColor(Color::Transparent);
 
 		idleAnim.setFacingRight(!facingRight);
 
@@ -124,7 +128,7 @@ void M15ABradley::update(float deltaTime)
 
 
 
-void M15ABradley::draw(sf::RenderWindow& window)
+void M15ABradley::draw(RenderWindow& window)
 
 {
 
@@ -162,35 +166,35 @@ void M15ABradley::draw(sf::RenderWindow& window)
 
 		float healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
 
-		if (healthRatio < 0.0f)
+		if (healthRatio < 0)
 
 		{
 
-			healthRatio = 0.0f;
+			healthRatio = 0;
 
 		}
 
 
 
-		sf::RectangleShape healthBack;
+		RectangleShape healthBack;
 
-		healthBack.setPosition(x, y - 12.0f);
+		healthBack.setPosition(x, y - 12);
 
-		healthBack.setSize(sf::Vector2f(width, 6.0f));
+		healthBack.setSize(Vector2f(width, 6));
 
-		healthBack.setFillColor(sf::Color(80, 20, 20));
+		healthBack.setFillColor(Color(80, 20, 20));
 
 		window.draw(healthBack);
 
 
 
-		sf::RectangleShape healthFront;
+		RectangleShape healthFront;
 
-		healthFront.setPosition(x, y - 12.0f);
+		healthFront.setPosition(x, y - 12);
 
-		healthFront.setSize(sf::Vector2f(width * healthRatio, 6.0f));
+		healthFront.setSize(Vector2f(width * healthRatio, 6));
 
-		healthFront.setFillColor(sf::Color(60, 220, 90));
+		healthFront.setFillColor(Color(60, 220, 90));
 
 		window.draw(healthFront);
 
@@ -220,9 +224,9 @@ void M15ABradley::updateAI()
 
 	float dx = target->getCenterX() - getCenterX();
 
-	float absDx = std::abs(dx);
+	float absDx = abs(dx);
 
-	facingRight = dx > 0.0f;
+	facingRight = dx > 0;
 
 
 
@@ -230,25 +234,25 @@ void M15ABradley::updateAI()
 
 	{
 
-		float terrainAhead = activeLevel->getMainGroundYAt(x + (facingRight ? width + 20.0f : -20.0f));
+		float terrainAhead = activeLevel->getMainGroundYAt(x + (facingRight ? width + 20 : -20));
 
 		float terrainNow = activeLevel->getMainGroundYAt(getCenterX());
 
-		bool badStep = terrainAhead > terrainNow + 40.0f;
+		bool badStep = terrainAhead > terrainNow + 40;
 
 		bool wateryAhead =
 
-			activeLevel->isWaterInBounds(x + (facingRight ? width : -8.0f), x + (facingRight ? width + 10.0f : 8.0f), y + height * 0.5f, y + height);
+			activeLevel->isWaterInBounds(x + (facingRight ? width : -8), x + (facingRight ? width + 10 : 8), y + height * 0.5f, y + height);
 
 		if (!badStep && !wateryAhead)
 
 		{
 
-			if (absDx > preferredRange + 120.0f)
+			if (absDx > preferredRange + 120)
 
 			{
 
-				if (dx > 0.0f)
+				if (dx > 0)
 
 				{
 
@@ -272,7 +276,7 @@ void M15ABradley::updateAI()
 
 
 
-	if (absDx <= detectionRange && attackTimer <= 0.0f)
+	if (absDx <= detectionRange && attackTimer <= 0)
 
 	{
 
@@ -290,9 +294,9 @@ Projectile* M15ABradley::attack()
 
 {
 
-	float spawnX = facingRight ? x + width + 8.0f : x - 42.0f;
+	float spawnX = facingRight ? x + width + 8 : x - 42;
 
-	float spawnY = y + 30.0f;
+	float spawnY = y + 30;
 
 	return new EnemyStraightRocketProjectile(spawnX, spawnY, facingRight);
 
@@ -327,5 +331,4 @@ const char* M15ABradley::getEnemyName() const
 	return "M-15A Bradley";
 
 }
-
 

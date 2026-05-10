@@ -2,17 +2,21 @@
 
 #include "Constants.h"
 
-static sf::Texture enemyPistolBulletTexture;
+
+using namespace std;
+using namespace sf;
+
+static Texture enemyPistolBulletTexture;
 static bool enemyPistolBulletTextureLoaded = false;
 
-static void applyEnemyPistolBulletTexture(sf::RectangleShape& body)
+static void applyEnemyPistolBulletTexture(RectangleShape& body)
 {
 	if (!enemyPistolBulletTextureLoaded)
 	{
-		sf::Image image;
+		Image image;
 		if (image.loadFromFile("Sprites/Clean/Pistol_bullet.png"))
 		{
-			image.createMaskFromColor(sf::Color::White);
+			image.createMaskFromColor(Color::White);
 			enemyPistolBulletTextureLoaded = enemyPistolBulletTexture.loadFromImage(image);
 		}
 	}
@@ -20,31 +24,31 @@ static void applyEnemyPistolBulletTexture(sf::RectangleShape& body)
 	if (enemyPistolBulletTextureLoaded)
 	{
 		body.setTexture(&enemyPistolBulletTexture);
-		body.setFillColor(sf::Color::White);
+		body.setFillColor(Color::White);
 	}
 }
 
 EnemyBullet::EnemyBullet(float startX, float startY, bool facingRight)
 {
 	damage = 8;
-	lifeTime = 2.0f;
-	width = 20.0f;
-	height = 20.0f;
+	lifeTime = 2;
+	width = 20;
+	height = 20;
 	setPlayerOwned(false);
 	setPosition(startX, startY);
 
 	if (facingRight)
 	{
-		setVelocity(Constants::ENEMY_BULLET_SPEED, 0.0f);
+		setVelocity(Constants::ENEMY_BULLET_SPEED, 0);
 	}
 	else
 	{
-		setVelocity(-Constants::ENEMY_BULLET_SPEED, 0.0f);
+		setVelocity(-Constants::ENEMY_BULLET_SPEED, 0);
 	}
 
-	body.setSize(sf::Vector2f(width, height));
-	body.setOutlineThickness(0.0f);
-	body.setFillColor(sf::Color(255, 80, 60));
+	body.setSize(Vector2f(width, height));
+	body.setOutlineThickness(0);
+	body.setFillColor(Color(255, 80, 60));
 	applyEnemyPistolBulletTexture(body);
 }
 
@@ -52,7 +56,7 @@ void EnemyBullet::update(float deltaTime)
 {
 	Projectile::update(deltaTime);
 
-	if (x + width < 0.0f || x > 25000.0f)
+	if (x + width < 0 || x > 25000)
 	{
 		deactivate();
 	}

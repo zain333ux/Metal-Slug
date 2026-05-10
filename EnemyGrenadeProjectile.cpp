@@ -3,36 +3,40 @@
 #include "AudioManager.h"
 #include "Constants.h"
 
-static const sf::IntRect ENEMY_GRENADE_FRAMES[] =
+
+using namespace std;
+using namespace sf;
+
+static const IntRect ENEMY_GRENADE_FRAMES[] =
 {
-	sf::IntRect(0, 0, 18, 27), sf::IntRect(18, 0, 17, 27), sf::IntRect(35, 0, 18, 27), sf::IntRect(53, 0, 20, 27),
-	sf::IntRect(73, 0, 22, 27), sf::IntRect(95, 0, 23, 27), sf::IntRect(118, 0, 24, 27), sf::IntRect(142, 0, 24, 27),
-	sf::IntRect(166, 0, 23, 27), sf::IntRect(189, 0, 24, 27), sf::IntRect(213, 0, 23, 27), sf::IntRect(236, 0, 22, 27),
-	sf::IntRect(258, 0, 22, 27), sf::IntRect(280, 0, 20, 27), sf::IntRect(300, 0, 18, 27), sf::IntRect(318, 0, 19, 27)
+	IntRect(0, 0, 18, 27), IntRect(18, 0, 17, 27), IntRect(35, 0, 18, 27), IntRect(53, 0, 20, 27),
+	IntRect(73, 0, 22, 27), IntRect(95, 0, 23, 27), IntRect(118, 0, 24, 27), IntRect(142, 0, 24, 27),
+	IntRect(166, 0, 23, 27), IntRect(189, 0, 24, 27), IntRect(213, 0, 23, 27), IntRect(236, 0, 22, 27),
+	IntRect(258, 0, 22, 27), IntRect(280, 0, 20, 27), IntRect(300, 0, 18, 27), IntRect(318, 0, 19, 27)
 };
 
-static const sf::IntRect ENEMY_GRENADE_EXPLOSION_FRAMES[] =
+static const IntRect ENEMY_GRENADE_EXPLOSION_FRAMES[] =
 {
-	sf::IntRect(0, 0, 32, 37), sf::IntRect(32, 0, 27, 37), sf::IntRect(59, 0, 24, 37),
-	sf::IntRect(83, 0, 26, 37), sf::IntRect(109, 0, 27, 37), sf::IntRect(136, 0, 31, 37),
-	sf::IntRect(167, 0, 31, 37), sf::IntRect(198, 0, 35, 37), sf::IntRect(233, 0, 37, 37),
-	sf::IntRect(270, 0, 37, 37), sf::IntRect(307, 0, 38, 37), sf::IntRect(345, 0, 37, 37),
-	sf::IntRect(382, 0, 39, 37), sf::IntRect(421, 0, 33, 37), sf::IntRect(454, 0, 34, 37)
+	IntRect(0, 0, 32, 37), IntRect(32, 0, 27, 37), IntRect(59, 0, 24, 37),
+	IntRect(83, 0, 26, 37), IntRect(109, 0, 27, 37), IntRect(136, 0, 31, 37),
+	IntRect(167, 0, 31, 37), IntRect(198, 0, 35, 37), IntRect(233, 0, 37, 37),
+	IntRect(270, 0, 37, 37), IntRect(307, 0, 38, 37), IntRect(345, 0, 37, 37),
+	IntRect(382, 0, 39, 37), IntRect(421, 0, 33, 37), IntRect(454, 0, 34, 37)
 };
 
-static sf::Texture enemyGrenadeTexture;
+static Texture enemyGrenadeTexture;
 static bool enemyGrenadeTextureLoaded = false;
-static sf::Texture enemyGrenadeExplosionTexture;
+static Texture enemyGrenadeExplosionTexture;
 static bool enemyGrenadeExplosionTextureLoaded = false;
 
-static void applyEnemyGrenadeTexture(sf::RectangleShape& body)
+static void applyEnemyGrenadeTexture(RectangleShape& body)
 {
 	if (!enemyGrenadeTextureLoaded)
 	{
-		sf::Image image;
+		Image image;
 		if (image.loadFromFile("Sprites/Clean/grenade.png"))
 		{
-			image.createMaskFromColor(sf::Color::White);
+			image.createMaskFromColor(Color::White);
 			enemyGrenadeTextureLoaded = enemyGrenadeTexture.loadFromImage(image);
 		}
 	}
@@ -41,7 +45,7 @@ static void applyEnemyGrenadeTexture(sf::RectangleShape& body)
 	{
 		body.setTexture(&enemyGrenadeTexture);
 		body.setTextureRect(ENEMY_GRENADE_FRAMES[0]);
-		body.setFillColor(sf::Color::White);
+		body.setFillColor(Color::White);
 	}
 }
 
@@ -49,10 +53,10 @@ static bool loadEnemyGrenadeExplosionTexture()
 {
 	if (!enemyGrenadeExplosionTextureLoaded)
 	{
-		sf::Image image;
+		Image image;
 		if (image.loadFromFile("Sprites/Clean/Explosion.png"))
 		{
-			image.createMaskFromColor(sf::Color::White);
+			image.createMaskFromColor(Color::White);
 			enemyGrenadeExplosionTextureLoaded = enemyGrenadeExplosionTexture.loadFromImage(image);
 		}
 	}
@@ -65,25 +69,25 @@ EnemyGrenadeProjectile::EnemyGrenadeProjectile(float startX, float startY, float
 	storedDamage = 18;
 	damage = 0;
 	lifeTime = 2.6f;
-	width = 42.0f;
-	height = 42.0f;
+	width = 42;
+	height = 42;
 	explosive = true;
-	blastRadius = 120.0f;
+	blastRadius = 120;
 	exploded = false;
 	armed = false;
 	armTimer = 0.16f;
-	explosionTimer = 0.0f;
+	explosionTimer = 0;
 	currentFrame = 0;
-	frameTimer = 0.0f;
+	frameTimer = 0;
 	explosionCenterX = startX;
 	explosionCenterY = startY;
 	setPlayerOwned(false);
 	setPosition(startX, startY);
 	setVelocity(throwVelocityX, throwVelocityY);
 
-	body.setSize(sf::Vector2f(width, height));
-	body.setOutlineThickness(0.0f);
-	body.setFillColor(sf::Color(80, 220, 90));
+	body.setSize(Vector2f(width, height));
+	body.setOutlineThickness(0);
+	body.setFillColor(Color(80, 220, 90));
 	applyEnemyGrenadeTexture(body);
 
 	if (loadEnemyGrenadeExplosionTexture())
@@ -103,23 +107,23 @@ void EnemyGrenadeProjectile::explode()
 
 	exploded = true;
 	AudioManager::playGlobalSound(SFX_EXPLOSION);
-	explosionTimer = 0.0f;
+	explosionTimer = 0;
 	currentFrame = 0;
-	frameTimer = 0.0f;
-	velocityX = 0.0f;
-	velocityY = 0.0f;
+	frameTimer = 0;
+	velocityX = 0;
+	velocityY = 0;
 
 	float centerX = getCenterX();
 	float centerY = getCenterY();
 	explosionCenterX = centerX;
 	explosionCenterY = centerY;
-	width = blastRadius * 2.0f;
-	height = blastRadius * 2.0f;
+	width = blastRadius * 2;
+	height = blastRadius * 2;
 	setPosition(centerX - blastRadius, centerY - blastRadius);
-	body.setSize(sf::Vector2f(width, height));
+	body.setSize(Vector2f(width, height));
 	body.setPosition(x, y);
 	body.setTexture(0);
-	body.setFillColor(sf::Color::Transparent);
+	body.setFillColor(Color::Transparent);
 
 	if (enemyGrenadeExplosionTextureLoaded)
 	{
@@ -135,7 +139,7 @@ void EnemyGrenadeProjectile::update(float deltaTime)
 		frameTimer += deltaTime;
 		if (frameTimer >= 0.05f)
 		{
-			frameTimer = 0.0f;
+			frameTimer = 0;
 			currentFrame += 1;
 			if (currentFrame >= 15)
 			{
@@ -152,7 +156,7 @@ void EnemyGrenadeProjectile::update(float deltaTime)
 	if (!armed)
 	{
 		armTimer -= deltaTime;
-		if (armTimer <= 0.0f)
+		if (armTimer <= 0)
 		{
 			armed = true;
 			damage = storedDamage;
@@ -160,7 +164,7 @@ void EnemyGrenadeProjectile::update(float deltaTime)
 	}
 
 	lifeTime -= deltaTime;
-	if (lifeTime <= 0.0f)
+	if (lifeTime <= 0)
 	{
 		explode();
 		return;
@@ -170,7 +174,7 @@ void EnemyGrenadeProjectile::update(float deltaTime)
 	frameTimer += deltaTime;
 	if (frameTimer >= 0.055f)
 	{
-		frameTimer = 0.0f;
+		frameTimer = 0;
 		currentFrame += 1;
 		if (currentFrame >= 16)
 		{
@@ -190,7 +194,7 @@ void EnemyGrenadeProjectile::update(float deltaTime)
 	}
 }
 
-void EnemyGrenadeProjectile::draw(sf::RenderWindow& window)
+void EnemyGrenadeProjectile::draw(RenderWindow& window)
 {
 	if (!visible)
 	{
@@ -219,6 +223,6 @@ void EnemyGrenadeProjectile::onCollision()
 
 void EnemyGrenadeProjectile::centerExplosionSprite()
 {
-	sf::FloatRect bounds = explosionSprite.getGlobalBounds();
-	explosionSprite.setPosition(explosionCenterX - bounds.width / 2.0f, explosionCenterY - bounds.height / 2.0f);
+	FloatRect bounds = explosionSprite.getGlobalBounds();
+	explosionSprite.setPosition(explosionCenterX - bounds.width / 2, explosionCenterY - bounds.height / 2);
 }

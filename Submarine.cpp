@@ -4,50 +4,56 @@
 #include "DeveloperMode.h"
 #include "EntityManager.h"
 #include "Level.h"
+#include "MarinerMissile.h"
 #include "VehicleTextureManager.h"
 
 #include <SFML/Window/Keyboard.hpp>
+<<<<<<< HEAD
 #include <cmath>
+
+
+using namespace std;
+using namespace sf;
 
 // --- MarinerMissile ---
 MarinerMissile::MarinerMissile(float startX, float startY, bool facingRight, MarinerMissileType type)
 {
 	missileType = type;
 	damage = 30;
-	lifeTime = 3.0f;
-	width = 32.0f;
-	height = 16.0f;
+	lifeTime = 3;
+	width = 32;
+	height = 16;
 	explosive = true;
-	blastRadius = 120.0f;
+	blastRadius = 120;
 	setPosition(startX, startY);
 
-	float speed = 500.0f;
+	float speed = 500;
 
 	switch (missileType)
 	{
 	case MARINER_MISSILE_HORIZONTAL:
 		if (facingRight)
-			setVelocity(speed, 0.0f);
+			setVelocity(speed, 0);
 		else
-			setVelocity(-speed, 0.0f);
+			setVelocity(-speed, 0);
 		break;
 	case MARINER_MISSILE_VERTICAL:
-		setVelocity(0.0f, -speed);
-		width = 16.0f;
-		height = 32.0f;
+		setVelocity(0, -speed);
+		width = 16;
+		height = 32;
 		break;
 	case MARINER_MISSILE_SURFACE:
 		if (facingRight)
-			setVelocity(200.0f, 100.0f);
+			setVelocity(200, 100);
 		else
-			setVelocity(-200.0f, 100.0f);
+			setVelocity(-200, 100);
 		break;
 	}
 
-	body.setSize(sf::Vector2f(width, height));
-	body.setFillColor(sf::Color(255, 150, 50));
-	body.setOutlineColor(sf::Color::Black);
-	body.setOutlineThickness(1.0f);
+	body.setSize(Vector2f(width, height));
+	body.setFillColor(Color(255, 150, 50));
+	body.setOutlineColor(Color::Black);
+	body.setOutlineThickness(1);
 }
 
 void MarinerMissile::update(float deltaTime)
@@ -55,11 +61,13 @@ void MarinerMissile::update(float deltaTime)
 	if (missileType == MARINER_MISSILE_SURFACE)
 	{
 		velocityY -= Constants::GRAVITY * 1.2f * deltaTime;
-		if (velocityY < -600.0f)
-			velocityY = -600.0f;
+		if (velocityY < -600)
+			velocityY = -600;
 	}
 	Projectile::update(deltaTime);
 }
+=======
+>>>>>>> 6d77c54b1816a0bae93ea8c1ad344f5e135692cd
 
 // --- SlugMariner ---
 
@@ -68,13 +76,13 @@ SlugMariner::SlugMariner(float startX, float startY) : Vehicle(startX, startY)
 	usingSprite = false;
 	usingCannonSprite = false;
 
-	width = 120.0f;
-	height = 70.0f;
+	width = 120;
+	height = 70;
 	baseMaxHealth = 200;
 	maxHealth = baseMaxHealth;
 	health = maxHealth;
 	moveSpeed = Constants::PLAYER_MOVE_SPEED * 1.2f;
-	verticalSpeed = 250.0f;
+	verticalSpeed = 250;
 	baseFireCooldown = 0.5f;
 	weapon.setCooldown(baseFireCooldown);
 
@@ -84,16 +92,16 @@ SlugMariner::SlugMariner(float startX, float startY) : Vehicle(startX, startY)
 
 	marinSpritesLoaded = buildMarinerSprite();
 
-	body.setFillColor(sf::Color::Transparent);
-	body.setOutlineColor(sf::Color::Transparent);
-	cabin.setFillColor(sf::Color::Transparent);
-	cabin.setOutlineColor(sf::Color::Transparent);
-	turret.setFillColor(sf::Color::Transparent);
-	turret.setOutlineColor(sf::Color::Transparent);
-	rearWheel.setFillColor(sf::Color::Transparent);
-	rearWheel.setOutlineColor(sf::Color::Transparent);
-	frontWheel.setFillColor(sf::Color::Transparent);
-	frontWheel.setOutlineColor(sf::Color::Transparent);
+	body.setFillColor(Color::Transparent);
+	body.setOutlineColor(Color::Transparent);
+	cabin.setFillColor(Color::Transparent);
+	cabin.setOutlineColor(Color::Transparent);
+	turret.setFillColor(Color::Transparent);
+	turret.setOutlineColor(Color::Transparent);
+	rearWheel.setFillColor(Color::Transparent);
+	rearWheel.setOutlineColor(Color::Transparent);
+	frontWheel.setFillColor(Color::Transparent);
+	frontWheel.setOutlineColor(Color::Transparent);
 }
 
 bool SlugMariner::loadVehicleSprites()
@@ -104,7 +112,7 @@ bool SlugMariner::loadVehicleSprites()
 
 bool SlugMariner::buildMarinerSprite()
 {
-	const sf::Texture* tex = VehicleTextureManager::instance().getTexture(VehicleTextureId::SlugMarinerIdle);
+	const Texture* tex = VehicleTextureManager::instance().getTexture(VehicleTextureId::SlugMarinerIdle);
 	if (tex == nullptr)
 	{
 		return false;
@@ -139,25 +147,25 @@ void SlugMariner::takeDamage(int damage)
 
 void SlugMariner::handleMovementInput()
 {
-	velocityX = 0.0f;
-	velocityY = 0.0f;
+	velocityX = 0;
+	velocityY = 0;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A))
 	{
 		velocityX = -moveSpeed;
 		facingRight = false;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	else if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::D))
 	{
 		velocityX = moveSpeed;
 		facingRight = true;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	if (Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::W))
 	{
 		velocityY = -verticalSpeed;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	else if (Keyboard::isKeyPressed(Keyboard::Down) || Keyboard::isKeyPressed(Keyboard::S))
 	{
 		velocityY = verticalSpeed;
 	}
@@ -171,11 +179,11 @@ void SlugMariner::update(float deltaTime)
 	}
 	else
 	{
-		velocityX = 0.0f;
-		velocityY = 30.0f;
+		velocityX = 0;
+		velocityY = 30;
 	}
 
-	if (damageFlashTimer > 0.0f)
+	if (damageFlashTimer > 0)
 	{
 		damageFlashTimer -= deltaTime;
 	}
@@ -188,27 +196,27 @@ void SlugMariner::update(float deltaTime)
 		if (y + height > groundY)
 		{
 			y = groundY - height;
-			velocityY = 0.0f;
+			velocityY = 0;
 		}
 
 		float waterSurfaceY = activeLevel->getWaterSurfaceYAt(x + width * 0.5f);
-		if (y < waterSurfaceY - 20.0f)
+		if (y < waterSurfaceY - 20)
 		{
-			y = waterSurfaceY - 20.0f;
-			if (velocityY < 0.0f)
-				velocityY = 0.0f;
+			y = waterSurfaceY - 20;
+			if (velocityY < 0)
+				velocityY = 0;
 		}
 
-		if (x < 0.0f)
-			x = 0.0f;
+		if (x < 0)
+			x = 0;
 		if (x + width > movementMaxX)
 			x = movementMaxX - width;
 	}
 
 	if (marinSpritesLoaded)
 	{
-		const sf::Color flash(255, 130, 130);
-		marinIdle.setTint(damageFlashTimer > 0.0f ? flash : sf::Color::White);
+		const Color flash(255, 130, 130);
+		marinIdle.setTint(damageFlashTimer > 0 ? flash : Color::White);
 		marinIdle.setFacingRight(facingRight);
 		marinIdle.update(deltaTime);
 	}
@@ -227,33 +235,33 @@ void SlugMariner::handleWeaponInput(EntityManager& entityManager, float deltaTim
 	{
 		bool fired = false;
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) || sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+		if (Keyboard::isKeyPressed(Keyboard::J) || Keyboard::isKeyPressed(Keyboard::LControl))
 		{
 			if (horizontalAmmo > 0)
 			{
-				float bulletX = facingRight ? x + width : x - 32.0f;
+				float bulletX = facingRight ? x + width : x - 32;
 				float bulletY = y + height * 0.5f;
 				entityManager.addEntity(new MarinerMissile(bulletX, bulletY, facingRight, MARINER_MISSILE_HORIZONTAL));
 				horizontalAmmo -= 1;
 				fired = true;
 			}
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::K) || sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+		else if (Keyboard::isKeyPressed(Keyboard::K) || Keyboard::isKeyPressed(Keyboard::LShift))
 		{
 			if (verticalAmmo > 0)
 			{
-				float bulletX = x + width * 0.5f - 8.0f;
-				float bulletY = y - 32.0f;
+				float bulletX = x + width * 0.5f - 8;
+				float bulletY = y - 32;
 				entityManager.addEntity(new MarinerMissile(bulletX, bulletY, facingRight, MARINER_MISSILE_VERTICAL));
 				verticalAmmo -= 1;
 				fired = true;
 			}
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::L) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		else if (Keyboard::isKeyPressed(Keyboard::L) || Keyboard::isKeyPressed(Keyboard::Space))
 		{
 			if (surfaceAmmo > 0)
 			{
-				float bulletX = facingRight ? x + width : x - 32.0f;
+				float bulletX = facingRight ? x + width : x - 32;
 				float bulletY = y + height * 0.5f;
 				entityManager.addEntity(new MarinerMissile(bulletX, bulletY, facingRight, MARINER_MISSILE_SURFACE));
 				surfaceAmmo -= 1;
@@ -268,7 +276,7 @@ void SlugMariner::handleWeaponInput(EntityManager& entityManager, float deltaTim
 	}
 }
 
-void SlugMariner::draw(sf::RenderWindow& window)
+void SlugMariner::draw(RenderWindow& window)
 {
 	if (!visible)
 	{

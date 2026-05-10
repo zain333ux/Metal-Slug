@@ -1,5 +1,9 @@
 #include "GameStateManager.h"
 
+
+using namespace std;
+using namespace sf;
+
 GameStateManager::GameStateManager()
 {
 	currentState = 0;
@@ -35,7 +39,7 @@ void GameStateManager::update(Game& game, float deltaTime)
 	}
 }
 
-void GameStateManager::draw(Game& game, sf::RenderWindow& window)
+void GameStateManager::draw(Game& game, RenderWindow& window)
 {
 	if (currentState != 0)
 	{

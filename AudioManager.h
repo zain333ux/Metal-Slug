@@ -50,8 +50,5 @@ public:
 	void playMusic(MusicTrack track);
 	void playSound(SoundEffectType type);
 
-	void setMusicVolume(float volume);
-	void setSfxVolume(float volume);
-
 	static void playGlobalSound(SoundEffectType type);
 };

@@ -15,6 +15,10 @@
 #include <cmath>
 
 
+using namespace std;
+using namespace sf;
+
+
 
 namespace
 
@@ -62,27 +66,27 @@ EnemySub::EnemySub()
 
 	contactDamage = 16;
 
-	width = 134.0f;
+	width = 134;
 
-	height = 70.0f;
+	height = 70;
 
-	moveSpeed = 92.0f;
+	moveSpeed = 92;
 
-	verticalSpeed = 36.0f;
+	verticalSpeed = 36;
 
 	attackCooldown = 1.9f;
 
 	canMoveInAir = true;
 
-	fallbackColor = sf::Color(78, 130, 170);
+	fallbackColor = Color(78, 130, 170);
 
-	body.setSize(sf::Vector2f(width, height));
+	body.setSize(Vector2f(width, height));
 
 	usingSprite = false;
 
 
 
-	damageFlashTimer = 0.0f;
+	damageFlashTimer = 0;
 
 
 
@@ -114,11 +118,11 @@ void EnemySub::buildSpritesIfNeeded()
 
 
 
-	const sf::Texture* moveTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::EnemySubMove);
+	const Texture* moveTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::EnemySubMove);
 
-	const sf::Texture* turnTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::EnemySubTurn);
+	const Texture* turnTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::EnemySubTurn);
 
-	const sf::Texture* deathTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::EnemySubDeath);
+	const Texture* deathTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::EnemySubDeath);
 
 
 
@@ -140,7 +144,7 @@ void EnemySub::buildSpritesIfNeeded()
 
 
 
-	const sf::Vector2u mz = moveTex->getSize();
+	const Vector2u mz = moveTex->getSize();
 
 	const int refMove = mz.x / 7 + 1;
 
@@ -160,7 +164,7 @@ void EnemySub::buildSpritesIfNeeded()
 
 
 
-	const sf::Vector2u tz = turnTex->getSize();
+	const Vector2u tz = turnTex->getSize();
 
 	const int refTurn = tz.x / 10 + 2;
 
@@ -180,7 +184,7 @@ void EnemySub::buildSpritesIfNeeded()
 
 
 
-	const sf::Vector2u dz = deathTex->getSize();
+	const Vector2u dz = deathTex->getSize();
 
 	const int refDeath = dz.x / 6 + 2;
 
@@ -216,7 +220,7 @@ void EnemySub::updateAI()
 
 		stopMoving();
 
-		velocityY = 0.0f;
+		velocityY = 0;
 
 		return;
 
@@ -268,9 +272,9 @@ void EnemySub::updateAI()
 
 		float waterY = activeLevel->getWaterSurfaceYAt(getCenterX());
 
-		desiredY = waterY + 70.0f;
+		desiredY = waterY + 70;
 
-		if (target != 0 && !target->isDead() && target->getCenterY() > waterY + 10.0f)
+		if (target != 0 && !target->isDead() && target->getCenterY() > waterY + 10)
 
 		{
 
@@ -278,7 +282,7 @@ void EnemySub::updateAI()
 
 		}
 
-		float floorY = activeLevel->getMainGroundYAt(getCenterX()) - height - 14.0f;
+		float floorY = activeLevel->getMainGroundYAt(getCenterX()) - height - 14;
 
 		if (desiredY > floorY)
 
@@ -288,11 +292,11 @@ void EnemySub::updateAI()
 
 		}
 
-		if (desiredY < waterY + 20.0f)
+		if (desiredY < waterY + 20)
 
 		{
 
-			desiredY = waterY + 20.0f;
+			desiredY = waterY + 20;
 
 		}
 
@@ -328,9 +332,9 @@ void EnemySub::updateAI()
 
 		float dx = target->getCenterX() - getCenterX();
 
-		facingRight = dx > 0.0f;
+		facingRight = dx > 0;
 
-		if (std::abs(dx) <= 720.0f && attackTimer <= 0.0f)
+		if (abs(dx) <= 720 && attackTimer <= 0)
 
 		{
 
@@ -388,9 +392,9 @@ void EnemySub::takeDamage(int damage)
 
 		turnPlaying = false;
 
-		velocityX = 0.0f;
+		velocityX = 0;
 
-		velocityY = 0.0f;
+		velocityY = 0;
 
 		deathAnim.reset();
 
@@ -466,7 +470,7 @@ Projectile* EnemySub::attack()
 
 {
 
-	float spawnX = facingRight ? x + width + 10.0f : x - 44.0f;
+	float spawnX = facingRight ? x + width + 10 : x - 44;
 
 	float spawnY = y + height * 0.55f;
 
@@ -484,7 +488,7 @@ void EnemySub::update(float deltaTime)
 
 
 
-	if (damageFlashTimer > 0.0f)
+	if (damageFlashTimer > 0)
 
 	{
 
@@ -494,7 +498,7 @@ void EnemySub::update(float deltaTime)
 
 
 
-	if (contactDamageTimer > 0.0f)
+	if (contactDamageTimer > 0)
 
 	{
 
@@ -502,7 +506,7 @@ void EnemySub::update(float deltaTime)
 
 	}
 
-	if (attackTimer > 0.0f)
+	if (attackTimer > 0)
 
 	{
 
@@ -546,11 +550,11 @@ void EnemySub::update(float deltaTime)
 
 
 
-	if (x < 0.0f)
+	if (x < 0)
 
 	{
 
-		x = 0.0f;
+		x = 0;
 
 		patrolDirection = 1;
 
@@ -574,15 +578,15 @@ void EnemySub::update(float deltaTime)
 
 		float waterY = activeLevel->getWaterSurfaceYAt(getCenterX());
 
-		float minY = waterY + 18.0f;
+		float minY = waterY + 18;
 
-		float maxY = activeLevel->getMainGroundYAt(getCenterX()) - height - 12.0f;
+		float maxY = activeLevel->getMainGroundYAt(getCenterX()) - height - 12;
 
-		if (maxY < minY + 10.0f)
+		if (maxY < minY + 10)
 
 		{
 
-			maxY = minY + 10.0f;
+			maxY = minY + 10;
 
 		}
 
@@ -616,9 +620,9 @@ void EnemySub::update(float deltaTime)
 
 		queuedAttack = false;
 
-		velocityX = 0.0f;
+		velocityX = 0;
 
-		velocityY = 0.0f;
+		velocityY = 0;
 
 		turnAnim.reset();
 
@@ -632,9 +636,9 @@ void EnemySub::update(float deltaTime)
 
 	{
 
-		velocityX = 0.0f;
+		velocityX = 0;
 
-		velocityY = 0.0f;
+		velocityY = 0;
 
 		turnAnim.update(deltaTime);
 
@@ -678,7 +682,7 @@ void EnemySub::update(float deltaTime)
 
 
 
-void EnemySub::draw(sf::RenderWindow& window)
+void EnemySub::draw(RenderWindow& window)
 
 {
 
@@ -704,13 +708,13 @@ void EnemySub::draw(sf::RenderWindow& window)
 
 
 
-	const sf::Color flashTint(255, 155, 155);
+	const Color flashTint(255, 155, 155);
 
-	const sf::Color neutral(255, 255, 255);
+	const Color neutral(255, 255, 255);
 
-	bool flash = damageFlashTimer > 0.0f;
+	bool flash = damageFlashTimer > 0;
 
-	const sf::Color moveTint = (!dyingPlaying && flash) ? flashTint : neutral;
+	const Color moveTint = (!dyingPlaying && flash) ? flashTint : neutral;
 
 
 
@@ -758,35 +762,35 @@ void EnemySub::draw(sf::RenderWindow& window)
 
 		float healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
 
-		if (healthRatio < 0.0f)
+		if (healthRatio < 0)
 
 		{
 
-			healthRatio = 0.0f;
+			healthRatio = 0;
 
 		}
 
 
 
-		sf::RectangleShape healthBack;
+		RectangleShape healthBack;
 
-		healthBack.setPosition(x, y - 12.0f);
+		healthBack.setPosition(x, y - 12);
 
-		healthBack.setSize(sf::Vector2f(width, 6.0f));
+		healthBack.setSize(Vector2f(width, 6));
 
-		healthBack.setFillColor(sf::Color(80, 20, 20));
+		healthBack.setFillColor(Color(80, 20, 20));
 
 		window.draw(healthBack);
 
 
 
-		sf::RectangleShape healthFront;
+		RectangleShape healthFront;
 
-		healthFront.setPosition(x, y - 12.0f);
+		healthFront.setPosition(x, y - 12);
 
-		healthFront.setSize(sf::Vector2f(width * healthRatio, 6.0f));
+		healthFront.setSize(Vector2f(width * healthRatio, 6));
 
-		healthFront.setFillColor(sf::Color(60, 220, 90));
+		healthFront.setFillColor(Color(60, 220, 90));
 
 		window.draw(healthFront);
 
@@ -823,5 +827,4 @@ const char* EnemySub::getEnemyName() const
 	return "Enemy Sub";
 
 }
-
 

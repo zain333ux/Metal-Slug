@@ -111,6 +111,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelProfile.cpp" />
     <ClCompile Include="LevelManager.cpp" />
+    <ClCompile Include="MarinerMissile.cpp" />
     <ClCompile Include="MeleeHitbox.cpp" />
     <ClCompile Include="ModeSelectState.cpp" />
     <ClCompile Include="M15ABradley.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelProfile.h" />
     <ClInclude Include="LevelManager.h" />
+    <ClInclude Include="MarinerMissile.h" />
     <ClInclude Include="MeleeHitbox.h" />
     <ClInclude Include="M15ABradley.h" />
     <ClInclude Include="ModeSelectState.h" />

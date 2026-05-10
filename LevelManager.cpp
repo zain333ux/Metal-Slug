@@ -1,5 +1,9 @@
 #include "LevelManager.h"
 
+
+using namespace std;
+using namespace sf;
+
 LevelManager::LevelManager()
 {
 	currentLevel = 0;
@@ -29,7 +33,7 @@ void LevelManager::update(float deltaTime)
 	}
 }
 
-void LevelManager::draw(sf::RenderWindow& window)
+void LevelManager::draw(RenderWindow& window)
 {
 	if (currentLevel != 0)
 	{

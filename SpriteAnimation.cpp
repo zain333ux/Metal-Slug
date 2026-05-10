@@ -1,22 +1,26 @@
 #include "SpriteAnimation.h"
 
+
+using namespace std;
+using namespace sf;
+
 SpriteAnimation::SpriteAnimation()
 {
 	texturePtr = nullptr;
 	frameCount = 0;
 	currentFrameIndex = 0;
 	frameTime = 0.12f;
-	elapsed = 0.0f;
+	elapsed = 0;
 	loopAnimation = true;
 	finishedAnimation = false;
-	scaleX = 1.0f;
-	scaleY = 1.0f;
+	scaleX = 1;
+	scaleY = 1;
 	playBackward = false;
 	facingRight = true;
-	tint = sf::Color::White;
+	tint = Color::White;
 }
 
-void SpriteAnimation::setTexture(const sf::Texture* texture)
+void SpriteAnimation::setTexture(const Texture* texture)
 {
 	texturePtr = texture;
 	if (texturePtr != nullptr)
@@ -38,12 +42,12 @@ void SpriteAnimation::setFrames(const FrameRect* rects, int count)
 	}
 	currentFrameIndex = 0;
 	finishedAnimation = false;
-	elapsed = 0.0f;
+	elapsed = 0;
 }
 
 void SpriteAnimation::setFrameTime(float seconds)
 {
-	if (seconds > 0.0f)
+	if (seconds > 0)
 	{
 		frameTime = seconds;
 	}
@@ -63,11 +67,11 @@ void SpriteAnimation::setScale(float sx, float sy)
 {
 	scaleX = sx;
 	scaleY = sy;
-	if (scaleX <= 0.0f)
+	if (scaleX <= 0)
 	{
 		scaleX = 0.01f;
 	}
-	if (scaleY <= 0.0f)
+	if (scaleY <= 0)
 	{
 		scaleY = 0.01f;
 	}
@@ -78,7 +82,7 @@ void SpriteAnimation::setFacingRight(bool right)
 	facingRight = right;
 }
 
-void SpriteAnimation::setTint(const sf::Color& color)
+void SpriteAnimation::setTint(const Color& color)
 {
 	tint = color;
 }
@@ -86,7 +90,7 @@ void SpriteAnimation::setTint(const sf::Color& color)
 void SpriteAnimation::reset()
 {
 	currentFrameIndex = playBackward ? (frameCount > 0 ? frameCount - 1 : 0) : 0;
-	elapsed = 0.0f;
+	elapsed = 0;
 	finishedAnimation = false;
 }
 
@@ -103,7 +107,7 @@ void SpriteAnimation::update(float dt)
 		return;
 	}
 
-	elapsed = 0.0f;
+	elapsed = 0;
 
 	if (playBackward)
 	{
@@ -148,11 +152,11 @@ void SpriteAnimation::applyToSprite()
 
 	const FrameRect& fr = frames[currentFrameIndex];
 	sprite.setTexture(*texturePtr);
-	sprite.setTextureRect(sf::IntRect(fr.x, fr.y, fr.w, fr.h));
+	sprite.setTextureRect(IntRect(fr.x, fr.y, fr.w, fr.h));
 	sprite.setColor(tint);
 }
 
-void SpriteAnimation::draw(sf::RenderWindow& window)
+void SpriteAnimation::draw(RenderWindow& window)
 {
 	if (texturePtr == nullptr || frameCount <= 0)
 	{
@@ -163,7 +167,7 @@ void SpriteAnimation::draw(sf::RenderWindow& window)
 	window.draw(sprite);
 }
 
-void SpriteAnimation::drawAtAnchor(sf::RenderWindow& window, float anchorCentreX, float anchorBottomY)
+void SpriteAnimation::drawAtAnchor(RenderWindow& window, float anchorCentreX, float anchorBottomY)
 {
 	if (texturePtr == nullptr || frameCount <= 0)
 	{
@@ -209,6 +213,7 @@ int SpriteAnimation::getFrameCount() const
 	return frameCount;
 }
 
+<<<<<<< HEAD
 int SpriteAnimation::getCurrentFrameIndex() const
 {
 	return currentFrameIndex;
@@ -233,3 +238,5 @@ int SpriteAnimation::getCurrentFrameHeight() const
 
 	return frames[currentFrameIndex].h;
 }
+=======
+>>>>>>> 6d77c54b1816a0bae93ea8c1ad344f5e135692cd

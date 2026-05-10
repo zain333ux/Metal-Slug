@@ -1,5 +1,9 @@
 #include "DamageableEntity.h"
 
+
+using namespace std;
+using namespace sf;
+
 DamageableEntity::DamageableEntity()
 {
 	maxHealth = 1;

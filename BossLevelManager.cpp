@@ -10,6 +10,9 @@
 #include "Submarine.h"
 #include "Vehicle.h"
 
+using namespace std;
+using namespace sf;
+
 BossLevelManager::BossLevelManager()
 {
 	sectionWidth = Constants::BOSS_PLAINS_END_X;
@@ -49,14 +52,14 @@ void BossLevelManager::spawnPhaseBoss(EntityManager& entities, PlayerSoldier* pl
 {
 	Level* level = levelManager.getCurrentLevel();
 	float startX = phaseStartX(currentPhase);
-	float arenaLeft = startX + 50.0f;
-	float arenaRight = phaseEndX(currentPhase) - 50.0f;
-	float arenaTop = 40.0f;
-	float arenaBottom = level != 0 ? level->getWorldHeight() - 20.0f : Constants::WORLD_HEIGHT - 20.0f;
+	float arenaLeft = startX + 50;
+	float arenaRight = phaseEndX(currentPhase) - 50;
+	float arenaTop = 40;
+	float arenaBottom = level != 0 ? level->getWorldHeight() - 20 : Constants::WORLD_HEIGHT - 20;
 	if (currentPhase == BossPhase::GroundIronNokana)
 	{
-		float ironGroundY = 1297.0f;
-		currentBoss = new IronNokanaBoss(1118.0f, ironGroundY, false);
+		float ironGroundY = 1297;
+		currentBoss = new IronNokanaBoss(1118, ironGroundY, false);
 		currentBoss->setTarget(player);
 		currentBoss->setArenaBounds(arenaLeft, arenaRight, currentBoss->getY(), currentBoss->getY() + currentBoss->getHeight());
 		currentBoss->setMovementMaxX(level != 0 ? level->getWorldWidth() : Constants::BOSS_WORLD_WIDTH);
@@ -64,33 +67,33 @@ void BossLevelManager::spawnPhaseBoss(EntityManager& entities, PlayerSoldier* pl
 	}
 	else if (currentPhase == BossPhase::AquaticSeaSatan)
 	{
-		currentBoss = new SeaSatanBoss(2829.0f, 1154.0f, false);
+		currentBoss = new SeaSatanBoss(2829, 1154, false);
 		currentBoss->setTarget(player);
-		currentBoss->setArenaBounds(arenaLeft, arenaRight, 1006.0f, arenaBottom);
+		currentBoss->setArenaBounds(arenaLeft, arenaRight, 1006, arenaBottom);
 		currentBoss->setMovementMaxX(level != 0 ? level->getWorldWidth() : Constants::BOSS_WORLD_WIDTH);
 		entities.addEntity(currentBoss);
 	}
 	else if (currentPhase == BossPhase::AerialHairbuster)
 	{
-		currentBoss = new HairbusterRibertsBoss(Constants::BOSS_AQUATIC_END_X + 760.0f, 260.0f, false);
+		currentBoss = new HairbusterRibertsBoss(Constants::BOSS_AQUATIC_END_X + 760, 260, false);
 		currentBoss->setTarget(player);
-		currentBoss->setArenaBounds(arenaLeft, arenaRight, 180.0f, 560.0f);
+		currentBoss->setArenaBounds(arenaLeft, arenaRight, 180, 560);
 		currentBoss->setMovementMaxX(level != 0 ? level->getWorldWidth() : Constants::BOSS_WORLD_WIDTH);
 		entities.addEntity(currentBoss);
 	}
 	else if (currentPhase == BossPhase::FinalMerged)
 	{
-		float ironX = 5000.0f;
-		float seaX = 5700.0f;
-		float ironGroundY = level != 0 ? level->getGroundYAt(ironX) : 1297.0f;
-		float seaGroundY = level != 0 ? level->getGroundYAt(seaX) : 1297.0f;
+		float ironX = 5000;
+		float seaX = 5700;
+		float ironGroundY = level != 0 ? level->getGroundYAt(ironX) : 1297;
+		float seaGroundY = level != 0 ? level->getGroundYAt(seaX) : 1297;
 		finalBosses[0] = new IronNokanaBoss(ironX, ironGroundY, true);
 		finalBosses[1] = new SeaSatanBoss(seaX, seaGroundY, true);
 		finalBosses[1]->setPosition(seaX, seaGroundY - finalBosses[1]->getHeight());
-		finalBosses[2] = new HairbusterRibertsBoss(6400.0f, 260.0f, true);
+		finalBosses[2] = new HairbusterRibertsBoss(6400, 260, true);
 		finalBosses[0]->setArenaBounds(arenaLeft, arenaRight, finalBosses[0]->getY(), finalBosses[0]->getY() + finalBosses[0]->getHeight());
 		finalBosses[1]->setArenaBounds(arenaLeft, arenaRight, finalBosses[1]->getY(), finalBosses[1]->getY() + finalBosses[1]->getHeight());
-		finalBosses[2]->setArenaBounds(arenaLeft, arenaRight, 180.0f, 560.0f);
+		finalBosses[2]->setArenaBounds(arenaLeft, arenaRight, 180, 560);
 		for (int i = 0; i < 3; i += 1)
 		{
 			finalBosses[i]->setTarget(player);
@@ -108,32 +111,32 @@ void BossLevelManager::spawnPhaseVehicle(EntityManager& entities, LevelManager& 
 
 	if (currentPhase == BossPhase::GroundIronNokana)
 	{
-		float y = level != 0 ? level->getMainGroundYAt(startX + 320.0f) - 96.0f : static_cast<float>(Constants::GROUND_Y) - 96.0f;
-		Vehicle* metalSlug = new Vehicle(startX + 320.0f, y);
+		float y = level != 0 ? level->getMainGroundYAt(startX + 320) - 96 : static_cast<float>(Constants::GROUND_Y) - 96;
+		Vehicle* metalSlug = new Vehicle(startX + 320, y);
 		metalSlug->setMovementMaxX(maxX);
 		metalSlug->setActiveLevel(level);
 		entities.addEntity(metalSlug);
 	}
 	else if (currentPhase == BossPhase::AquaticSeaSatan)
 	{
-		SlugMariner* mariner = new SlugMariner(startX + 280.0f, 625.0f);
+		SlugMariner* mariner = new SlugMariner(startX + 280, 625);
 		mariner->setMovementMaxX(maxX);
 		mariner->setActiveLevel(level);
 		entities.addEntity(mariner);
 	}
 	else if (currentPhase == BossPhase::AerialHairbuster)
 	{
-		SlugFlyer* flyer = new SlugFlyer(startX + 280.0f, 620.0f);
+		SlugFlyer* flyer = new SlugFlyer(startX + 280, 620);
 		flyer->setMovementMaxX(maxX);
 		flyer->setActiveLevel(level);
 		entities.addEntity(flyer);
 	}
 	else if (currentPhase == BossPhase::FinalMerged)
 	{
-		float y = level != 0 ? level->getMainGroundYAt(startX + 260.0f) - 96.0f : static_cast<float>(Constants::GROUND_Y) - 96.0f;
-		Vehicle* metalSlug = new Vehicle(startX + 260.0f, y);
-		SlugMariner* mariner = new SlugMariner(startX + 760.0f, 625.0f);
-		SlugFlyer* flyer = new SlugFlyer(startX + 1240.0f, 330.0f);
+		float y = level != 0 ? level->getMainGroundYAt(startX + 260) - 96 : static_cast<float>(Constants::GROUND_Y) - 96;
+		Vehicle* metalSlug = new Vehicle(startX + 260, y);
+		SlugMariner* mariner = new SlugMariner(startX + 760, 625);
+		SlugFlyer* flyer = new SlugFlyer(startX + 1240, 330);
 		metalSlug->setMovementMaxX(maxX);
 		mariner->setMovementMaxX(maxX);
 		flyer->setMovementMaxX(maxX);
@@ -173,7 +176,7 @@ void BossLevelManager::cleanupPhase(EntityManager& entities)
 	{
 		finalBosses[i] = 0;
 	}
-	entities.addEntity(new Collectible(COLLECTIBLE_TURKEY, phaseEndX(currentPhase) + 80.0f, 650.0f));
+	entities.addEntity(new Collectible(COLLECTIBLE_TURKEY, phaseEndX(currentPhase) + 80, 650));
 }
 
 void BossLevelManager::advancePhase(EntityManager& entities, PlayerSoldier* player, LevelManager& level)
@@ -273,7 +276,7 @@ float BossLevelManager::phaseStartX(BossPhase phase) const
 	{
 		return Constants::BOSS_AERIAL_END_X;
 	}
-	return 0.0f;
+	return 0;
 }
 
 float BossLevelManager::phaseEndX(BossPhase phase) const
@@ -331,12 +334,16 @@ bool BossLevelManager::isCompleted() const
 	return currentPhase == BossPhase::Completed;
 }
 
+<<<<<<< HEAD
 BossPhase BossLevelManager::getCurrentPhase() const
 {
 	return currentPhase;
 }
 
+void BossLevelManager::appendHudText(string& text) const
+=======
 void BossLevelManager::appendHudText(std::string& text) const
+>>>>>>> 6d77c54b1816a0bae93ea8c1ad344f5e135692cd
 {
 	if (!started)
 	{
@@ -352,9 +359,9 @@ void BossLevelManager::appendHudText(std::string& text) const
 			text += "  ";
 			text += currentBoss->getBossDisplayName();
 			text += " HP ";
-			text += std::to_string(currentBoss->getHealth());
+			text += to_string(currentBoss->getHealth());
 			text += "/";
-			text += std::to_string(currentBoss->getMaxHealth());
+			text += to_string(currentBoss->getMaxHealth());
 		}
 		return;
 	}
@@ -366,7 +373,7 @@ void BossLevelManager::appendHudText(std::string& text) const
 			text += "  ";
 			text += finalBosses[i]->getBossDisplayName();
 			text += " ";
-			text += std::to_string(finalBosses[i]->getHealth());
+			text += to_string(finalBosses[i]->getHealth());
 		}
 		else if (finalBossDefeated[i])
 		{

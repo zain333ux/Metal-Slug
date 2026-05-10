@@ -1,5 +1,8 @@
 #include "ScoreManager.h"
 
+
+using namespace std;
+
 ScoreManager::ScoreManager()
 {
 	score = 0;
@@ -21,11 +24,6 @@ void ScoreManager::add(int amount)
 void ScoreManager::addSurvivalClear()
 {
 	score += 1000;
-}
-
-void ScoreManager::addCampaignClear()
-{
-	score += 3000;
 }
 
 int ScoreManager::getScore() const

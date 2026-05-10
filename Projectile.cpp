@@ -4,29 +4,33 @@
 
 #include "Level.h"
 
+
+using namespace std;
+using namespace sf;
+
 Projectile::Projectile()
 {
 	damage = 10;
-	lifeTime = 2.0f;
-	width = 22.0f;
-	height = 8.0f;
+	lifeTime = 2;
+	width = 22;
+	height = 8;
 	explosive = false;
 	melee = false;
 	firedWhileAirborne = false;
 	playerOwned = true;
-	blastRadius = 0.0f;
+	blastRadius = 0;
 	activeLevel = 0;
 
-	body.setSize(sf::Vector2f(width, height));
-	body.setFillColor(sf::Color(255, 230, 90));
-	body.setOutlineColor(sf::Color::Black);
-	body.setOutlineThickness(1.0f);
+	body.setSize(Vector2f(width, height));
+	body.setFillColor(Color(255, 230, 90));
+	body.setOutlineColor(Color::Black);
+	body.setOutlineThickness(1);
 }
 
 void Projectile::update(float deltaTime)
 {
 	lifeTime -= deltaTime;
-	if (lifeTime <= 0.0f)
+	if (lifeTime <= 0)
 	{
 		deactivate();
 		return;
@@ -36,7 +40,7 @@ void Projectile::update(float deltaTime)
 	body.setPosition(x, y);
 }
 
-void Projectile::draw(sf::RenderWindow& window)
+void Projectile::draw(RenderWindow& window)
 {
 	if (visible)
 	{
@@ -112,7 +116,7 @@ float Projectile::getGroundY() const
 {
 	if (activeLevel != 0)
 	{
-		return activeLevel->getMainGroundYAt(x + width / 2.0f);
+		return activeLevel->getMainGroundYAt(x + width / 2);
 	}
 
 	return static_cast<float>(Constants::GROUND_Y);

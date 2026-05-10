@@ -10,10 +10,14 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <cmath>
 
+
+using namespace std;
+using namespace sf;
+
 Vehicle::Vehicle(float startX, float startY)
 {
-	width = 110.0f;
-	height = 96.0f;
+	width = 110;
+	height = 96;
 	baseMaxHealth = 160;
 	baseFireCooldown = 0.24f;
 	maxHealth = baseMaxHealth;
@@ -23,8 +27,8 @@ Vehicle::Vehicle(float startX, float startY)
 	grounded = false;
 	inWater = false;
 	moveSpeed = Constants::PLAYER_MOVE_SPEED * 1.2f;
-	movementMaxX = Constants::WORLD_WIDTH_LEVEL_3 + 2200.0f;
-	damageFlashTimer = 0.0f;
+	movementMaxX = Constants::WORLD_WIDTH_LEVEL_3 + 2200;
+	damageFlashTimer = 0;
 	activeLevel = 0;
 	weapon.setCooldown(baseFireCooldown);
 
@@ -50,33 +54,33 @@ Vehicle::Vehicle(float startX, float startY)
 	currentFrameBottomPadding = 2;
 	currentCannonFrame = 0;
 	currentCannonFrameWidth = 53;
-	animationTimer = 0.0f;
-	shootAnimationTimer = 0.0f;
-	hitAnimationTimer = 0.0f;
-	cannonTimer = 0.0f;
-	cannonFrameTimer = 0.0f;
+	animationTimer = 0;
+	shootAnimationTimer = 0;
+	hitAnimationTimer = 0;
+	cannonTimer = 0;
+	cannonFrameTimer = 0;
 
-	body.setSize(sf::Vector2f(width, 44.0f));
-	body.setOutlineColor(sf::Color::Black);
-	body.setOutlineThickness(2.0f);
+	body.setSize(Vector2f(width, 44));
+	body.setOutlineColor(Color::Black);
+	body.setOutlineThickness(2);
 
-	cabin.setSize(sf::Vector2f(54.0f, 34.0f));
-	cabin.setOutlineColor(sf::Color::Black);
-	cabin.setOutlineThickness(2.0f);
+	cabin.setSize(Vector2f(54, 34));
+	cabin.setOutlineColor(Color::Black);
+	cabin.setOutlineThickness(2);
 
-	turret.setSize(sf::Vector2f(58.0f, 12.0f));
-	turret.setOutlineColor(sf::Color::Black);
-	turret.setOutlineThickness(1.0f);
+	turret.setSize(Vector2f(58, 12));
+	turret.setOutlineColor(Color::Black);
+	turret.setOutlineThickness(1);
 
-	rearWheel.setRadius(15.0f);
-	rearWheel.setFillColor(sf::Color(35, 35, 35));
-	rearWheel.setOutlineColor(sf::Color::Black);
-	rearWheel.setOutlineThickness(2.0f);
+	rearWheel.setRadius(15);
+	rearWheel.setFillColor(Color(35, 35, 35));
+	rearWheel.setOutlineColor(Color::Black);
+	rearWheel.setOutlineThickness(2);
 
-	frontWheel.setRadius(15.0f);
-	frontWheel.setFillColor(sf::Color(35, 35, 35));
-	frontWheel.setOutlineColor(sf::Color::Black);
-	frontWheel.setOutlineThickness(2.0f);
+	frontWheel.setRadius(15);
+	frontWheel.setFillColor(Color(35, 35, 35));
+	frontWheel.setOutlineColor(Color::Black);
+	frontWheel.setOutlineThickness(2);
 
 	loadVehicleSprites();
 	setPosition(startX, startY);
@@ -102,7 +106,7 @@ void Vehicle::resetAnimation(VehicleAnimation& animation)
 
 bool Vehicle::loadVehicleSprites()
 {
-	sf::Image sheetImage;
+	Image sheetImage;
 	if (!sheetImage.loadFromFile("Sprites/Metal Slug.png"))
 	{
 		usingSprite = false;
@@ -110,7 +114,7 @@ bool Vehicle::loadVehicleSprites()
 		return false;
 	}
 
-	sf::Color backgroundColor = sheetImage.getPixel(0, 0);
+	Color backgroundColor = sheetImage.getPixel(0, 0);
 
 	loadAnimation(normalIdleAnimation, sheetImage, backgroundColor, 8, 23, 195, 59, 3, 0.18f, true);
 	loadAnimation(normalMoveAnimation, sheetImage, backgroundColor, 263, 881, 354, 58, 5, 0.10f, true);
@@ -215,16 +219,16 @@ bool Vehicle::loadVehicleSprites()
 	return usingSprite;
 }
 
-bool Vehicle::loadAnimation(VehicleAnimation& animation, const sf::Image& sheetImage, sf::Color backgroundColor, int x, int y, int totalWidth, int totalHeight, int frameCount, float frameDuration, bool loop)
+bool Vehicle::loadAnimation(VehicleAnimation& animation, const Image& sheetImage, Color backgroundColor, int x, int y, int totalWidth, int totalHeight, int frameCount, float frameDuration, bool loop)
 {
 	if (totalWidth <= 0 || totalHeight <= 0 || frameCount <= 0)
 	{
 		return false;
 	}
 
-	sf::Image animationImage;
+	Image animationImage;
 	animationImage.create(totalWidth, totalHeight, backgroundColor);
-	animationImage.copy(sheetImage, 0, 0, sf::IntRect(x, y, totalWidth, totalHeight));
+	animationImage.copy(sheetImage, 0, 0, IntRect(x, y, totalWidth, totalHeight));
 	animationImage.createMaskFromColor(backgroundColor);
 
 	if (!animation.texture.loadFromImage(animationImage))
@@ -276,14 +280,14 @@ void Vehicle::setAnimationBottomPadding(VehicleAnimation& animation, int bottomP
 
 void Vehicle::applyDriverBonuses(const PlayerSoldier* driver)
 {
-	float healthRatio = 1.0f;
+	float healthRatio = 1;
 	if (maxHealth > 0)
 	{
 		healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
 	}
 
-	float durabilityMultiplier = 1.0f;
-	float cooldownMultiplier = 1.0f;
+	float durabilityMultiplier = 1;
+	float cooldownMultiplier = 1;
 	if (driver != 0)
 	{
 		durabilityMultiplier = driver->getVehicleDurabilityMultiplier();
@@ -388,7 +392,7 @@ void Vehicle::setAnimationFrame(VehicleAnimation& animation, int frameIndex)
 	}
 
 	vehicleSprite.setTexture(animation.texture);
-	vehicleSprite.setTextureRect(sf::IntRect(frameLeft, 0, currentFrameWidth, currentFrameHeight));
+	vehicleSprite.setTextureRect(IntRect(frameLeft, 0, currentFrameWidth, currentFrameHeight));
 }
 
 void Vehicle::setCannonFrame(int frameIndex)
@@ -416,20 +420,20 @@ void Vehicle::setCannonFrame(int frameIndex)
 	}
 
 	cannonSprite.setTexture(cannonAnimation.texture);
-	cannonSprite.setTextureRect(sf::IntRect(frameLeft, 0, currentCannonFrameWidth, cannonAnimation.frameHeight));
+	cannonSprite.setTextureRect(IntRect(frameLeft, 0, currentCannonFrameWidth, cannonAnimation.frameHeight));
 }
 
 void Vehicle::handleMovementInput()
 {
-	velocityX = 0.0f;
+	velocityX = 0;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A))
 	{
 		velocityX = -moveSpeed;
 		facingRight = false;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::D))
 	{
 		velocityX = moveSpeed;
 		facingRight = true;
@@ -443,15 +447,15 @@ void Vehicle::update(float deltaTime)
 		health = maxHealth;
 	}
 
-	if (damageFlashTimer > 0.0f)
+	if (damageFlashTimer > 0)
 	{
 		damageFlashTimer -= deltaTime;
 	}
-	if (shootAnimationTimer > 0.0f)
+	if (shootAnimationTimer > 0)
 	{
 		shootAnimationTimer -= deltaTime;
 	}
-	if (hitAnimationTimer > 0.0f)
+	if (hitAnimationTimer > 0)
 	{
 		hitAnimationTimer -= deltaTime;
 	}
@@ -459,27 +463,27 @@ void Vehicle::update(float deltaTime)
 	if (occupied)
 	{
 		handleMovementInput();
-		usingUphillAnimation = sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+		usingUphillAnimation = Keyboard::isKeyPressed(Keyboard::W) || Keyboard::isKeyPressed(Keyboard::Up);
 	}
 	else
 	{
-		velocityX = 0.0f;
+		velocityX = 0;
 		usingUphillAnimation = false;
 	}
 
 	bool wasInWater = false;
 	if (activeLevel != 0)
 	{
-		wasInWater = activeLevel->isWaterInBounds(x + 8.0f, x + width - 8.0f, y + height * 0.45f, y + height + 12.0f);
+		wasInWater = activeLevel->isWaterInBounds(x + 8, x + width - 8, y + height * 0.45f, y + height + 12);
 	}
 
 	float gravity = Constants::GRAVITY;
 	if (wasInWater)
 	{
 		gravity *= 0.24f;
-		if (velocityY > 120.0f)
+		if (velocityY > 120)
 		{
-			velocityY = 120.0f;
+			velocityY = 120;
 		}
 		velocityX *= 0.65f;
 	}
@@ -489,7 +493,7 @@ void Vehicle::update(float deltaTime)
 	Entity::update(deltaTime);
 
 	float landingY = static_cast<float>(Constants::GROUND_Y);
-	float waterSurfaceY = static_cast<float>(Constants::WORLD_HEIGHT) + 1.0f;
+	float waterSurfaceY = static_cast<float>(Constants::WORLD_HEIGHT) + 1;
 	if (activeLevel != 0)
 	{
 		landingY = activeLevel->getLandingY(x, x + width, previousBottom, y + height);
@@ -497,23 +501,23 @@ void Vehicle::update(float deltaTime)
 	}
 
 	inWater = activeLevel != 0 &&
-		activeLevel->isWaterInBounds(x + 8.0f, x + width - 8.0f, y + height * 0.45f, y + height + 12.0f);
+		activeLevel->isWaterInBounds(x + 8, x + width - 8, y + height * 0.45f, y + height + 12);
 
-	bool canFloatOnWater = inWater && waterSurfaceY <= landingY - 8.0f;
+	bool canFloatOnWater = inWater && waterSurfaceY <= landingY - 8;
 	float floatingBottom = waterSurfaceY + height * 0.28f;
 	if (canFloatOnWater && y + height > floatingBottom)
 	{
 		y = floatingBottom - height;
-		if (velocityY > 0.0f)
+		if (velocityY > 0)
 		{
-			velocityY = 0.0f;
+			velocityY = 0;
 		}
 		grounded = false;
 	}
 	else if (y + height >= landingY)
 	{
 		y = landingY - height;
-		velocityY = 0.0f;
+		velocityY = 0;
 		grounded = true;
 	}
 	else
@@ -524,22 +528,22 @@ void Vehicle::update(float deltaTime)
 	if (activeLevel != 0 && y + height > activeLevel->getWorldHeight())
 	{
 		y = activeLevel->getWorldHeight() - height;
-		velocityY = 0.0f;
+		velocityY = 0;
 		grounded = true;
 	}
 
-	if (y < 0.0f)
+	if (y < 0)
 	{
-		y = 0.0f;
-		if (velocityY < 0.0f)
+		y = 0;
+		if (velocityY < 0)
 		{
-			velocityY = 0.0f;
+			velocityY = 0;
 		}
 	}
 
-	if (x < 0.0f)
+	if (x < 0)
 	{
-		x = 0.0f;
+		x = 0;
 	}
 
 	if (x + width > movementMaxX)
@@ -561,15 +565,15 @@ void Vehicle::updateAnimation(float deltaTime)
 	}
 
 	int nextAnimationKind = VEHICLE_ANIM_IDLE;
-	if (hitAnimationTimer > 0.0f)
+	if (hitAnimationTimer > 0)
 	{
 		nextAnimationKind = VEHICLE_ANIM_HIT;
 	}
-	else if (shootAnimationTimer > 0.0f)
+	else if (shootAnimationTimer > 0)
 	{
 		nextAnimationKind = VEHICLE_ANIM_SHOOT;
 	}
-	else if (velocityX != 0.0f)
+	else if (velocityX != 0)
 	{
 		nextAnimationKind = VEHICLE_ANIM_MOVE;
 	}
@@ -578,7 +582,7 @@ void Vehicle::updateAnimation(float deltaTime)
 	{
 		currentAnimationKind = nextAnimationKind;
 		currentAnimationFrame = 0;
-		animationTimer = 0.0f;
+		animationTimer = 0;
 		setAnimationFrame(getAnimation(currentAnimationKind, usingUphillAnimation), 0);
 		return;
 	}
@@ -587,29 +591,29 @@ void Vehicle::updateAnimation(float deltaTime)
 	animationTimer += deltaTime;
 	if (animationTimer >= animation.frameDuration)
 	{
-		animationTimer = 0.0f;
+		animationTimer = 0;
 		setAnimationFrame(animation, currentAnimationFrame + 1);
 	}
 }
 
 void Vehicle::updateCannonAnimation(float deltaTime)
 {
-	if (!usingCannonSprite || cannonTimer <= 0.0f)
+	if (!usingCannonSprite || cannonTimer <= 0)
 	{
 		return;
 	}
 
 	cannonTimer -= deltaTime;
-	if (cannonTimer <= 0.0f)
+	if (cannonTimer <= 0)
 	{
-		cannonTimer = 0.0f;
+		cannonTimer = 0;
 		return;
 	}
 
 	cannonFrameTimer += deltaTime;
 	if (cannonFrameTimer >= cannonAnimation.frameDuration)
 	{
-		cannonFrameTimer = 0.0f;
+		cannonFrameTimer = 0;
 		setCannonFrame(currentCannonFrame + 1);
 	}
 }
@@ -623,13 +627,13 @@ void Vehicle::handleWeaponInput(EntityManager& entityManager, float deltaTime)
 		return;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+	if (Keyboard::isKeyPressed(Keyboard::LControl) || Keyboard::isKeyPressed(Keyboard::J))
 	{
 		bool canFireNow = weapon.canFire();
 		if (canFireNow)
 		{
-			float cannonY = usingUphillAnimation ? y + 16.0f : y + 28.0f;
-			float bulletX = facingRight ? x + width + 48.0f : x - 48.0f;
+			float cannonY = usingUphillAnimation ? y + 16 : y + 28;
+			float bulletX = facingRight ? x + width + 48 : x - 48;
 			float bulletY = cannonY;
 			entityManager.addEntity(new VehicleBullet(bulletX, bulletY, facingRight));
 			weapon.restartCooldown();
@@ -638,10 +642,10 @@ void Vehicle::handleWeaponInput(EntityManager& entityManager, float deltaTime)
 			shootAnimationTimer = shootAnimation.frameDuration * static_cast<float>(shootAnimation.frameCount);
 			currentAnimationKind = VEHICLE_ANIM_SHOOT;
 			currentAnimationFrame = 0;
-			animationTimer = 0.0f;
+			animationTimer = 0;
 			setAnimationFrame(shootAnimation, 0);
 			cannonTimer = cannonAnimation.frameDuration * static_cast<float>(cannonAnimation.frameCount);
-			cannonFrameTimer = 0.0f;
+			cannonFrameTimer = 0;
 			setCannonFrame(0);
 		}
 	}
@@ -660,7 +664,7 @@ void Vehicle::takeDamage(int damage)
 	hitAnimationTimer = hitAnimation.frameDuration * static_cast<float>(hitAnimation.frameCount);
 	currentAnimationKind = VEHICLE_ANIM_HIT;
 	currentAnimationFrame = 0;
-	animationTimer = 0.0f;
+	animationTimer = 0;
 	setAnimationFrame(hitAnimation, 0);
 
 	if (health <= 0)
@@ -679,7 +683,7 @@ bool Vehicle::canMount(const PlayerSoldier& player) const
 
 	float distanceX = player.getCenterX() - getCenterX();
 	float distanceY = player.getCenterY() - getCenterY();
-	return std::abs(distanceX) <= 120.0f && std::abs(distanceY) <= 115.0f;
+	return abs(distanceX) <= 120 && abs(distanceY) <= 115;
 }
 
 void Vehicle::mount(PlayerSoldier& player)
@@ -692,7 +696,7 @@ void Vehicle::mount(PlayerSoldier& player)
 	occupied = true;
 	applyDriverBonuses(&player);
 	player.setRidingVehicle(true);
-	player.setVelocity(0.0f, 0.0f);
+	player.setVelocity(0, 0);
 	player.setPosition(getSeatX(), getSeatY());
 }
 
@@ -706,16 +710,16 @@ void Vehicle::dismount(PlayerSoldier& player)
 	occupied = false;
 	applyDriverBonuses(0);
 	player.setRidingVehicle(false);
-	player.setVelocity(0.0f, 0.0f);
+	player.setVelocity(0, 0);
 
-	float exitX = facingRight ? x - player.getWidth() - 8.0f : x + width + 8.0f;
-	if (exitX < 0.0f)
+	float exitX = facingRight ? x - player.getWidth() - 8 : x + width + 8;
+	if (exitX < 0)
 	{
-		exitX = x + width + 8.0f;
+		exitX = x + width + 8;
 	}
 	if (exitX + player.getWidth() > movementMaxX)
 	{
-		exitX = x - player.getWidth() - 8.0f;
+		exitX = x - player.getWidth() - 8;
 	}
 
 	player.setPosition(exitX, y + height - player.getHeight());
@@ -732,8 +736,8 @@ void Vehicle::ejectPlayer(PlayerSoldier& player)
 	occupied = false;
 	applyDriverBonuses(0);
 	player.setRidingVehicle(false);
-	player.setVelocity(0.0f, 0.0f);
-	player.setPosition(x + width / 2.0f - player.getWidth() / 2.0f, y + height - player.getHeight());
+	player.setVelocity(0, 0);
+	player.setPosition(x + width / 2 - player.getWidth() / 2, y + height - player.getHeight());
 	if (!driverSurvives)
 	{
 		player.handleVehicleDestruction();
@@ -742,14 +746,14 @@ void Vehicle::ejectPlayer(PlayerSoldier& player)
 
 void Vehicle::updateVisualPosition()
 {
-	body.setPosition(x, y + 48.0f);
-	cabin.setPosition(x + 30.0f, y + 28.0f);
-	rearWheel.setPosition(x + 14.0f, y + 66.0f);
-	frontWheel.setPosition(x + 66.0f, y + 66.0f);
+	body.setPosition(x, y + 48);
+	cabin.setPosition(x + 30, y + 28);
+	rearWheel.setPosition(x + 14, y + 66);
+	frontWheel.setPosition(x + 66, y + 66);
 
 	if (usingSprite)
 	{
-		float drawX = x + width / 2.0f - static_cast<float>(currentFrameWidth) * spriteScale / 2.0f;
+		float drawX = x + width / 2 - static_cast<float>(currentFrameWidth) * spriteScale / 2;
 		float drawY = y + height - static_cast<float>(currentFrameHeight) * spriteScale;
 		drawY += static_cast<float>(currentFrameBottomPadding - 2) * spriteScale;
 
@@ -767,26 +771,26 @@ void Vehicle::updateVisualPosition()
 
 	if (usingCannonSprite)
 	{
-		float cannonY = usingUphillAnimation ? y + 16.0f : y + 28.0f;
+		float cannonY = usingUphillAnimation ? y + 16 : y + 28;
 		if (facingRight)
 		{
 			cannonSprite.setScale(cannonScale, cannonScale);
-			cannonSprite.setPosition(x + width - 8.0f, cannonY);
+			cannonSprite.setPosition(x + width - 8, cannonY);
 		}
 		else
 		{
 			cannonSprite.setScale(-cannonScale, cannonScale);
-			cannonSprite.setPosition(x + 8.0f, cannonY);
+			cannonSprite.setPosition(x + 8, cannonY);
 		}
 	}
 
 	if (facingRight)
 	{
-		turret.setPosition(x + 58.0f, y + 42.0f);
+		turret.setPosition(x + 58, y + 42);
 	}
 	else
 	{
-		turret.setPosition(x - 8.0f, y + 42.0f);
+		turret.setPosition(x - 8, y + 42);
 	}
 }
 
@@ -794,61 +798,61 @@ void Vehicle::updateColors()
 {
 	if (usingSprite)
 	{
-		if (damageFlashTimer > 0.0f)
+		if (damageFlashTimer > 0)
 		{
-			vehicleSprite.setColor(sf::Color(255, 130, 130));
+			vehicleSprite.setColor(Color(255, 130, 130));
 		}
 		else
 		{
-			vehicleSprite.setColor(sf::Color::White);
+			vehicleSprite.setColor(Color::White);
 		}
 		return;
 	}
 
-	if (damageFlashTimer > 0.0f)
+	if (damageFlashTimer > 0)
 	{
-		body.setFillColor(sf::Color(230, 70, 55));
-		cabin.setFillColor(sf::Color(255, 120, 90));
-		turret.setFillColor(sf::Color(255, 120, 90));
+		body.setFillColor(Color(230, 70, 55));
+		cabin.setFillColor(Color(255, 120, 90));
+		turret.setFillColor(Color(255, 120, 90));
 		return;
 	}
 
 	if (occupied)
 	{
-		body.setFillColor(sf::Color(72, 125, 78));
-		cabin.setFillColor(sf::Color(96, 160, 98));
-		turret.setFillColor(sf::Color(64, 100, 68));
+		body.setFillColor(Color(72, 125, 78));
+		cabin.setFillColor(Color(96, 160, 98));
+		turret.setFillColor(Color(64, 100, 68));
 	}
 	else
 	{
-		body.setFillColor(sf::Color(82, 100, 76));
-		cabin.setFillColor(sf::Color(105, 120, 92));
-		turret.setFillColor(sf::Color(66, 78, 60));
+		body.setFillColor(Color(82, 100, 76));
+		cabin.setFillColor(Color(105, 120, 92));
+		turret.setFillColor(Color(66, 78, 60));
 	}
 }
 
-void Vehicle::drawHealthBar(sf::RenderWindow& window)
+void Vehicle::drawHealthBar(RenderWindow& window)
 {
 	float healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
-	if (healthRatio < 0.0f)
+	if (healthRatio < 0)
 	{
-		healthRatio = 0.0f;
+		healthRatio = 0;
 	}
 
-	sf::RectangleShape healthBack;
-	healthBack.setPosition(x, y - 12.0f);
-	healthBack.setSize(sf::Vector2f(width, 6.0f));
-	healthBack.setFillColor(sf::Color(70, 20, 20));
+	RectangleShape healthBack;
+	healthBack.setPosition(x, y - 12);
+	healthBack.setSize(Vector2f(width, 6));
+	healthBack.setFillColor(Color(70, 20, 20));
 	window.draw(healthBack);
 
-	sf::RectangleShape healthFront;
-	healthFront.setPosition(x, y - 12.0f);
-	healthFront.setSize(sf::Vector2f(width * healthRatio, 6.0f));
-	healthFront.setFillColor(sf::Color(80, 230, 100));
+	RectangleShape healthFront;
+	healthFront.setPosition(x, y - 12);
+	healthFront.setSize(Vector2f(width * healthRatio, 6));
+	healthFront.setFillColor(Color(80, 230, 100));
 	window.draw(healthFront);
 }
 
-void Vehicle::draw(sf::RenderWindow& window)
+void Vehicle::draw(RenderWindow& window)
 {
 	if (!visible)
 	{
@@ -858,7 +862,7 @@ void Vehicle::draw(sf::RenderWindow& window)
 	if (usingSprite)
 	{
 		window.draw(vehicleSprite);
-		if (cannonTimer > 0.0f && usingCannonSprite)
+		if (cannonTimer > 0 && usingCannonSprite)
 		{
 			window.draw(cannonSprite);
 		}
@@ -905,10 +909,10 @@ int Vehicle::getMaxHealth() const
 
 float Vehicle::getSeatX() const
 {
-	return x + width / 2.0f - 26.0f;
+	return x + width / 2 - 26;
 }
 
 float Vehicle::getSeatY() const
 {
-	return y + height - 96.0f;
+	return y + height - 96;
 }

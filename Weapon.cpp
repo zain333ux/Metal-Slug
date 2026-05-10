@@ -1,10 +1,13 @@
 #include "Weapon.h"
 
+
+using namespace std;
+
 Weapon::Weapon()
 {
 	damage = 10;
 	cooldown = 0.25f;
-	cooldownTimer = 0.0f;
+	cooldownTimer = 0;
 }
 
 Weapon::~Weapon()
@@ -13,7 +16,7 @@ Weapon::~Weapon()
 
 void Weapon::update(float deltaTime)
 {
-	if (cooldownTimer > 0.0f)
+	if (cooldownTimer > 0)
 	{
 		cooldownTimer -= deltaTime;
 	}
@@ -21,5 +24,5 @@ void Weapon::update(float deltaTime)
 
 bool Weapon::canFire() const
 {
-	return cooldownTimer <= 0.0f;
+	return cooldownTimer <= 0;
 }

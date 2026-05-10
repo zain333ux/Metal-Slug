@@ -3,6 +3,9 @@
 #include "Game.h"
 #include "Level.h"
 #include "PlayState.h"
+
+
+using namespace std;
 using namespace sf;
 
 ModeSelectState::ModeSelectState()
@@ -28,34 +31,34 @@ void ModeSelectState::setupScreen()
 	title.setString("METAL SLUG");
 	title.setCharacterSize(70);
 	title.setFillColor(Color(245,245,245));
-	title.setPosition(480.0f, 180.0f);
+	title.setPosition(480, 180);
 
 	survivalOption.setFont(font);
 	survivalOption.setCharacterSize(36);
 	survivalOption.setFillColor(Color(80, 220, 255));
-	survivalOption.setPosition(540.0f, 360.0f);
+	survivalOption.setPosition(540, 360);
 
 	campaignOption.setFont(font);
 	campaignOption.setCharacterSize(36);
 	campaignOption.setFillColor(Color(230, 230, 230));
-	campaignOption.setPosition(540.0f, 450.0f);
+	campaignOption.setPosition(540, 450);
 
 	bossLevelOption.setFont(font);
 	bossLevelOption.setCharacterSize(36);
 	bossLevelOption.setFillColor(Color(230, 230, 230));
-	bossLevelOption.setPosition(540.0f, 540.0f);
+	bossLevelOption.setPosition(540, 540);
 
 	instructions.setFont(font);
 	instructions.setString("Use Up and Down. Press Enter.");
 	instructions.setCharacterSize(24);
 	instructions.setFillColor(Color(210, 220, 230));
-	instructions.setPosition(540.0f, 650.0f);
+	instructions.setPosition(540, 650);
 
 	message.setFont(font);
 	message.setString("Campaign profile: generated plains.");
 	message.setCharacterSize(24);
 	message.setFillColor(Color(255, 120, 120));
-	message.setPosition(540.0f, 700.0f);
+	message.setPosition(540, 700);
 }
 
 void ModeSelectState::refreshOptions()
@@ -64,31 +67,31 @@ void ModeSelectState::refreshOptions()
 	{
 		survivalOption.setString("> Survival Mode");
 		campaignOption.setString("  Campaign Mode");
-		bossLevelOption.setString("  [B] Boss Level Test");
+		bossLevelOption.setString("  Boss Level ");
 
-		survivalOption.setFillColor(sf::Color(80, 220, 255));
-		campaignOption.setFillColor(sf::Color(230, 230, 230));
-		bossLevelOption.setFillColor(sf::Color(230, 230, 230));
+		survivalOption.setFillColor(Color(80, 220, 255));
+		campaignOption.setFillColor(Color(230, 230, 230));
+		bossLevelOption.setFillColor(Color(230, 230, 230));
 	}
 	else if (selectedOption == 1)
 	{
 		survivalOption.setString("  Survival Mode");
 		campaignOption.setString("> Campaign Mode");
-		bossLevelOption.setString("  [B] Boss Level Test");
+		bossLevelOption.setString("  Boss Level ");
 
-		survivalOption.setFillColor(sf::Color(230, 230, 230));
-		campaignOption.setFillColor(sf::Color(80, 220, 255));
-		bossLevelOption.setFillColor(sf::Color(230, 230, 230));
+		survivalOption.setFillColor(Color(230, 230, 230));
+		campaignOption.setFillColor(Color(80, 220, 255));
+		bossLevelOption.setFillColor(Color(230, 230, 230));
 	}
 	else
 	{
 		survivalOption.setString("  Survival Mode");
 		campaignOption.setString("  Campaign Mode");
-		bossLevelOption.setString("> [B] Boss Level Test");
+		bossLevelOption.setString("> Boss Level ");
 
-		survivalOption.setFillColor(sf::Color(230, 230, 230));
-		campaignOption.setFillColor(sf::Color(230, 230, 230));
-		bossLevelOption.setFillColor(sf::Color(255, 210, 90));
+		survivalOption.setFillColor(Color(230, 230, 230));
+		campaignOption.setFillColor(Color(230, 230, 230));
+		bossLevelOption.setFillColor(Color(80, 220, 255));
 	}
 }
 

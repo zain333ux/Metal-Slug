@@ -14,6 +14,10 @@
 #include <cmath>
 #include <cstdlib>
 
+
+using namespace std;
+using namespace sf;
+
 namespace
 {
 	float clampBossValue(float value, float minimum, float maximum)
@@ -38,8 +42,8 @@ namespace
 
 		float dx = player->getCenterX() - boss.getCenterX();
 		float dy = player->getCenterY() - boss.getCenterY();
-		float length = std::sqrt(dx * dx + dy * dy);
-		if (length < 1.0f)
+		float length = sqrt(dx * dx + dy * dy);
+		if (length < 1)
 		{
 			return speed;
 		}
@@ -50,15 +54,15 @@ namespace
 	{
 		if (player == 0)
 		{
-			return 0.0f;
+			return 0;
 		}
 
 		float dx = player->getCenterX() - boss.getCenterX();
 		float dy = player->getCenterY() - boss.getCenterY();
-		float length = std::sqrt(dx * dx + dy * dy);
-		if (length < 1.0f)
+		float length = sqrt(dx * dx + dy * dy);
+		if (length < 1)
 		{
-			return 0.0f;
+			return 0;
 		}
 		return dy / length * speed;
 	}
@@ -71,12 +75,12 @@ Boss::Boss(BossType newBossType, BiomeType newBiomeType, bool newFinalPhase)
 	finalPhase = newFinalPhase;
 	retreating = false;
 	retreatFinished = false;
-	arenaLeft = 0.0f;
+	arenaLeft = 0;
 	arenaRight = Constants::BOSS_WORLD_WIDTH;
-	arenaTop = 0.0f;
+	arenaTop = 0;
 	arenaBottom = Constants::WORLD_HEIGHT;
 	attackTimer = 0.9f;
-	minionSpawnTimer = 4.0f;
+	minionSpawnTimer = 4;
 	waitingForMinionBatchClear = false;
 	pendingProjectileCount = 0;
 	maxHealth = 150;
@@ -87,18 +91,18 @@ Boss::Boss(BossType newBossType, BiomeType newBiomeType, bool newFinalPhase)
 	health = maxHealth;
 	scoreValue = 500;
 	contactDamage = 24;
-	detectionRange = 1600.0f;
-	shootingRange = 1300.0f;
-	stopDistance = 340.0f;
-	moveSpeed = 70.0f;
+	detectionRange = 1600;
+	shootingRange = 1300;
+	stopDistance = 340;
+	moveSpeed = 70;
 	canMoveInAir = true;
-	fallbackColor = sf::Color(190, 70, 70);
-	width = 210.0f;
-	height = 145.0f;
-	body.setSize(sf::Vector2f(width, height));
+	fallbackColor = Color(190, 70, 70);
+	width = 210;
+	height = 145;
+	body.setSize(Vector2f(width, height));
 	body.setFillColor(fallbackColor);
-	body.setOutlineColor(sf::Color::Black);
-	body.setOutlineThickness(3.0f);
+	body.setOutlineColor(Color::Black);
+	body.setOutlineThickness(3);
 }
 
 Boss::~Boss()
@@ -113,14 +117,14 @@ bool Boss::loadStaticBossTexture(const char* fileName, float scale)
 		return false;
 	}
 
-	sf::Vector2u textureSize = texture.getSize();
+	Vector2u textureSize = texture.getSize();
 	sprite.setTexture(texture);
 	spriteScale = scale;
 	spriteFacesLeft = true;
 	usingSprite = true;
 	width = static_cast<float>(textureSize.x) * spriteScale;
 	height = static_cast<float>(textureSize.y) * spriteScale;
-	body.setSize(sf::Vector2f(width, height));
+	body.setSize(Vector2f(width, height));
 	updateBossVisual();
 	return true;
 }
@@ -144,13 +148,13 @@ void Boss::updateBossVisual()
 	}
 
 	sprite.setScale(spriteScale, spriteScale);
-	sf::FloatRect bounds = sprite.getGlobalBounds();
-	sprite.setPosition(x + width / 2.0f - bounds.width / 2.0f, y + height - bounds.height);
+	FloatRect bounds = sprite.getGlobalBounds();
+	sprite.setPosition(x + width / 2 - bounds.width / 2, y + height - bounds.height);
 }
 
 void Boss::update(float deltaTime)
 {
-	if (contactDamageTimer > 0.0f)
+	if (contactDamageTimer > 0)
 	{
 		contactDamageTimer -= deltaTime;
 	}
@@ -160,9 +164,9 @@ void Boss::update(float deltaTime)
 
 	if (activeLevel != 0)
 	{
-		if (x < 0.0f)
+		if (x < 0)
 		{
-			x = 0.0f;
+			x = 0;
 		}
 		if (x + width > movementMaxX && !retreating)
 		{
@@ -193,14 +197,14 @@ void Boss::updateMinionBatch(EntityManager& entities)
 {
 	if (waitingForMinionBatchClear && entities.countActiveNonBossEnemies() == 0)
 	{
-		Collectible* crate = new Collectible(COLLECTIBLE_TURKEY, getCenterX() - 16.0f, y - 32.0f);
+		Collectible* crate = new Collectible(COLLECTIBLE_TURKEY, getCenterX() - 16, y - 32);
 		entities.addEntity(crate);
 		waitingForMinionBatchClear = false;
-		minionSpawnTimer = 7.0f;
+		minionSpawnTimer = 7;
 	}
 }
 
-void Boss::draw(sf::RenderWindow& window)
+void Boss::draw(RenderWindow& window)
 {
 	Enemy::draw(window);
 }
@@ -310,16 +314,16 @@ IronNokanaBoss::IronNokanaBoss(float startX, float worldY, bool finalPhaseBoss)
 	: Boss(BossType::IronNokana, finalPhaseBoss ? BiomeType::Merged : BiomeType::Plains, finalPhaseBoss)
 {
 	float ironScale = 1.55f;
-	float ironXOffset = 0.0f;    // negative = left, positive = right
+	float ironXOffset = 0;    // negative = left, positive = right
 
-	width = 180.0f * ironScale;
-	height = 121.0f * ironScale;
+	width = 180 * ironScale;
+	height = 121 * ironScale;
 
-	moveSpeed = 0.0f;
-	patrolDirectionTimer = 0.0f;
-	fallbackColor = sf::Color(150, 92, 52);
+	moveSpeed = 0;
+	patrolDirectionTimer = 0;
+	fallbackColor = Color(150, 92, 52);
 
-	body.setSize(sf::Vector2f(width, height));
+	body.setSize(Vector2f(width, height));
 	body.setFillColor(fallbackColor);
 
 	loadStaticBossTexture("Sprites/Clean/Iron_Nokana.png", ironScale);
@@ -341,22 +345,22 @@ void IronNokanaBoss::update(float deltaTime, PlayerSoldier& player, EntityManage
 		facingRight = false;
 	}
 
-	if (attackTimer > 0.0f)
+	if (attackTimer > 0)
 	{
 		attackTimer -= deltaTime;
 	}
-	if (minionSpawnTimer > 0.0f)
+	if (minionSpawnTimer > 0)
 	{
 		minionSpawnTimer -= deltaTime;
 	}
 
-	if (attackTimer <= 0.0f)
+	if (attackTimer <= 0)
 	{
 		attack(player, entities);
 		attackTimer = 1.65f;
 	}
 	updateMinionBatch(entities);
-	if (minionSpawnTimer <= 0.0f && !waitingForMinionBatchClear)
+	if (minionSpawnTimer <= 0 && !waitingForMinionBatchClear)
 	{
 		spawnMinions(entities);
 	}
@@ -366,13 +370,13 @@ void IronNokanaBoss::update(float deltaTime, PlayerSoldier& player, EntityManage
 void IronNokanaBoss::attack(PlayerSoldier& player, EntityManager& entities)
 {
 	(void)entities;
-	float closeDistance = std::abs(player.getCenterX() - getCenterX());
+	float closeDistance = abs(player.getCenterX() - getCenterX());
 	enqueueProjectile(0);
-	if (closeDistance < 260.0f && player.getCenterY() > y + 40.0f)
+	if (closeDistance < 260 && player.getCenterY() > y + 40)
 	{
 		enqueueProjectile(1);
 	}
-	if ((std::rand() % 3) == 0)
+	if ((rand() % 3) == 0)
 	{
 		enqueueProjectile(2);
 	}
@@ -380,7 +384,7 @@ void IronNokanaBoss::attack(PlayerSoldier& player, EntityManager& entities)
 
 void IronNokanaBoss::spawnMinions(EntityManager& entities)
 {
-	int count = 2 + std::rand() % 3;
+	int count = 2 + rand() % 3;
 	for (int i = 0; i < count; i += 1)
 	{
 		EnemyKind kind = ENEMY_REBEL;
@@ -392,18 +396,18 @@ void IronNokanaBoss::spawnMinions(EntityManager& entities)
 		{
 			kind = ENEMY_GRENADE;
 		}
-		Enemy* minion = EnemyFactory::createEnemy(kind, x - 140.0f - i * 70.0f, y + height - 96.0f, target);
+		Enemy* minion = EnemyFactory::createEnemy(kind, x - 140 - i * 70, y + height - 96, target);
 		entities.addEntity(minion);
 	}
 	waitingForMinionBatchClear = true;
-	minionSpawnTimer = 6.0f;
+	minionSpawnTimer = 6;
 }
 
 void IronNokanaBoss::startRetreat()
 {
 	retreating = false;
-	velocityX = 0.0f;
-	velocityY = 0.0f;
+	velocityX = 0;
+	velocityY = 0;
 }
 
 void IronNokanaBoss::updateRetreat(float deltaTime)
@@ -413,18 +417,18 @@ void IronNokanaBoss::updateRetreat(float deltaTime)
 
 Projectile* IronNokanaBoss::buildProjectile(int projectileKind)
 {
-	float startX = facingRight ? x + width - 22.0f : x - 20.0f;
-	float startY = y + 48.0f;
+	float startX = facingRight ? x + width - 22 : x - 20;
+	float startY = y + 48;
 	if (projectileKind == 1)
 	{
-		return new EnemyBullet(startX, y + 94.0f, facingRight);
+		return new EnemyBullet(startX, y + 94, facingRight);
 	}
 	if (projectileKind == 2)
 	{
-		float vx = facingRight ? 250.0f : -250.0f;
-		return new EnemyGrenadeProjectile(startX, y + 28.0f, vx, -500.0f);
+		float vx = facingRight ? 250 : -250;
+		return new EnemyGrenadeProjectile(startX, y + 28, vx, -500);
 	}
-	return new EnemyRocketProjectile(startX, startY, aimedVelocityX(*this, target, 380.0f), aimedVelocityY(*this, target, 380.0f) - 80.0f);
+	return new EnemyRocketProjectile(startX, startY, aimedVelocityX(*this, target, 380), aimedVelocityY(*this, target, 380) - 80);
 }
 
 const char* IronNokanaBoss::getEnemyName() const
@@ -435,17 +439,17 @@ const char* IronNokanaBoss::getEnemyName() const
 SeaSatanBoss::SeaSatanBoss(float startX, float startY, bool finalPhaseBoss)
 	: Boss(BossType::SeaSatan, finalPhaseBoss ? BiomeType::Merged : BiomeType::Aquatic, finalPhaseBoss)
 {
-	width = 364.0f * 1.0f;
-	height = 227.0f * 1.0f;
-	moveSpeed = 58.0f;
-	patrolLeftBound = startX - 420.0f;
-	patrolRightBound = startX + 420.0f;
-	fallbackColor = sf::Color(45, 110, 170);
-	body.setSize(sf::Vector2f(width, height));
+	width = 364 * 1;
+	height = 227 * 1;
+	moveSpeed = 58;
+	patrolLeftBound = startX - 420;
+	patrolRightBound = startX + 420;
+	fallbackColor = Color(45, 110, 170);
+	body.setSize(Vector2f(width, height));
 	body.setFillColor(fallbackColor);
-	loadStaticBossTexture("Sprites/Clean/Sea_Satan.png", 1.0f);
+	loadStaticBossTexture("Sprites/Clean/Sea_Satan.png", 1);
 	setSpawnPosition(startX, startY);
-	velocityX = finalPhase ? 0.0f : -moveSpeed;
+	velocityX = finalPhase ? 0 : -moveSpeed;
 	updateBossVisual();
 }
 
@@ -456,8 +460,8 @@ void SeaSatanBoss::update(float deltaTime, PlayerSoldier& player, EntityManager&
 
 	if (finalPhase)
 	{
-		velocityX = 0.0f;
-		velocityY = 0.0f;
+		velocityX = 0;
+		velocityY = 0;
 	}
 	else if (x <= patrolLeftBound)
 	{
@@ -468,21 +472,21 @@ void SeaSatanBoss::update(float deltaTime, PlayerSoldier& player, EntityManager&
 		velocityX = -moveSpeed;
 	}
 
-	if (attackTimer > 0.0f)
+	if (attackTimer > 0)
 	{
 		attackTimer -= deltaTime;
 	}
-	if (minionSpawnTimer > 0.0f)
+	if (minionSpawnTimer > 0)
 	{
 		minionSpawnTimer -= deltaTime;
 	}
-	if (attackTimer <= 0.0f)
+	if (attackTimer <= 0)
 	{
 		attack(player, entities);
 		attackTimer = 1.35f;
 	}
 	updateMinionBatch(entities);
-	if (minionSpawnTimer <= 0.0f && !waitingForMinionBatchClear)
+	if (minionSpawnTimer <= 0 && !waitingForMinionBatchClear)
 	{
 		spawnMinions(entities);
 	}
@@ -495,7 +499,7 @@ void SeaSatanBoss::attack(PlayerSoldier& player, EntityManager& entities)
 	(void)entities;
 	enqueueProjectile(0);
 	enqueueProjectile(1);
-	if ((std::rand() % 2) == 0)
+	if ((rand() % 2) == 0)
 	{
 		enqueueProjectile(2);
 	}
@@ -507,21 +511,21 @@ void SeaSatanBoss::attack(PlayerSoldier& player, EntityManager& entities)
 
 void SeaSatanBoss::spawnMinions(EntityManager& entities)
 {
-	int count = 2 + std::rand() % 3;
+	int count = 2 + rand() % 3;
 	for (int i = 0; i < count; i += 1)
 	{
 		EnemyKind kind = (i % 2 == 0) ? ENEMY_SUB_VEHICLE : ENEMY_ZOMBIE;
-		Enemy* minion = EnemyFactory::createEnemy(kind, x - 180.0f + i * 95.0f, y + 120.0f, target);
+		Enemy* minion = EnemyFactory::createEnemy(kind, x - 180 + i * 95, y + 120, target);
 		entities.addEntity(minion);
 	}
 	waitingForMinionBatchClear = true;
-	minionSpawnTimer = 7.0f;
+	minionSpawnTimer = 7;
 }
 
 void SeaSatanBoss::startRetreat()
 {
 	retreating = false;
-	velocityY = 0.0f;
+	velocityY = 0;
 }
 
 void SeaSatanBoss::updateRetreat(float deltaTime)
@@ -533,17 +537,17 @@ Projectile* SeaSatanBoss::buildProjectile(int projectileKind)
 {
 	if (projectileKind == 0)
 	{
-		return new EnemyBullet(x - 18.0f, y + 48.0f, false);
+		return new EnemyBullet(x - 18, y + 48, false);
 	}
 	if (projectileKind == 1)
 	{
-		return new EnemyBullet(x + width, y + 48.0f, true);
+		return new EnemyBullet(x + width, y + 48, true);
 	}
 	if (projectileKind == 3)
 	{
-		return new EnemyRocketProjectile(getCenterX(), y, 0.0f, -430.0f);
+		return new EnemyRocketProjectile(getCenterX(), y, 0, -430);
 	}
-	return new EnemyRocketProjectile(getCenterX(), getCenterY(), aimedVelocityX(*this, target, 360.0f), aimedVelocityY(*this, target, 360.0f));
+	return new EnemyRocketProjectile(getCenterX(), getCenterY(), aimedVelocityX(*this, target, 360), aimedVelocityY(*this, target, 360));
 }
 
 const char* SeaSatanBoss::getEnemyName() const
@@ -554,13 +558,13 @@ const char* SeaSatanBoss::getEnemyName() const
 HairbusterRibertsBoss::HairbusterRibertsBoss(float startX, float startY, bool finalPhaseBoss)
 	: Boss(BossType::HairbusterRiberts, finalPhaseBoss ? BiomeType::Merged : BiomeType::Aerial, finalPhaseBoss)
 {
-	width = 180.0f * 1.3f;
-	height = 105.0f * 1.3f;
-	moveSpeed = 82.0f;
-	patrolLeftBound = startX - 500.0f;
-	patrolRightBound = startX + 500.0f;
-	fallbackColor = sf::Color(165, 165, 85);
-	body.setSize(sf::Vector2f(width, height));
+	width = 180 * 1.3f;
+	height = 105 * 1.3f;
+	moveSpeed = 82;
+	patrolLeftBound = startX - 500;
+	patrolRightBound = startX + 500;
+	fallbackColor = Color(165, 165, 85);
+	body.setSize(Vector2f(width, height));
 	body.setFillColor(fallbackColor);
 	loadStaticBossTexture("Sprites/Clean/Hairbuster.png", 1.3f);
 	setSpawnPosition(startX, startY);
@@ -581,21 +585,21 @@ void HairbusterRibertsBoss::update(float deltaTime, PlayerSoldier& player, Entit
 		velocityX = -moveSpeed;
 	}
 
-	if (attackTimer > 0.0f)
+	if (attackTimer > 0)
 	{
 		attackTimer -= deltaTime;
 	}
-	if (minionSpawnTimer > 0.0f)
+	if (minionSpawnTimer > 0)
 	{
 		minionSpawnTimer -= deltaTime;
 	}
-	if (attackTimer <= 0.0f)
+	if (attackTimer <= 0)
 	{
 		attack(player, entities);
 		attackTimer = 1.45f;
 	}
 	updateMinionBatch(entities);
-	if (minionSpawnTimer <= 0.0f && !waitingForMinionBatchClear)
+	if (minionSpawnTimer <= 0 && !waitingForMinionBatchClear)
 	{
 		spawnMinions(entities);
 	}
@@ -608,7 +612,7 @@ void HairbusterRibertsBoss::attack(PlayerSoldier& player, EntityManager& entitie
 	(void)entities;
 	enqueueProjectile(0);
 	enqueueProjectile(1);
-	if ((std::rand() % 2) == 0)
+	if ((rand() % 2) == 0)
 	{
 		enqueueProjectile(2);
 	}
@@ -616,11 +620,11 @@ void HairbusterRibertsBoss::attack(PlayerSoldier& player, EntityManager& entitie
 
 void HairbusterRibertsBoss::spawnMinions(EntityManager& entities)
 {
-	int count = 2 + std::rand() % 3;
+	int count = 2 + rand() % 3;
 	for (int i = 0; i < count; i += 1)
 	{
 		EnemyKind kind = (i % 2 == 0) ? ENEMY_FLYING_TARA : ENEMY_MARTIAN;
-		Enemy* minion = EnemyFactory::createEnemy(kind, x - 220.0f + i * 110.0f, y + 80.0f, target);
+		Enemy* minion = EnemyFactory::createEnemy(kind, x - 220 + i * 110, y + 80, target);
 		entities.addEntity(minion);
 	}
 	waitingForMinionBatchClear = true;
@@ -630,7 +634,7 @@ void HairbusterRibertsBoss::spawnMinions(EntityManager& entities)
 void HairbusterRibertsBoss::startRetreat()
 {
 	retreating = false;
-	velocityY = 0.0f;
+	velocityY = 0;
 }
 
 void HairbusterRibertsBoss::updateRetreat(float deltaTime)
@@ -642,13 +646,13 @@ Projectile* HairbusterRibertsBoss::buildProjectile(int projectileKind)
 {
 	if (projectileKind == 1)
 	{
-		return new EnemyGrenadeProjectile(getCenterX(), y + height - 10.0f, facingRight ? 120.0f : -120.0f, 120.0f);
+		return new EnemyGrenadeProjectile(getCenterX(), y + height - 10, facingRight ? 120 : -120, 120);
 	}
 	if (projectileKind == 2)
 	{
-		return new EnemyRocketProjectile(getCenterX() + 36.0f, getCenterY(), aimedVelocityX(*this, target, 390.0f) + 70.0f, aimedVelocityY(*this, target, 390.0f));
+		return new EnemyRocketProjectile(getCenterX() + 36, getCenterY(), aimedVelocityX(*this, target, 390) + 70, aimedVelocityY(*this, target, 390));
 	}
-	return new EnemyRocketProjectile(getCenterX() - 36.0f, getCenterY(), aimedVelocityX(*this, target, 390.0f) - 70.0f, aimedVelocityY(*this, target, 390.0f));
+	return new EnemyRocketProjectile(getCenterX() - 36, getCenterY(), aimedVelocityX(*this, target, 390) - 70, aimedVelocityY(*this, target, 390));
 }
 
 const char* HairbusterRibertsBoss::getEnemyName() const

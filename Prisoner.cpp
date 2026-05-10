@@ -4,6 +4,9 @@
 #include "Constants.h"
 #include "Level.h"
 
+using namespace std;
+using namespace sf;
+
 namespace
 {
 	void makeStrip(FrameRect* frames, int count, int width, int height)
@@ -24,22 +27,22 @@ Prisoner::Prisoner(float startX, float groundY)
 	crateQueued = false;
 	crateCreated = false;
 	facingRight = true;
-	runSpeed = 190.0f;
-	width = 64.0f;
-	height = 82.0f;
+	runSpeed = 190;
+	width = 64;
+	height = 82;
 	setPosition(startX, groundY - height);
 	buildAnimations();
 }
 
-bool Prisoner::loadMaskedTexture(sf::Texture& target, const char* fileName)
+bool Prisoner::loadMaskedTexture(Texture& target, const char* fileName)
 {
-	sf::Image image;
+	Image image;
 	if (!image.loadFromFile(fileName))
 	{
 		return false;
 	}
-	image.createMaskFromColor(sf::Color::White);
-	image.createMaskFromColor(sf::Color(255, 0, 255));
+	image.createMaskFromColor(Color::White);
+	image.createMaskFromColor(Color(255, 0, 255));
 	return target.loadFromImage(image);
 }
 
@@ -71,25 +74,25 @@ void Prisoner::buildAnimations()
 	stuckAnim.setFrames(stuckFrames, 2);
 	stuckAnim.setFrameTime(0.16f);
 	stuckAnim.setLoop(true);
-	stuckAnim.setScale(2.0f, 2.0f);
+	stuckAnim.setScale(2, 2);
 
 	breakAnim.setTexture(&breakTexture);
 	breakAnim.setFrames(breakFrames, 9);
 	breakAnim.setFrameTime(0.08f);
 	breakAnim.setLoop(false);
-	breakAnim.setScale(2.0f, 2.0f);
+	breakAnim.setScale(2, 2);
 
 	dropAnim.setTexture(&dropTexture);
 	dropAnim.setFrames(dropFrames, 11);
 	dropAnim.setFrameTime(0.08f);
 	dropAnim.setLoop(false);
-	dropAnim.setScale(2.0f, 2.0f);
+	dropAnim.setScale(2, 2);
 
 	runAnim.setTexture(&runTexture);
 	runAnim.setFrames(runFrames, 8);
 	runAnim.setFrameTime(0.07f);
 	runAnim.setLoop(true);
-	runAnim.setScale(2.0f, 2.0f);
+	runAnim.setScale(2, 2);
 
 	stuckAnim.reset();
 	breakAnim.reset();
@@ -108,7 +111,7 @@ void Prisoner::setState(PrisonerState newState)
 	}
 	else if (state == PRISONER_DROPPING)
 	{
-		velocityY = -260.0f;
+		velocityY = -260;
 	}
 }
 
@@ -158,7 +161,7 @@ void Prisoner::update(float deltaTime)
 	{
 		Entity::update(deltaTime);
 		float maxX = activeLevel != 0 ? activeLevel->getWorldWidth() : Constants::WORLD_WIDTH_LEVEL_3;
-		if (x > maxX + 180.0f)
+		if (x > maxX + 180)
 		{
 			deactivate();
 		}
@@ -174,7 +177,7 @@ void Prisoner::update(float deltaTime)
 		if (y + height >= groundY)
 		{
 			y = groundY - height;
-			velocityY = 0.0f;
+			velocityY = 0;
 			crateQueued = true;
 		}
 	}
@@ -184,7 +187,7 @@ void Prisoner::update(float deltaTime)
 	}
 }
 
-void Prisoner::draw(sf::RenderWindow& window)
+void Prisoner::draw(RenderWindow& window)
 {
 	if (!visible || !active)
 	{
@@ -198,10 +201,10 @@ void Prisoner::draw(sf::RenderWindow& window)
 	}
 	else
 	{
-		sf::RectangleShape fallback;
+		RectangleShape fallback;
 		fallback.setPosition(x, y);
-		fallback.setSize(sf::Vector2f(width, height));
-		fallback.setFillColor(sf::Color(210, 180, 120));
+		fallback.setSize(Vector2f(width, height));
+		fallback.setFillColor(Color(210, 180, 120));
 		window.draw(fallback);
 	}
 }
@@ -233,7 +236,7 @@ Collectible* Prisoner::createCrateIfReady()
 	}
 
 	crateCreated = true;
-	float crateX = x + width + 12.0f;
-	float crateY = y + height - 72.0f;
+	float crateX = x + width + 12;
+	float crateY = y + height - 72;
 	return new Collectible(COLLECTIBLE_SUPPLY_CRATE, crateX, crateY);
 }

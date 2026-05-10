@@ -6,25 +6,28 @@
 
 #include <cstdlib>
 
+using namespace std;
+using namespace sf;
+
 Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 {
 	kind = newKind;
 	activeLevel = 0;
-	velocityX = 0.0f;
-	velocityY = 0.0f;
+	velocityX = 0;
+	velocityY = 0;
 	spriteLoaded = false;
 	animationFrames = 0;
 	animationFrameCount = 1;
 	animationFrameIndex = 0;
-	animationTimer = 0.0f;
+	animationTimer = 0;
 	animationFrameDuration = 0.12f;
-	lifeTime = 12.0f;
+	lifeTime = 12;
 
-	width = 32.0f;
-	height = 32.0f;
+	width = 32;
+	height = 32;
 	setPosition(newX, newY);
-	fallbackBody.setOutlineColor(sf::Color::Black);
-	fallbackBody.setOutlineThickness(1.0f);
+	fallbackBody.setOutlineColor(Color::Black);
+	fallbackBody.setOutlineThickness(1);
 
 	if (kind == COLLECTIBLE_FRUIT)
 	{
@@ -33,12 +36,12 @@ Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 	else if (kind == COLLECTIBLE_TURKEY)
 	{
 		loadMaskedTexture("Sprites/Clean/turkey_item.png");
-		static const sf::IntRect TURKEY_FRAMES[] =
+		static const IntRect TURKEY_FRAMES[] =
 		{
-			sf::IntRect(1, 2, 26, 32), sf::IntRect(32, 4, 26, 30), sf::IntRect(63, 3, 26, 31),
-			sf::IntRect(95, 3, 26, 31), sf::IntRect(126, 2, 26, 32), sf::IntRect(157, 2, 26, 32),
-			sf::IntRect(188, 3, 26, 31), sf::IntRect(218, 3, 26, 31), sf::IntRect(249, 3, 27, 31),
-			sf::IntRect(281, 3, 28, 31), sf::IntRect(314, 4, 28, 30)
+			IntRect(1, 2, 26, 32), IntRect(32, 4, 26, 30), IntRect(63, 3, 26, 31),
+			IntRect(95, 3, 26, 31), IntRect(126, 2, 26, 32), IntRect(157, 2, 26, 32),
+			IntRect(188, 3, 26, 31), IntRect(218, 3, 26, 31), IntRect(249, 3, 27, 31),
+			IntRect(281, 3, 28, 31), IntRect(314, 4, 28, 30)
 		};
 		animationFrames = TURKEY_FRAMES;
 		animationFrameCount = 11;
@@ -55,41 +58,41 @@ Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 	else
 	{
 		loadMaskedTexture("Sprites/Clean/crate.png");
-		static const sf::IntRect CRATE_FRAMES[] =
+		static const IntRect CRATE_FRAMES[] =
 		{
-			sf::IntRect(3, 6, 32, 28),  
-			sf::IntRect(40, 5, 32, 29),  
-			sf::IntRect(77, 4, 32, 30),  
-			sf::IntRect(114, 2, 32, 32),  
-			sf::IntRect(152, 3, 32, 31),   
-			sf::IntRect(190, 5, 32, 29),   
-			sf::IntRect(228, 6, 32, 28),   
+			IntRect(3, 6, 32, 28),  
+			IntRect(40, 5, 32, 29),  
+			IntRect(77, 4, 32, 30),  
+			IntRect(114, 2, 32, 32),  
+			IntRect(152, 3, 32, 31),   
+			IntRect(190, 5, 32, 29),   
+			IntRect(228, 6, 32, 28),   
 		};
 		animationFrames = CRATE_FRAMES;
 		animationFrameCount = 6;
 		animationFrameDuration = 0.12f;
-		width = 88.0f;
-		height = 72.0f;
+		width = 88;
+		height = 72;
 	}
 
 	if (!spriteLoaded)
 	{
-		fallbackBody.setSize(sf::Vector2f(width, height));
+		fallbackBody.setSize(Vector2f(width, height));
 		if (kind == COLLECTIBLE_FRUIT)
 		{
-			fallbackBody.setFillColor(sf::Color(245, 90, 80));
+			fallbackBody.setFillColor(Color(245, 90, 80));
 		}
 		else if (kind == COLLECTIBLE_TURKEY)
 		{
-			fallbackBody.setFillColor(sf::Color(210, 140, 80));
+			fallbackBody.setFillColor(Color(210, 140, 80));
 		}
 		else if (kind == COLLECTIBLE_ROCKET_ITEM || kind == COLLECTIBLE_HMG_ITEM)
 		{
-			fallbackBody.setFillColor(sf::Color(170, 170, 210));
+			fallbackBody.setFillColor(Color(170, 170, 210));
 		}
 		else
 		{
-			fallbackBody.setFillColor(sf::Color(170, 110, 60));
+			fallbackBody.setFillColor(Color(170, 110, 60));
 		}
 	}
 
@@ -107,7 +110,7 @@ void Collectible::update(float deltaTime)
 		return;
 	}
 	lifeTime -= deltaTime;
-	if (lifeTime <= 0.0f)
+	if (lifeTime <= 0)
 	{
 		deactivate();
 		return;
@@ -125,7 +128,7 @@ void Collectible::update(float deltaTime)
 	if (y + height >= landingY)
 	{
 		y = landingY - height;
-		velocityY = 0.0f;
+		velocityY = 0;
 	}
 
 	if (animationFrames != 0 && animationFrameCount > 1)
@@ -133,7 +136,7 @@ void Collectible::update(float deltaTime)
 		animationTimer += deltaTime;
 		if (animationTimer >= animationFrameDuration)
 		{
-			animationTimer = 0.0f;
+			animationTimer = 0;
 			animationFrameIndex += 1;
 			if (animationFrameIndex >= animationFrameCount)
 			{
@@ -168,7 +171,7 @@ void Collectible::apply(PlayerSoldier& player)
 	{
 		player.addGrenades(5);
 		player.heal(30);
-		if (std::rand() % 2 == 0)
+		if (rand() % 2 == 0)
 		{
 			player.addRocketAmmo(4);
 		}
@@ -181,7 +184,7 @@ void Collectible::apply(PlayerSoldier& player)
 	deactivate();
 }
 
-void Collectible::draw(sf::RenderWindow& window)
+void Collectible::draw(RenderWindow& window)
 {
 	if (!visible || !active)
 	{
@@ -204,21 +207,16 @@ void Collectible::setActiveLevel(Level* level)
 	activeLevel = level;
 }
 
-CollectibleKind Collectible::getKind() const
-{
-	return kind;
-}
-
 bool Collectible::loadMaskedTexture(const char* fileName)
 {
-	sf::Image image;
+	Image image;
 	if (!image.loadFromFile(fileName))
 	{
 		spriteLoaded = false;
 		return false;
 	}
-	image.createMaskFromColor(sf::Color::White);
-	image.createMaskFromColor(sf::Color(255, 0, 255));
+	image.createMaskFromColor(Color::White);
+	image.createMaskFromColor(Color(255, 0, 255));
 	if (!texture.loadFromImage(image))
 	{
 		spriteLoaded = false;
@@ -236,22 +234,22 @@ void Collectible::updateVisualPosition()
 		return;
 	}
 
-	float spriteScale = 2.0f;
+	float spriteScale = 2;
 	itemSprite.setScale(spriteScale, spriteScale);
-	sf::FloatRect bounds = itemSprite.getLocalBounds();
+	FloatRect bounds = itemSprite.getLocalBounds();
 	if (animationFrames != 0 && animationFrameCount > 1)
 	{
 		itemSprite.setPosition(x + width * 0.5f - bounds.width * spriteScale * 0.5f,
 			y + height - bounds.height * spriteScale);
-		fallbackBody.setSize(sf::Vector2f(width, height));
+		fallbackBody.setSize(Vector2f(width, height));
 		return;
 	}
 
-	if (bounds.height > 0.0f)
+	if (bounds.height > 0)
 	{
 		width = bounds.width * spriteScale;
 		height = bounds.height * spriteScale;
 	}
 	itemSprite.setPosition(x, y);
-	fallbackBody.setSize(sf::Vector2f(width, height));
+	fallbackBody.setSize(Vector2f(width, height));
 }

@@ -15,6 +15,10 @@
 #include <cmath>
 
 
+using namespace std;
+using namespace sf;
+
+
 
 FlyingTara::FlyingTara()
 
@@ -28,11 +32,11 @@ FlyingTara::FlyingTara()
 
 	contactDamage = 12;
 
-	width = 82.0f;
+	width = 82;
 
-	height = 58.0f;
+	height = 58;
 
-	moveSpeed = 105.0f;
+	moveSpeed = 105;
 
 	canMoveInAir = true;
 
@@ -40,9 +44,9 @@ FlyingTara::FlyingTara()
 
 	hoverY = y;
 
-	fallbackColor = sf::Color(195, 105, 230);
+	fallbackColor = Color(195, 105, 230);
 
-	body.setSize(sf::Vector2f(width, height));
+	body.setSize(Vector2f(width, height));
 
 	usingSprite = false;
 
@@ -52,9 +56,9 @@ FlyingTara::FlyingTara()
 
 	taraSpritesLoaded = false;
 
-	damageFlashTimer = 0.0f;
+	damageFlashTimer = 0;
 
-	lastVerticalVelocity = 0.0f;
+	lastVerticalVelocity = 0;
 
 
 
@@ -68,11 +72,11 @@ void FlyingTara::buildSprites()
 
 {
 
-	const sf::Texture* idleTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::TaraIdle);
+	const Texture* idleTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::TaraIdle);
 
-	const sf::Texture* mdTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::TaraMoveDown);
+	const Texture* mdTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::TaraMoveDown);
 
-	const sf::Texture* muTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::TaraMoveUp);
+	const Texture* muTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::TaraMoveUp);
 
 
 
@@ -164,7 +168,7 @@ void FlyingTara::updateAI()
 
 {
 
-	velocityY = 0.0f;
+	velocityY = 0;
 
 
 
@@ -204,25 +208,25 @@ void FlyingTara::updateAI()
 
 
 
-	float wave = std::sin(x * 0.014f) * 20.0f;
+	float wave = sin(x * 0.014f) * 20;
 
 	float targetY = hoverY + wave;
 
 	velocityY = (targetY - y) * 2.2f;
 
-	if (velocityY > 95.0f)
+	if (velocityY > 95)
 
 	{
 
-		velocityY = 95.0f;
+		velocityY = 95;
 
 	}
 
-	if (velocityY < -95.0f)
+	if (velocityY < -95)
 
 	{
 
-		velocityY = -95.0f;
+		velocityY = -95;
 
 	}
 
@@ -232,11 +236,11 @@ void FlyingTara::updateAI()
 
 	{
 
-		float alignX = std::abs(target->getCenterX() - getCenterX());
+		float alignX = abs(target->getCenterX() - getCenterX());
 
 		bool playerBelow = target->getCenterY() > getCenterY();
 
-		if (alignX <= 34.0f && playerBelow && attackTimer <= 0.0f)
+		if (alignX <= 34 && playerBelow && attackTimer <= 0)
 
 		{
 
@@ -260,7 +264,7 @@ void FlyingTara::update(float deltaTime)
 
 
 
-	if (damageFlashTimer > 0.0f)
+	if (damageFlashTimer > 0)
 
 	{
 
@@ -268,7 +272,7 @@ void FlyingTara::update(float deltaTime)
 
 	}
 
-	if (contactDamageTimer > 0.0f)
+	if (contactDamageTimer > 0)
 
 	{
 
@@ -276,7 +280,7 @@ void FlyingTara::update(float deltaTime)
 
 	}
 
-	if (attackTimer > 0.0f)
+	if (attackTimer > 0)
 
 	{
 
@@ -296,11 +300,11 @@ void FlyingTara::update(float deltaTime)
 
 
 
-	if (x < 0.0f)
+	if (x < 0)
 
 	{
 
-		x = 0.0f;
+		x = 0;
 
 		patrolDirection = 1;
 
@@ -324,15 +328,15 @@ void FlyingTara::update(float deltaTime)
 
 	{
 
-		float top = 90.0f;
+		float top = 90;
 
-		float bottom = activeLevel->getMainGroundYAt(getCenterX()) - height - 26.0f;
+		float bottom = activeLevel->getMainGroundYAt(getCenterX()) - height - 26;
 
-		if (bottom < top + 20.0f)
+		if (bottom < top + 20)
 
 		{
 
-			bottom = top + 20.0f;
+			bottom = top + 20;
 
 		}
 
@@ -366,11 +370,11 @@ void FlyingTara::update(float deltaTime)
 
 		body.setFillColor(fallbackColor);
 
-		if (damageFlashTimer > 0.0f)
+		if (damageFlashTimer > 0)
 
 		{
 
-			body.setFillColor(sf::Color(255, 155, 180));
+			body.setFillColor(Color(255, 155, 180));
 
 		}
 
@@ -384,11 +388,11 @@ void FlyingTara::update(float deltaTime)
 
 
 
-	if (std::abs(vy) >= 40.0f)
+	if (abs(vy) >= 40)
 
 	{
 
-		visibleKind = vy > 0.0f ? FlyingTaraAnimKind::MoveDown : FlyingTaraAnimKind::MoveUp;
+		visibleKind = vy > 0 ? FlyingTaraAnimKind::MoveDown : FlyingTaraAnimKind::MoveUp;
 
 	}
 
@@ -432,11 +436,11 @@ void FlyingTara::update(float deltaTime)
 
 
 
-	if (damageFlashTimer > 0.0f)
+	if (damageFlashTimer > 0)
 
 	{
 
-		const sf::Color flash(255, 165, 195);
+		const Color flash(255, 165, 195);
 
 		animIdle.setTint(flash);
 
@@ -450,7 +454,7 @@ void FlyingTara::update(float deltaTime)
 
 	{
 
-		const sf::Color normal = sf::Color::White;
+		const Color normal = Color::White;
 
 		animIdle.setTint(normal);
 
@@ -468,7 +472,7 @@ void FlyingTara::update(float deltaTime)
 
 
 
-	body.setFillColor(sf::Color::Transparent);
+	body.setFillColor(Color::Transparent);
 
 }
 
@@ -480,17 +484,17 @@ Projectile* FlyingTara::attack()
 
 	float bombX = x + width * 0.62f;
 
-	float bombY = y + height - 10.0f;
+	float bombY = y + height - 10;
 
 	float throwX = velocityX * 0.35f;
 
-	return new FlyingTaraBombProjectile(bombX, bombY, throwX, 130.0f);
+	return new FlyingTaraBombProjectile(bombX, bombY, throwX, 130);
 
 }
 
 
 
-void FlyingTara::draw(sf::RenderWindow& window)
+void FlyingTara::draw(RenderWindow& window)
 
 {
 
@@ -558,35 +562,35 @@ void FlyingTara::draw(sf::RenderWindow& window)
 
 		float healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
 
-		if (healthRatio < 0.0f)
+		if (healthRatio < 0)
 
 		{
 
-			healthRatio = 0.0f;
+			healthRatio = 0;
 
 		}
 
 
 
-		sf::RectangleShape healthBack;
+		RectangleShape healthBack;
 
-		healthBack.setPosition(x, y - 12.0f);
+		healthBack.setPosition(x, y - 12);
 
-		healthBack.setSize(sf::Vector2f(width, 6.0f));
+		healthBack.setSize(Vector2f(width, 6));
 
-		healthBack.setFillColor(sf::Color(80, 20, 20));
+		healthBack.setFillColor(Color(80, 20, 20));
 
 		window.draw(healthBack);
 
 
 
-		sf::RectangleShape healthFront;
+		RectangleShape healthFront;
 
-		healthFront.setPosition(x, y - 12.0f);
+		healthFront.setPosition(x, y - 12);
 
-		healthFront.setSize(sf::Vector2f(width * healthRatio, 6.0f));
+		healthFront.setSize(Vector2f(width * healthRatio, 6));
 
-		healthFront.setFillColor(sf::Color(60, 220, 90));
+		healthFront.setFillColor(Color(60, 220, 90));
 
 		window.draw(healthFront);
 
@@ -623,5 +627,4 @@ const char* FlyingTara::getEnemyName() const
 	return "Flying Tara";
 
 }
-
 

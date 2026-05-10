@@ -6,6 +6,10 @@
 #include "FlyingTara.h"
 #include "M15ABradley.h"
 
+
+using namespace std;
+using namespace sf;
+
 Enemy* EnemyFactory::createEnemy(EnemyKind kind, float x, float y, PlayerSoldier* target)
 {
 	Enemy* enemy = 0;

@@ -1,5 +1,8 @@
 #include "LevelProfile.h"
 
+
+using namespace std;
+
 LevelProfile::~LevelProfile()
 {
 }
@@ -11,7 +14,7 @@ const char* PlainsProfile::getName() const
 
 float PlainsProfile::getWorldWidth() const
 {
-	return 5200.0f;
+	return 5200;
 }
 
 int PlainsProfile::getDifficulty() const
@@ -26,7 +29,7 @@ const char* MountainProfile::getName() const
 
 float MountainProfile::getWorldWidth() const
 {
-	return 6200.0f;
+	return 6200;
 }
 
 int MountainProfile::getDifficulty() const
@@ -41,7 +44,7 @@ const char* AquaticProfile::getName() const
 
 float AquaticProfile::getWorldWidth() const
 {
-	return 7000.0f;
+	return 7000;
 }
 
 int AquaticProfile::getDifficulty() const

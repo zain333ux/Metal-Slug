@@ -8,6 +8,10 @@
 #include "M15ABradley.h"
 #include "PlayerSoldier.h"
 
+
+using namespace std;
+using namespace sf;
+
 namespace
 {
 	const int FLYING_TARA_BATCH_SIZE = 2;
@@ -18,13 +22,13 @@ namespace
 		{
 			return x;
 		}
-		if (x < 80.0f)
+		if (x < 80)
 		{
-			return 80.0f;
+			return 80;
 		}
-		if (x > level->getWorldWidth() - 120.0f)
+		if (x > level->getWorldWidth() - 120)
 		{
-			return level->getWorldWidth() - 120.0f;
+			return level->getWorldWidth() - 120;
 		}
 		return x;
 	}
@@ -72,11 +76,11 @@ void EnemyVehicleFactory::spawnEnemyVehiclesForSurvivalLevel(int levelNumber, Le
 		float baseX = level->getWorldWidth() * (0.30f + 0.18f * static_cast<float>(batch));
 		for (int i = 0; i < FLYING_TARA_BATCH_SIZE; i += 1)
 		{
-			float taraX = clampToPlayableX(level, baseX + static_cast<float>(i) * 120.0f);
-			float taraY = level->getMainGroundYAt(taraX) - 280.0f;
-			if (taraY < 100.0f)
+			float taraX = clampToPlayableX(level, baseX + static_cast<float>(i) * 120);
+			float taraY = level->getMainGroundYAt(taraX) - 280;
+			if (taraY < 100)
 			{
-				taraY = 100.0f;
+				taraY = 100;
 			}
 			entityManager.addEntity(createFlyingTara(taraX, taraY, target));
 		}
@@ -88,8 +92,8 @@ void EnemyVehicleFactory::spawnEnemyVehiclesForSurvivalLevel(int levelNumber, Le
 		for (int i = 0; i < 2; i += 1)
 		{
 			float x = clampToPlayableX(level, bradleyXs[i]);
-			float y = level->getMainGroundYAt(x) - 84.0f;
-			if (level->isPlainsBiome(x, y + 84.0f))
+			float y = level->getMainGroundYAt(x) - 84;
+			if (level->isPlainsBiome(x, y + 84))
 			{
 				entityManager.addEntity(createM15ABradley(x, y, target));
 			}
@@ -102,7 +106,7 @@ void EnemyVehicleFactory::spawnEnemyVehiclesForSurvivalLevel(int levelNumber, Le
 		float x = level->getWorldWidth() * (0.72f + static_cast<float>(i) * 0.12f);
 		x = clampToPlayableX(level, x);
 		float waterY = level->getWaterSurfaceYAt(x);
-		float y = waterY + 58.0f;
+		float y = waterY + 58;
 		if (level->isAquaticBiome(x, y))
 		{
 			entityManager.addEntity(createEnemySub(x, y, target));
@@ -121,8 +125,8 @@ void EnemyVehicleFactory::spawnEnemyVehiclesForCampaign(Level* level, EntityMana
 
 	if (destroyedFlyingTara < 3)
 	{
-		float x = clampToPlayableX(level, target->getX() + 760.0f);
-		float y = level->getMainGroundYAt(x) - 260.0f;
+		float x = clampToPlayableX(level, target->getX() + 760);
+		float y = level->getMainGroundYAt(x) - 260;
 		if (level->isAerialBiome(x, y))
 		{
 			entityManager.addEntity(createFlyingTara(x, y, target));
@@ -130,17 +134,17 @@ void EnemyVehicleFactory::spawnEnemyVehiclesForCampaign(Level* level, EntityMana
 	}
 	if (destroyedBradley < 3)
 	{
-		float x = clampToPlayableX(level, target->getX() + 960.0f);
-		float y = level->getMainGroundYAt(x) - 84.0f;
-		if (level->isPlainsBiome(x, y + 84.0f))
+		float x = clampToPlayableX(level, target->getX() + 960);
+		float y = level->getMainGroundYAt(x) - 84;
+		if (level->isPlainsBiome(x, y + 84))
 		{
 			entityManager.addEntity(createM15ABradley(x, y, target));
 		}
 	}
 	if (destroyedSub < 3)
 	{
-		float x = clampToPlayableX(level, target->getX() + 1160.0f);
-		float y = level->getWaterSurfaceYAt(x) + 58.0f;
+		float x = clampToPlayableX(level, target->getX() + 1160);
+		float y = level->getWaterSurfaceYAt(x) + 58;
 		if (level->isAquaticBiome(x, y))
 		{
 			entityManager.addEntity(createEnemySub(x, y, target));

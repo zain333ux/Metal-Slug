@@ -10,6 +10,10 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
+
+using namespace std;
+using namespace sf;
+
 namespace
 {
 	bool pushSlugStrip(FrameRect* out, int& count, const int* widths, int n, int sheetH, int refW)
@@ -31,13 +35,13 @@ SlugFlyer::SlugFlyer(float startX, float startY) : Vehicle(startX, startY)
 {
 	usingSprite = false;
 	usingCannonSprite = false;
-	width = 130.0f;
-	height = 110.0f;
+	width = 130;
+	height = 110;
 	baseMaxHealth = 140;
 	maxHealth = baseMaxHealth;
 	health = maxHealth;
 	moveSpeed = Constants::PLAYER_MOVE_SPEED * 1.15f;
-	verticalSpeed = 290.0f;
+	verticalSpeed = 290;
 	baseFireCooldown = 0.48f;
 	weapon.setCooldown(baseFireCooldown);
 	missilesRemaining = 4;
@@ -47,14 +51,14 @@ SlugFlyer::SlugFlyer(float startX, float startY) : Vehicle(startX, startY)
 
 	slugSpritesLoaded = buildSlugAnimations();
 
-	worldTopBound = 70.0f;
-	worldBottomBound = static_cast<float>(Constants::GROUND_Y) - 70.0f;
+	worldTopBound = 70;
+	worldBottomBound = static_cast<float>(Constants::GROUND_Y) - 70;
 
-	body.setFillColor(sf::Color(70, 120, 155));
-	cabin.setFillColor(sf::Color(120, 175, 210));
-	turret.setFillColor(sf::Color(62, 92, 120));
-	rearWheel.setFillColor(sf::Color(70, 120, 155));
-	frontWheel.setFillColor(sf::Color(70, 120, 155));
+	body.setFillColor(Color(70, 120, 155));
+	cabin.setFillColor(Color(120, 175, 210));
+	turret.setFillColor(Color(62, 92, 120));
+	rearWheel.setFillColor(Color(70, 120, 155));
+	frontWheel.setFillColor(Color(70, 120, 155));
 
 	updateVisualPosition();
 	updateColors();
@@ -68,7 +72,7 @@ bool SlugFlyer::loadVehicleSprites()
 
 bool SlugFlyer::buildSlugAnimations()
 {
-	const sf::Texture* idleTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::SlugFlyerIdle);
+	const Texture* idleTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::SlugFlyerIdle);
 	static FrameRect idleFr[5];
 	static bool idleBuilt = false;
 	if (!idleBuilt && idleTex != nullptr)
@@ -79,7 +83,7 @@ bool SlugFlyer::buildSlugAnimations()
 		idleBuilt = true;
 	}
 
-	const sf::Texture* shootTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::SlugFlyerShoot);
+	const Texture* shootTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::SlugFlyerShoot);
 	static FrameRect shootFr[5];
 	static bool shootBuilt = false;
 	if (!shootBuilt && shootTex != nullptr)
@@ -90,7 +94,7 @@ bool SlugFlyer::buildSlugAnimations()
 		shootBuilt = true;
 	}
 
-	const sf::Texture* landTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::SlugFlyerLand);
+	const Texture* landTex = VehicleTextureManager::instance().getTexture(VehicleTextureId::SlugFlyerLand);
 	static FrameRect landFr[6];
 	static bool landBuilt = false;
 	if (!landBuilt && landTex != nullptr)
@@ -149,16 +153,16 @@ bool SlugFlyer::buildSlugAnimations()
 
 void SlugFlyer::handleMovementInput()
 {
-	velocityX = 0.0f;
+	velocityX = 0;
 
 	if (occupied && vizPhase != V_PHASE_LAND_PLAY && vizPhase != V_PHASE_TAKEOFF_PLAY)
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		if (Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A))
 		{
 			velocityX = -moveSpeed;
 			facingRight = false;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		if (Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::D))
 		{
 			velocityX = moveSpeed;
 			facingRight = true;
@@ -167,27 +171,27 @@ void SlugFlyer::handleMovementInput()
 
 	if (occupied && vizPhase != V_PHASE_LAND_PLAY && vizPhase != V_PHASE_TAKEOFF_PLAY && vizPhase != V_PHASE_GROUND_HOVER)
 	{
-		velocityY = 0.0f;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		velocityY = 0;
+		if (Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::W))
 		{
 			velocityY = -verticalSpeed;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		if (Keyboard::isKeyPressed(Keyboard::Down) || Keyboard::isKeyPressed(Keyboard::S))
 		{
 			velocityY = verticalSpeed;
 		}
 	}
 	else if (!occupied || vizPhase == V_PHASE_GROUND_HOVER || vizPhase == V_PHASE_LAND_PLAY || vizPhase == V_PHASE_TAKEOFF_PLAY)
 	{
-		velocityY = 0.0f;
+		velocityY = 0;
 		if (occupied && vizPhase == V_PHASE_GROUND_HOVER &&
-			(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A)))
+			(Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A)))
 		{
 			velocityX = -moveSpeed;
 			facingRight = false;
 		}
 		if (occupied && vizPhase == V_PHASE_GROUND_HOVER &&
-			(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)))
+			(Keyboard::isKeyPressed(Keyboard::Right) || Keyboard::isKeyPressed(Keyboard::D)))
 		{
 			velocityX = moveSpeed;
 			facingRight = true;
@@ -230,7 +234,7 @@ void SlugFlyer::syncSlugVisualState(float deltaTime, bool fireHeld, bool landInt
 		vizPhase = V_PHASE_LAND_PLAY;
 		animLand.setPlayBackward(false);
 		animLand.reset();
-		animLand.update(0.0f);
+		animLand.update(0);
 		return;
 	}
 
@@ -239,7 +243,7 @@ void SlugFlyer::syncSlugVisualState(float deltaTime, bool fireHeld, bool landInt
 		vizPhase = V_PHASE_TAKEOFF_PLAY;
 		animLand.setPlayBackward(true);
 		animLand.reset();
-		animLand.update(0.0f);
+		animLand.update(0);
 		return;
 	}
 
@@ -287,15 +291,15 @@ void SlugFlyer::syncSlugVisualState(float deltaTime, bool fireHeld, bool landInt
 void SlugFlyer::refreshSlugAnimTint(float deltaTime)
 {
 	(void)deltaTime;
-	const sf::Color flash(255, 130, 130);
-	const sf::Color normal = sf::Color::White;
+	const Color flash(255, 130, 130);
+	const Color normal = Color::White;
 
 	if (!slugSpritesLoaded)
 	{
 		return;
 	}
 
-	if (damageFlashTimer > 0.0f)
+	if (damageFlashTimer > 0)
 	{
 		animIdle.setTint(flash);
 		animShoot.setTint(flash);
@@ -315,7 +319,7 @@ void SlugFlyer::update(float deltaTime)
 	{
 		health = maxHealth;
 	}
-	if (damageFlashTimer > 0.0f)
+	if (damageFlashTimer > 0)
 	{
 		damageFlashTimer -= deltaTime;
 	}
@@ -326,8 +330,8 @@ void SlugFlyer::update(float deltaTime)
 	}
 	else
 	{
-		velocityX = 0.0f;
-		velocityY = 0.0f;
+		velocityX = 0;
+		velocityY = 0;
 	}
 
 	if (vizPhase != V_PHASE_LAND_PLAY && vizPhase != V_PHASE_TAKEOFF_PLAY)
@@ -338,21 +342,21 @@ void SlugFlyer::update(float deltaTime)
 		float worldBottom = worldBottomBound;
 		if (activeLevel != 0)
 		{
-			worldTop = 40.0f;
+			worldTop = 40;
 			float terrainY = activeLevel->getMainGroundYAt(x + width * 0.5f);
-			worldBottom = terrainY - 40.0f;
+			worldBottom = terrainY - 40;
 		}
 		worldBottomBound = worldBottom;
 		worldTopBound = worldTop;
-		if (worldBottom < worldTop + height + 10.0f)
+		if (worldBottom < worldTop + height + 10)
 		{
-			worldBottom = worldTop + height + 10.0f;
+			worldBottom = worldTop + height + 10;
 			worldBottomBound = worldBottom;
 		}
 
-		if (x < 0.0f)
+		if (x < 0)
 		{
-			x = 0.0f;
+			x = 0;
 		}
 		if (x + width > movementMaxX)
 		{
@@ -370,19 +374,19 @@ void SlugFlyer::update(float deltaTime)
 	else
 	{
 		worldBottomBound =
-			activeLevel != 0 ? activeLevel->getMainGroundYAt(x + width * 0.5f) - 40.0f : static_cast<float>(Constants::GROUND_Y) - 70.0f;
+			activeLevel != 0 ? activeLevel->getMainGroundYAt(x + width * 0.5f) - 40 : static_cast<float>(Constants::GROUND_Y) - 70;
 	}
 
 	bool fireHeld = occupied && !isDead() &&
-								 (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::J));
+								 (Keyboard::isKeyPressed(Keyboard::LControl) || Keyboard::isKeyPressed(Keyboard::J));
 
 	bool landIntent =
 		occupied && (vizPhase != V_PHASE_LAND_PLAY && vizPhase != V_PHASE_TAKEOFF_PLAY) &&
-		(sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S));
+		(Keyboard::isKeyPressed(Keyboard::Down) || Keyboard::isKeyPressed(Keyboard::S));
 	bool takeoffIntent =
 		occupied && vizPhase == V_PHASE_GROUND_HOVER &&
-		(sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W));
-	bool groundedNear = (y + height) >= worldBottomBound - 14.0f;
+		(Keyboard::isKeyPressed(Keyboard::Up) || Keyboard::isKeyPressed(Keyboard::W));
+	bool groundedNear = (y + height) >= worldBottomBound - 14;
 
 	syncSlugVisualState(deltaTime, fireHeld, landIntent, takeoffIntent, groundedNear);
 
@@ -397,32 +401,32 @@ void SlugFlyer::handleWeaponInput(EntityManager& entityManager, float deltaTime)
 
 	if (!occupied || isDead())
 	{
-		previousMissileKey = sf::Keyboard::isKeyPressed(sf::Keyboard::H);
+		previousMissileKey = Keyboard::isKeyPressed(Keyboard::H);
 		return;
 	}
 
 	if (vizPhase == V_PHASE_LAND_PLAY || vizPhase == V_PHASE_TAKEOFF_PLAY)
 	{
-		previousMissileKey = sf::Keyboard::isKeyPressed(sf::Keyboard::H);
+		previousMissileKey = Keyboard::isKeyPressed(Keyboard::H);
 		return;
 	}
 
-	bool fireBulletKey = sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::J);
+	bool fireBulletKey = Keyboard::isKeyPressed(Keyboard::LControl) || Keyboard::isKeyPressed(Keyboard::J);
 	if (fireBulletKey && weapon.canFire())
 	{
-		float bulletX = facingRight ? x + width + 8.0f : x - 32.0f;
+		float bulletX = facingRight ? x + width + 8 : x - 32;
 		float bulletY = y + height * 0.45f;
 		VehicleBullet* bullet = new VehicleBullet(bulletX, bulletY, facingRight);
 		float slugFlyerBulletSpeed = Constants::PLAYER_BULLET_SPEED * 0.5f;
-		bullet->setVelocity(facingRight ? slugFlyerBulletSpeed : -slugFlyerBulletSpeed, 0.0f);
+		bullet->setVelocity(facingRight ? slugFlyerBulletSpeed : -slugFlyerBulletSpeed, 0);
 		entityManager.addEntity(bullet);
 		weapon.restartCooldown();
 	}
 
-	bool missileKey = sf::Keyboard::isKeyPressed(sf::Keyboard::H);
+	bool missileKey = Keyboard::isKeyPressed(Keyboard::H);
 	if (missileKey && !previousMissileKey && missilesRemaining > 0 && vizPhase != V_PHASE_GROUND_HOVER)
 	{
-		float rocketX = facingRight ? x + width + 6.0f : x - 38.0f;
+		float rocketX = facingRight ? x + width + 6 : x - 38;
 		float rocketY = y + height * 0.4f;
 		entityManager.addEntity(new SlugFlyerRocketProjectile(rocketX, rocketY, facingRight, true));
 		missilesRemaining -= 1;
@@ -430,7 +434,7 @@ void SlugFlyer::handleWeaponInput(EntityManager& entityManager, float deltaTime)
 	previousMissileKey = missileKey;
 }
 
-void SlugFlyer::draw(sf::RenderWindow& window)
+void SlugFlyer::draw(RenderWindow& window)
 {
 	if (!visible)
 	{

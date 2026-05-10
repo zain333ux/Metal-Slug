@@ -42,10 +42,8 @@ private:
 	void configureHud();
 	void loadCurrentLevel(Game& game);
 	void spawnEnemy(Game& game, EnemyKind kind, float x, float y);
-	void spawnEnemyAt(Game& game, EnemyKind kind, float x, float y);
 	void spawnSurvivalPrisoner(Game& game);
 	void spawnSurvivalWave(Game& game);
-	void spawnBossWave(Game& game);
 	void spawnCampaignWave(Game& game);
 	void updateCampaignSpawning(Game& game, float deltaTime);
 	void spawnVehicle(Game& game);

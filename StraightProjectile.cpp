@@ -2,17 +2,21 @@
 
 #include "Constants.h"
 
-static sf::Texture pistolBulletTexture;
+
+using namespace std;
+using namespace sf;
+
+static Texture pistolBulletTexture;
 static bool pistolBulletTextureLoaded = false;
 
-static void applyPistolBulletTexture(sf::RectangleShape& body)
+static void applyPistolBulletTexture(RectangleShape& body)
 {
 	if (!pistolBulletTextureLoaded)
 	{
-		sf::Image image;
+		Image image;
 		if (image.loadFromFile("Sprites/Clean/Pistol_bullet.png"))
 		{
-			image.createMaskFromColor(sf::Color::White);
+			image.createMaskFromColor(Color::White);
 			pistolBulletTextureLoaded = pistolBulletTexture.loadFromImage(image);
 		}
 	}
@@ -20,7 +24,7 @@ static void applyPistolBulletTexture(sf::RectangleShape& body)
 	if (pistolBulletTextureLoaded)
 	{
 		body.setTexture(&pistolBulletTexture);
-		body.setFillColor(sf::Color::White);
+		body.setFillColor(Color::White);
 	}
 }
 
@@ -31,24 +35,24 @@ StraightProjectile::StraightProjectile(float startX, float startY, bool facingRi
 
 StraightProjectile::StraightProjectile(float startX, float startY, bool facingRight, bool upward)
 {
-	width = 20.0f;
-	height = 20.0f;
-	body.setSize(sf::Vector2f(width, height));
-	body.setOutlineThickness(0.0f);
+	width = 20;
+	height = 20;
+	body.setSize(Vector2f(width, height));
+	body.setOutlineThickness(0);
 	applyPistolBulletTexture(body);
 	setPosition(startX, startY);
 
 	if (upward)
 	{
-		setVelocity(0.0f, -Constants::PLAYER_BULLET_SPEED);
+		setVelocity(0, -Constants::PLAYER_BULLET_SPEED);
 	}
 	else if (facingRight)
 	{
-		setVelocity(Constants::PLAYER_BULLET_SPEED, 0.0f);
+		setVelocity(Constants::PLAYER_BULLET_SPEED, 0);
 	}
 	else
 	{
-		setVelocity(-Constants::PLAYER_BULLET_SPEED, 0.0f);
+		setVelocity(-Constants::PLAYER_BULLET_SPEED, 0);
 	}
 }
 
@@ -56,7 +60,7 @@ void StraightProjectile::update(float deltaTime)
 {
 	Projectile::update(deltaTime);
 
-	if (x + width < 0.0f || x > 25000.0f || y + height < 0.0f)
+	if (x + width < 0 || x > 25000 || y + height < 0)
 	{
 		deactivate();
 	}

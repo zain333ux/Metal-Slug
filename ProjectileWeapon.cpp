@@ -4,6 +4,10 @@
 #include "EntityManager.h"
 #include "StraightProjectile.h"
 
+
+using namespace std;
+using namespace sf;
+
 ProjectileWeapon::ProjectileWeapon()
 {
 	damage = 10;

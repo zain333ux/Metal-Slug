@@ -3,12 +3,16 @@
 #include <fstream>
 #include <iostream>
 
+
+using namespace std;
+using namespace sf;
+
 AudioManager* AudioManager::activeManager = 0;
 
 AudioManager::AudioManager()
 {
-	musicVolume = 35.0f;
-	sfxVolume = 70.0f;
+	musicVolume = 35;
+	sfxVolume = 70;
 	currentMusicTrack = MUSIC_NONE;
 
 	for (int i = 0; i < 6; i += 1)
@@ -120,24 +124,6 @@ void AudioManager::playSound(SoundEffectType type)
 	sfxSounds[index].play();
 }
 
-void AudioManager::setMusicVolume(float volume)
-{
-	musicVolume = volume;
-	backgroundMusic.setVolume(musicVolume);
-}
-
-void AudioManager::setSfxVolume(float volume)
-{
-	sfxVolume = volume;
-	for (int i = 0; i < 5; i += 1)
-	{
-		if (sfxLoaded[i])
-		{
-			sfxSounds[i].setVolume(sfxVolume);
-		}
-	}
-}
-
 void AudioManager::playGlobalSound(SoundEffectType type)
 {
 	if (activeManager != 0)
@@ -198,11 +184,11 @@ const char* AudioManager::getSfxPath(SoundEffectType type) const
 
 bool AudioManager::fileExists(const char* path) const
 {
-	std::ifstream file(path);
+	ifstream file(path);
 	return file.good();
 }
 
 void AudioManager::warnMissingFile(const char* path) const
 {
-	std::cout << "[AudioManager] Warning: could not load audio file: " << path << std::endl;
+	cout << "[AudioManager] Warning: could not load audio file: " << path << endl;
 }

@@ -3,28 +3,32 @@
 #include "AudioManager.h"
 #include "Constants.h"
 
-static const sf::IntRect PLAYER_ROCKET_EXPLOSION_FRAMES[] =
+
+using namespace std;
+using namespace sf;
+
+static const IntRect PLAYER_ROCKET_EXPLOSION_FRAMES[] =
 {
-	sf::IntRect(0, 0, 32, 37), sf::IntRect(32, 0, 27, 37), sf::IntRect(59, 0, 24, 37),
-	sf::IntRect(83, 0, 26, 37), sf::IntRect(109, 0, 27, 37), sf::IntRect(136, 0, 31, 37),
-	sf::IntRect(167, 0, 31, 37), sf::IntRect(198, 0, 35, 37), sf::IntRect(233, 0, 37, 37),
-	sf::IntRect(270, 0, 37, 37), sf::IntRect(307, 0, 38, 37), sf::IntRect(345, 0, 37, 37),
-	sf::IntRect(382, 0, 39, 37), sf::IntRect(421, 0, 33, 37), sf::IntRect(454, 0, 34, 37)
+	IntRect(0, 0, 32, 37), IntRect(32, 0, 27, 37), IntRect(59, 0, 24, 37),
+	IntRect(83, 0, 26, 37), IntRect(109, 0, 27, 37), IntRect(136, 0, 31, 37),
+	IntRect(167, 0, 31, 37), IntRect(198, 0, 35, 37), IntRect(233, 0, 37, 37),
+	IntRect(270, 0, 37, 37), IntRect(307, 0, 38, 37), IntRect(345, 0, 37, 37),
+	IntRect(382, 0, 39, 37), IntRect(421, 0, 33, 37), IntRect(454, 0, 34, 37)
 };
 
-static sf::Texture playerRocketTexture;
+static Texture playerRocketTexture;
 static bool playerRocketTextureLoaded = false;
-static sf::Texture playerRocketExplosionTexture;
+static Texture playerRocketExplosionTexture;
 static bool playerRocketExplosionTextureLoaded = false;
 
-static void applyPlayerRocketTexture(sf::RectangleShape& body)
+static void applyPlayerRocketTexture(RectangleShape& body)
 {
 	if (!playerRocketTextureLoaded)
 	{
-		sf::Image image;
+		Image image;
 		if (image.loadFromFile("Sprites/Clean/Bazooka_bullet.png"))
 		{
-			image.createMaskFromColor(sf::Color::White);
+			image.createMaskFromColor(Color::White);
 			playerRocketTextureLoaded = playerRocketTexture.loadFromImage(image);
 		}
 	}
@@ -32,8 +36,8 @@ static void applyPlayerRocketTexture(sf::RectangleShape& body)
 	if (playerRocketTextureLoaded)
 	{
 		body.setTexture(&playerRocketTexture);
-		body.setFillColor(sf::Color::White);
-		body.setTextureRect(sf::IntRect(0, 0, 13, 14));
+		body.setFillColor(Color::White);
+		body.setTextureRect(IntRect(0, 0, 13, 14));
 	}
 }
 
@@ -41,10 +45,10 @@ static bool loadPlayerRocketExplosionTexture()
 {
 	if (!playerRocketExplosionTextureLoaded)
 	{
-		sf::Image image;
+		Image image;
 		if (image.loadFromFile("Sprites/Clean/Explosion.png"))
 		{
-			image.createMaskFromColor(sf::Color::White);
+			image.createMaskFromColor(Color::White);
 			playerRocketExplosionTextureLoaded = playerRocketExplosionTexture.loadFromImage(image);
 		}
 	}
@@ -55,14 +59,14 @@ static bool loadPlayerRocketExplosionTexture()
 RocketProjectile::RocketProjectile(float startX, float startY, bool facingRight, bool airborne)
 {
 	damage = 35;
-	lifeTime = 2.0f;
-	width = 32.0f;
-	height = 32.0f;
+	lifeTime = 2;
+	width = 32;
+	height = 32;
 	explosive = true;
-	blastRadius = 190.0f;
+	blastRadius = 190;
 	exploded = false;
 	currentFrame = 0;
-	frameTimer = 0.0f;
+	frameTimer = 0;
 	explosionCenterX = startX;
 	explosionCenterY = startY;
 	markFiredWhileAirborne(airborne);
@@ -70,16 +74,16 @@ RocketProjectile::RocketProjectile(float startX, float startY, bool facingRight,
 
 	if (facingRight)
 	{
-		setVelocity(650.0f, 0.0f);
+		setVelocity(650, 0);
 	}
 	else
 	{
-		setVelocity(-650.0f, 0.0f);
+		setVelocity(-650, 0);
 	}
 
-	body.setSize(sf::Vector2f(width, height));
-	body.setOutlineThickness(0.0f);
-	body.setFillColor(sf::Color(255, 120, 50));
+	body.setSize(Vector2f(width, height));
+	body.setOutlineThickness(0);
+	body.setFillColor(Color(255, 120, 50));
 	applyPlayerRocketTexture(body);
 
 	if (loadPlayerRocketExplosionTexture())
@@ -97,7 +101,7 @@ void RocketProjectile::update(float deltaTime)
 		frameTimer += deltaTime;
 		if (frameTimer >= 0.05f)
 		{
-			frameTimer = 0.0f;
+			frameTimer = 0;
 			currentFrame += 1;
 			if (currentFrame >= 15)
 			{
@@ -112,7 +116,7 @@ void RocketProjectile::update(float deltaTime)
 	}
 
 	lifeTime -= deltaTime;
-	if (lifeTime <= 0.0f)
+	if (lifeTime <= 0)
 	{
 		explode();
 		return;
@@ -121,19 +125,19 @@ void RocketProjectile::update(float deltaTime)
 	frameTimer += deltaTime;
 	if (frameTimer >= 0.08f)
 	{
-		frameTimer = 0.0f;
+		frameTimer = 0;
 		currentFrame += 1;
 		if (currentFrame >= 4)
 		{
 			currentFrame = 0;
 		}
-		body.setTextureRect(sf::IntRect(currentFrame * 13, 0, 13, 14));
+		body.setTextureRect(IntRect(currentFrame * 13, 0, 13, 14));
 	}
 
 	Entity::update(deltaTime);
 	body.setPosition(x, y);
 
-	if (x + width < 0.0f || x > Constants::WORLD_WIDTH_LEVEL_3 + 800.0f)
+	if (x + width < 0 || x > Constants::WORLD_WIDTH_LEVEL_3 + 800)
 	{
 		explode();
 	}
@@ -149,21 +153,21 @@ void RocketProjectile::explode()
 	exploded = true;
 	AudioManager::playGlobalSound(SFX_EXPLOSION);
 	currentFrame = 0;
-	frameTimer = 0.0f;
-	velocityX = 0.0f;
-	velocityY = 0.0f;
+	frameTimer = 0;
+	velocityX = 0;
+	velocityY = 0;
 
 	float centerX = getCenterX();
 	float centerY = getCenterY();
 	explosionCenterX = centerX;
 	explosionCenterY = centerY;
-	width = blastRadius * 2.0f;
-	height = blastRadius * 2.0f;
+	width = blastRadius * 2;
+	height = blastRadius * 2;
 	setPosition(centerX - blastRadius, centerY - blastRadius);
-	body.setSize(sf::Vector2f(width, height));
+	body.setSize(Vector2f(width, height));
 	body.setPosition(x, y);
 	body.setTexture(0);
-	body.setFillColor(sf::Color::Transparent);
+	body.setFillColor(Color::Transparent);
 
 	if (playerRocketExplosionTextureLoaded)
 	{
@@ -172,7 +176,7 @@ void RocketProjectile::explode()
 	}
 }
 
-void RocketProjectile::draw(sf::RenderWindow& window)
+void RocketProjectile::draw(RenderWindow& window)
 {
 	if (!visible)
 	{
@@ -196,6 +200,6 @@ void RocketProjectile::onCollision()
 
 void RocketProjectile::centerExplosionSprite()
 {
-	sf::FloatRect bounds = explosionSprite.getGlobalBounds();
-	explosionSprite.setPosition(explosionCenterX - bounds.width / 2.0f, explosionCenterY - bounds.height / 2.0f);
+	FloatRect bounds = explosionSprite.getGlobalBounds();
+	explosionSprite.setPosition(explosionCenterX - bounds.width / 2, explosionCenterY - bounds.height / 2);
 }

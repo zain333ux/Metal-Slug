@@ -14,99 +14,103 @@
 
 #include <cmath>
 
-static const sf::IntRect REBEL_IDLE_FRAMES[] =
+
+using namespace std;
+using namespace sf;
+
+static const IntRect REBEL_IDLE_FRAMES[] =
 {
-	sf::IntRect(0, 0, 43, 42), sf::IntRect(43, 0, 43, 42), sf::IntRect(86, 0, 43, 42), sf::IntRect(129, 0, 44, 42)
+	IntRect(0, 0, 43, 42), IntRect(43, 0, 43, 42), IntRect(86, 0, 43, 42), IntRect(129, 0, 44, 42)
 };
 
-static const sf::IntRect REBEL_RUN_FRAMES[] =
+static const IntRect REBEL_RUN_FRAMES[] =
 {
-	sf::IntRect(0, 0, 39, 42), sf::IntRect(39, 0, 40, 42), sf::IntRect(79, 0, 43, 42), sf::IntRect(122, 0, 45, 42),
-	sf::IntRect(167, 0, 40, 42), sf::IntRect(207, 0, 39, 42), sf::IntRect(246, 0, 38, 42), sf::IntRect(284, 0, 40, 42),
-	sf::IntRect(324, 0, 43, 42), sf::IntRect(367, 0, 41, 42), sf::IntRect(408, 0, 41, 42), sf::IntRect(449, 0, 39, 42)
+	IntRect(0, 0, 39, 42), IntRect(39, 0, 40, 42), IntRect(79, 0, 43, 42), IntRect(122, 0, 45, 42),
+	IntRect(167, 0, 40, 42), IntRect(207, 0, 39, 42), IntRect(246, 0, 38, 42), IntRect(284, 0, 40, 42),
+	IntRect(324, 0, 43, 42), IntRect(367, 0, 41, 42), IntRect(408, 0, 41, 42), IntRect(449, 0, 39, 42)
 };
 
-static const sf::IntRect REBEL_FIRE_FRAMES[] =
+static const IntRect REBEL_FIRE_FRAMES[] =
 {
-	sf::IntRect(0, 0, 47, 51), sf::IntRect(47, 0, 51, 51), sf::IntRect(98, 0, 50, 51), sf::IntRect(148, 0, 45, 51),
-	sf::IntRect(193, 0, 45, 51), sf::IntRect(238, 0, 43, 51), sf::IntRect(281, 0, 46, 51), sf::IntRect(327, 0, 50, 51),
-	sf::IntRect(377, 0, 49, 51), sf::IntRect(426, 0, 46, 51)
+	IntRect(0, 0, 47, 51), IntRect(47, 0, 51, 51), IntRect(98, 0, 50, 51), IntRect(148, 0, 45, 51),
+	IntRect(193, 0, 45, 51), IntRect(238, 0, 43, 51), IntRect(281, 0, 46, 51), IntRect(327, 0, 50, 51),
+	IntRect(377, 0, 49, 51), IntRect(426, 0, 46, 51)
 };
 
-static const sf::IntRect MARTIAN_POD_MOVE_FRAMES[] =
+static const IntRect MARTIAN_POD_MOVE_FRAMES[] =
 {
-	sf::IntRect(5, 3, 43, 38), sf::IntRect(48, 3, 48, 38), sf::IntRect(99, 3, 44, 38), sf::IntRect(146, 3, 43, 38),
-	sf::IntRect(192, 3, 48, 38), sf::IntRect(240, 3, 48, 38), sf::IntRect(288, 4, 48, 37), sf::IntRect(336, 4, 38, 37),
-	sf::IntRect(5, 45, 43, 37), sf::IntRect(48, 45, 48, 37), sf::IntRect(99, 45, 43, 37), sf::IntRect(145, 45, 44, 37),
-	sf::IntRect(192, 44, 48, 38), sf::IntRect(240, 43, 48, 39), sf::IntRect(288, 44, 48, 38), sf::IntRect(336, 43, 39, 39)
+	IntRect(5, 3, 43, 38), IntRect(48, 3, 48, 38), IntRect(99, 3, 44, 38), IntRect(146, 3, 43, 38),
+	IntRect(192, 3, 48, 38), IntRect(240, 3, 48, 38), IntRect(288, 4, 48, 37), IntRect(336, 4, 38, 37),
+	IntRect(5, 45, 43, 37), IntRect(48, 45, 48, 37), IntRect(99, 45, 43, 37), IntRect(145, 45, 44, 37),
+	IntRect(192, 44, 48, 38), IntRect(240, 43, 48, 39), IntRect(288, 44, 48, 38), IntRect(336, 43, 39, 39)
 };
 
-static const sf::IntRect MARTIAN_POD_DEATH_FRAMES[] =
+static const IntRect MARTIAN_POD_DEATH_FRAMES[] =
 {
-	sf::IntRect(5, 20, 44, 38), sf::IntRect(52, 18, 49, 40), sf::IntRect(104, 8, 54, 50),
-	sf::IntRect(164, 6, 55, 52), sf::IntRect(226, 5, 63, 53), sf::IntRect(295, 4, 64, 54),
-	sf::IntRect(5, 69, 61, 52), sf::IntRect(70, 70, 54, 51), sf::IntRect(128, 64, 55, 57),
-	sf::IntRect(187, 68, 46, 53), sf::IntRect(237, 69, 44, 52), sf::IntRect(285, 69, 45, 52),
-	sf::IntRect(333, 68, 45, 53),
-	sf::IntRect(5, 130, 43, 53), sf::IntRect(51, 129, 43, 54), sf::IntRect(97, 127, 40, 56),
-	sf::IntRect(143, 126, 41, 57), sf::IntRect(188, 129, 35, 54), sf::IntRect(228, 128, 35, 55),
-	sf::IntRect(268, 137, 41, 40), sf::IntRect(310, 139, 65, 34)
+	IntRect(5, 20, 44, 38), IntRect(52, 18, 49, 40), IntRect(104, 8, 54, 50),
+	IntRect(164, 6, 55, 52), IntRect(226, 5, 63, 53), IntRect(295, 4, 64, 54),
+	IntRect(5, 69, 61, 52), IntRect(70, 70, 54, 51), IntRect(128, 64, 55, 57),
+	IntRect(187, 68, 46, 53), IntRect(237, 69, 44, 52), IntRect(285, 69, 45, 52),
+	IntRect(333, 68, 45, 53),
+	IntRect(5, 130, 43, 53), IntRect(51, 129, 43, 54), IntRect(97, 127, 40, 56),
+	IntRect(143, 126, 41, 57), IntRect(188, 129, 35, 54), IntRect(228, 128, 35, 55),
+	IntRect(268, 137, 41, 40), IntRect(310, 139, 65, 34)
 };
 
-static const sf::IntRect MARTIAN_POD_ATTACK_FRAMES[] =
+static const IntRect MARTIAN_POD_ATTACK_FRAMES[] =
 {
-	sf::IntRect(308, 55, 44, 88), sf::IntRect(368, 55, 36, 88), sf::IntRect(420, 55, 28, 88),
-	sf::IntRect(452, 43, 64, 112), sf::IntRect(528, 35, 88, 128), sf::IntRect(628, 27, 104, 144),
-	sf::IntRect(744, 23, 112, 152), sf::IntRect(868, 23, 88, 152)
+	IntRect(308, 55, 44, 88), IntRect(368, 55, 36, 88), IntRect(420, 55, 28, 88),
+	IntRect(452, 43, 64, 112), IntRect(528, 35, 88, 128), IntRect(628, 27, 104, 144),
+	IntRect(744, 23, 112, 152), IntRect(868, 23, 88, 152)
 };
 
-static const sf::IntRect MARTIAN_IDLE_FRAMES[] =
+static const IntRect MARTIAN_IDLE_FRAMES[] =
 {
-	sf::IntRect(0, 0, 52, 43), sf::IntRect(52, 0, 52, 43), sf::IntRect(104, 0, 52, 43), sf::IntRect(156, 0, 52, 43),
-	sf::IntRect(208, 0, 52, 43), sf::IntRect(260, 0, 52, 43), sf::IntRect(312, 0, 52, 43), sf::IntRect(364, 0, 52, 43),
-	sf::IntRect(416, 0, 52, 43), sf::IntRect(468, 0, 52, 43), sf::IntRect(520, 0, 52, 43), sf::IntRect(572, 0, 52, 43),
-	sf::IntRect(624, 0, 52, 43), sf::IntRect(676, 0, 52, 43), sf::IntRect(728, 0, 52, 43), sf::IntRect(780, 0, 52, 43)
+	IntRect(0, 0, 52, 43), IntRect(52, 0, 52, 43), IntRect(104, 0, 52, 43), IntRect(156, 0, 52, 43),
+	IntRect(208, 0, 52, 43), IntRect(260, 0, 52, 43), IntRect(312, 0, 52, 43), IntRect(364, 0, 52, 43),
+	IntRect(416, 0, 52, 43), IntRect(468, 0, 52, 43), IntRect(520, 0, 52, 43), IntRect(572, 0, 52, 43),
+	IntRect(624, 0, 52, 43), IntRect(676, 0, 52, 43), IntRect(728, 0, 52, 43), IntRect(780, 0, 52, 43)
 };
 
-static const sf::IntRect MARTIAN_WALK_FRAMES[] =
+static const IntRect MARTIAN_WALK_FRAMES[] =
 {
-	sf::IntRect(0, 0, 51, 43), sf::IntRect(51, 0, 51, 43), sf::IntRect(102, 0, 51, 43), sf::IntRect(153, 0, 51, 43),
-	sf::IntRect(204, 0, 51, 43), sf::IntRect(255, 0, 51, 43), sf::IntRect(306, 0, 51, 43), sf::IntRect(357, 0, 51, 43),
-	sf::IntRect(408, 0, 51, 43), sf::IntRect(459, 0, 51, 43), sf::IntRect(510, 0, 51, 43), sf::IntRect(561, 0, 51, 43),
-	sf::IntRect(612, 0, 51, 43), sf::IntRect(663, 0, 51, 43), sf::IntRect(714, 0, 51, 43), sf::IntRect(765, 0, 51, 43)
+	IntRect(0, 0, 51, 43), IntRect(51, 0, 51, 43), IntRect(102, 0, 51, 43), IntRect(153, 0, 51, 43),
+	IntRect(204, 0, 51, 43), IntRect(255, 0, 51, 43), IntRect(306, 0, 51, 43), IntRect(357, 0, 51, 43),
+	IntRect(408, 0, 51, 43), IntRect(459, 0, 51, 43), IntRect(510, 0, 51, 43), IntRect(561, 0, 51, 43),
+	IntRect(612, 0, 51, 43), IntRect(663, 0, 51, 43), IntRect(714, 0, 51, 43), IntRect(765, 0, 51, 43)
 };
 
-static const sf::IntRect MARTIAN_FIRE_FRAMES[] =
+static const IntRect MARTIAN_FIRE_FRAMES[] =
 {
-	sf::IntRect(0, 0, 71, 43), sf::IntRect(71, 0, 71, 43), sf::IntRect(142, 0, 71, 43), sf::IntRect(213, 0, 71, 43),
-	sf::IntRect(284, 0, 71, 43), sf::IntRect(355, 0, 71, 43), sf::IntRect(426, 0, 71, 43), sf::IntRect(497, 0, 71, 43),
-	sf::IntRect(568, 0, 71, 43), sf::IntRect(639, 0, 71, 43), sf::IntRect(710, 0, 71, 43), sf::IntRect(781, 0, 71, 43),
-	sf::IntRect(852, 0, 71, 43), sf::IntRect(923, 0, 71, 43), sf::IntRect(994, 0, 71, 43), sf::IntRect(1065, 0, 71, 43),
-	sf::IntRect(1136, 0, 71, 43), sf::IntRect(1207, 0, 71, 43)
+	IntRect(0, 0, 71, 43), IntRect(71, 0, 71, 43), IntRect(142, 0, 71, 43), IntRect(213, 0, 71, 43),
+	IntRect(284, 0, 71, 43), IntRect(355, 0, 71, 43), IntRect(426, 0, 71, 43), IntRect(497, 0, 71, 43),
+	IntRect(568, 0, 71, 43), IntRect(639, 0, 71, 43), IntRect(710, 0, 71, 43), IntRect(781, 0, 71, 43),
+	IntRect(852, 0, 71, 43), IntRect(923, 0, 71, 43), IntRect(994, 0, 71, 43), IntRect(1065, 0, 71, 43),
+	IntRect(1136, 0, 71, 43), IntRect(1207, 0, 71, 43)
 };
 
-static const sf::IntRect MARTIAN_TELEPORT_FRAMES[] =
+static const IntRect MARTIAN_TELEPORT_FRAMES[] =
 {
-	sf::IntRect(0, 0, 66, 65), sf::IntRect(66, 0, 66, 65), sf::IntRect(132, 0, 66, 65), sf::IntRect(198, 0, 66, 65),
-	sf::IntRect(264, 0, 66, 65), sf::IntRect(330, 0, 66, 65), sf::IntRect(396, 0, 66, 65), sf::IntRect(462, 0, 66, 65),
-	sf::IntRect(528, 0, 66, 65), sf::IntRect(594, 0, 66, 65), sf::IntRect(660, 0, 66, 65), sf::IntRect(726, 0, 66, 65),
-	sf::IntRect(792, 0, 66, 65), sf::IntRect(0, 66, 66, 65), sf::IntRect(66, 66, 66, 65)
+	IntRect(0, 0, 66, 65), IntRect(66, 0, 66, 65), IntRect(132, 0, 66, 65), IntRect(198, 0, 66, 65),
+	IntRect(264, 0, 66, 65), IntRect(330, 0, 66, 65), IntRect(396, 0, 66, 65), IntRect(462, 0, 66, 65),
+	IntRect(528, 0, 66, 65), IntRect(594, 0, 66, 65), IntRect(660, 0, 66, 65), IntRect(726, 0, 66, 65),
+	IntRect(792, 0, 66, 65), IntRect(0, 66, 66, 65), IntRect(66, 66, 66, 65)
 };
 
-static const sf::IntRect MARTIAN_DEATH_FRAMES[] =
+static const IntRect MARTIAN_DEATH_FRAMES[] =
 {
-	sf::IntRect(10, 9, 40, 34), sf::IntRect(62, 9, 41, 34), sf::IntRect(115, 9, 42, 34), sf::IntRect(169, 9, 40, 34),
-	sf::IntRect(226, 9, 41, 34), sf::IntRect(284, 9, 38, 34), sf::IntRect(334, 9, 38, 34), sf::IntRect(385, 9, 37, 34),
-	sf::IntRect(437, 9, 36, 34), sf::IntRect(489, 9, 35, 34), sf::IntRect(542, 9, 37, 34), sf::IntRect(595, 10, 39, 33),
-	sf::IntRect(649, 13, 38, 30), sf::IntRect(702, 12, 54, 31), sf::IntRect(756, 13, 33, 30), sf::IntRect(822, 15, 29, 28),
-	sf::IntRect(14, 43, 34, 43), sf::IntRect(72, 43, 29, 43), sf::IntRect(128, 43, 31, 43), sf::IntRect(183, 43, 33, 43),
-	sf::IntRect(216, 43, 54, 43), sf::IntRect(270, 43, 54, 43), sf::IntRect(324, 43, 54, 43), sf::IntRect(378, 43, 54, 43),
-	sf::IntRect(432, 43, 54, 43), sf::IntRect(486, 43, 54, 43), sf::IntRect(540, 43, 54, 43), sf::IntRect(594, 43, 42, 43),
-	sf::IntRect(666, 43, 24, 5), sf::IntRect(720, 43, 24, 5), sf::IntRect(760, 43, 50, 5), sf::IntRect(810, 43, 41, 5),
-	sf::IntRect(8, 86, 44, 36), sf::IntRect(63, 86, 45, 36), sf::IntRect(116, 86, 46, 36), sf::IntRect(162, 86, 54, 36),
-	sf::IntRect(216, 86, 54, 36), sf::IntRect(270, 86, 54, 36), sf::IntRect(324, 86, 54, 36), sf::IntRect(378, 86, 54, 36),
-	sf::IntRect(432, 86, 54, 36), sf::IntRect(486, 86, 54, 36), sf::IntRect(540, 86, 54, 36), sf::IntRect(594, 86, 27, 36),
-	sf::IntRect(648, 86, 1, 1), sf::IntRect(702, 86, 1, 1), sf::IntRect(756, 86, 1, 1), sf::IntRect(810, 86, 1, 1)
+	IntRect(10, 9, 40, 34), IntRect(62, 9, 41, 34), IntRect(115, 9, 42, 34), IntRect(169, 9, 40, 34),
+	IntRect(226, 9, 41, 34), IntRect(284, 9, 38, 34), IntRect(334, 9, 38, 34), IntRect(385, 9, 37, 34),
+	IntRect(437, 9, 36, 34), IntRect(489, 9, 35, 34), IntRect(542, 9, 37, 34), IntRect(595, 10, 39, 33),
+	IntRect(649, 13, 38, 30), IntRect(702, 12, 54, 31), IntRect(756, 13, 33, 30), IntRect(822, 15, 29, 28),
+	IntRect(14, 43, 34, 43), IntRect(72, 43, 29, 43), IntRect(128, 43, 31, 43), IntRect(183, 43, 33, 43),
+	IntRect(216, 43, 54, 43), IntRect(270, 43, 54, 43), IntRect(324, 43, 54, 43), IntRect(378, 43, 54, 43),
+	IntRect(432, 43, 54, 43), IntRect(486, 43, 54, 43), IntRect(540, 43, 54, 43), IntRect(594, 43, 42, 43),
+	IntRect(666, 43, 24, 5), IntRect(720, 43, 24, 5), IntRect(760, 43, 50, 5), IntRect(810, 43, 41, 5),
+	IntRect(8, 86, 44, 36), IntRect(63, 86, 45, 36), IntRect(116, 86, 46, 36), IntRect(162, 86, 54, 36),
+	IntRect(216, 86, 54, 36), IntRect(270, 86, 54, 36), IntRect(324, 86, 54, 36), IntRect(378, 86, 54, 36),
+	IntRect(432, 86, 54, 36), IntRect(486, 86, 54, 36), IntRect(540, 86, 54, 36), IntRect(594, 86, 27, 36),
+	IntRect(648, 86, 1, 1), IntRect(702, 86, 1, 1), IntRect(756, 86, 1, 1), IntRect(810, 86, 1, 1)
 };
 
 RebelSoldier::RebelSoldier()
@@ -115,29 +119,29 @@ RebelSoldier::RebelSoldier()
 	health = maxHealth;
 	scoreValue = 50;
 	contactDamage = 6;
-	moveSpeed = 95.0f;
-	stopDistance = 185.0f;
-	detectionRange = 560.0f;
-	shootingRange = 430.0f;
-	attackRange = 70.0f;
+	moveSpeed = 95;
+	stopDistance = 185;
+	detectionRange = 560;
+	shootingRange = 430;
+	attackRange = 70;
 	pistolCooldown = 1.35f;
 	pistolTimer = 0.6f;
 	pistolEquipped = true;
 	rebelState = 0;
 	rebelAnimationState = -1;
-	hurtTimer = 0.0f;
-	shootTimer = 0.0f;
-	shotReleaseTimer = 0.0f;
+	hurtTimer = 0;
+	shootTimer = 0;
+	shotReleaseTimer = 0;
 	queuedRebelShot = false;
 	currentFrames = 0;
 	customFrameCount = 0;
 	customFrameIndex = 0;
-	customFrameTimer = 0.0f;
+	customFrameTimer = 0;
 	customFrameDuration = 0.12f;
-	fallbackColor = sf::Color(210, 70, 70);
-	width = 52.0f;
-	height = 96.0f;
-	body.setSize(sf::Vector2f(width, height));
+	fallbackColor = Color(210, 70, 70);
+	width = 52;
+	height = 96;
+	body.setSize(Vector2f(width, height));
 	setSpriteScale(2.25f);
 	usingSprite = false;
 
@@ -152,15 +156,15 @@ RebelSoldier::RebelSoldier()
 
 void RebelSoldier::update(float deltaTime)
 {
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
 		hurtTimer -= deltaTime;
 	}
-	if (shootTimer > 0.0f)
+	if (shootTimer > 0)
 	{
 		shootTimer -= deltaTime;
 	}
-	if (shotReleaseTimer > 0.0f)
+	if (shotReleaseTimer > 0)
 	{
 		shotReleaseTimer -= deltaTime;
 	}
@@ -171,7 +175,7 @@ void RebelSoldier::update(float deltaTime)
 
 Projectile* RebelSoldier::createProjectileIfReady()
 {
-	if (queuedShot && !queuedRebelShot && shootTimer <= 0.0f && shotReleaseTimer <= 0.0f)
+	if (queuedShot && !queuedRebelShot && shootTimer <= 0 && shotReleaseTimer <= 0)
 	{
 		queuedRebelShot = true;
 		shootTimer = 0.50f;
@@ -180,15 +184,15 @@ Projectile* RebelSoldier::createProjectileIfReady()
 		return 0;
 	}
 
-	if (!queuedRebelShot || shotReleaseTimer > 0.0f)
+	if (!queuedRebelShot || shotReleaseTimer > 0)
 	{
 		return 0;
 	}
 
 	queuedRebelShot = false;
 	queuedShot = false;
-	float bulletX = facingRight ? x + width : x - 18.0f;
-	float bulletY = y + 42.0f;
+	float bulletX = facingRight ? x + width : x - 18;
+	float bulletY = y + 42;
 	return new EnemyBullet(bulletX, bulletY, facingRight);
 }
 
@@ -201,11 +205,11 @@ bool RebelSoldier::applyProjectileHit(Projectile& projectile)
 
 void RebelSoldier::updateRebelAnimation(float deltaTime)
 {
-	if (shootTimer > 0.0f)
+	if (shootTimer > 0)
 	{
 		rebelState = 2;
 	}
-	else if (velocityX != 0.0f)
+	else if (velocityX != 0)
 	{
 		rebelState = 1;
 	}
@@ -217,14 +221,14 @@ void RebelSoldier::updateRebelAnimation(float deltaTime)
 	setRebelAnimation(rebelState);
 	updateCustomAnimation(deltaTime);
 
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
-		sprite.setColor(sf::Color(255, 120, 120));
-		body.setFillColor(sf::Color(255, 80, 80));
+		sprite.setColor(Color(255, 120, 120));
+		body.setFillColor(Color(255, 80, 80));
 	}
 	else
 	{
-		sprite.setColor(sf::Color::White);
+		sprite.setColor(Color::White);
 		body.setFillColor(fallbackColor);
 	}
 }
@@ -251,12 +255,12 @@ void RebelSoldier::setRebelAnimation(int newState)
 	}
 }
 
-void RebelSoldier::setCustomAnimation(sf::Texture& newTexture, const sf::IntRect* frames, int frameCount, float frameDuration)
+void RebelSoldier::setCustomAnimation(Texture& newTexture, const IntRect* frames, int frameCount, float frameDuration)
 {
 	currentFrames = frames;
 	customFrameCount = frameCount;
 	customFrameIndex = 0;
-	customFrameTimer = 0.0f;
+	customFrameTimer = 0;
 	customFrameDuration = frameDuration;
 	sprite.setTexture(newTexture, true);
 	sprite.setTextureRect(currentFrames[0]);
@@ -276,7 +280,7 @@ void RebelSoldier::updateCustomAnimation(float deltaTime)
 		return;
 	}
 
-	customFrameTimer = 0.0f;
+	customFrameTimer = 0;
 	customFrameIndex += 1;
 	if (customFrameIndex >= customFrameCount)
 	{
@@ -298,23 +302,23 @@ ShieldedSoldier::ShieldedSoldier()
 	health = maxHealth;
 	scoreValue = 75;
 	contactDamage = 12;
-	moveSpeed = 70.0f;
-	stopDistance = 210.0f;
-	detectionRange = 560.0f;
-	shootingRange = 430.0f;
-	attackRange = 90.0f;
+	moveSpeed = 70;
+	stopDistance = 210;
+	detectionRange = 560;
+	shootingRange = 430;
+	attackRange = 90;
 	pistolCooldown = 1.5f;
 	pistolTimer = 0.8f;
 	pistolEquipped = true;
 	shieldState = 0;
 	shieldAnimationState = -1;
-	hurtTimer = 0.0f;
-	shootTimer = 0.0f;
-	shotReleaseTimer = 0.0f;
-	fallbackColor = sf::Color(90, 130, 210);
-	width = 58.0f;
-	height = 96.0f;
-	body.setSize(sf::Vector2f(width, height));
+	hurtTimer = 0;
+	shootTimer = 0;
+	shotReleaseTimer = 0;
+	fallbackColor = Color(90, 130, 210);
+	width = 58;
+	height = 96;
+	body.setSize(Vector2f(width, height));
 	setSpriteScale(2.2f);
 
 	if (loadMaskedTexture(idleTexture, "Sprites/Clean/ShieldedSoldier_idle.png") &&
@@ -359,7 +363,7 @@ bool ShieldedSoldier::applyProjectileHit(Projectile& projectile)
 
 Projectile* ShieldedSoldier::createProjectileIfReady()
 {
-	if (queuedShot && shootTimer <= 0.0f && shotReleaseTimer <= 0.0f)
+	if (queuedShot && shootTimer <= 0 && shotReleaseTimer <= 0)
 	{
 		shootTimer = 0.60f;
 		shotReleaseTimer = 0.22f;
@@ -367,7 +371,7 @@ Projectile* ShieldedSoldier::createProjectileIfReady()
 		return 0;
 	}
 
-	if (queuedShot && shotReleaseTimer > 0.0f)
+	if (queuedShot && shotReleaseTimer > 0)
 	{
 		return 0;
 	}
@@ -383,15 +387,15 @@ Projectile* ShieldedSoldier::createProjectileIfReady()
 
 void ShieldedSoldier::update(float deltaTime)
 {
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
 		hurtTimer -= deltaTime;
 	}
-	if (shootTimer > 0.0f)
+	if (shootTimer > 0)
 	{
 		shootTimer -= deltaTime;
 	}
-	if (shotReleaseTimer > 0.0f)
+	if (shotReleaseTimer > 0)
 	{
 		shotReleaseTimer -= deltaTime;
 	}
@@ -403,15 +407,15 @@ void ShieldedSoldier::update(float deltaTime)
 void ShieldedSoldier::updateShieldAnimation()
 {
 	// Simple integer state: 0 idle, 1 walk, 2 shoot, 3 hurt.
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
 		shieldState = 3;
 	}
-	else if (shootTimer > 0.0f)
+	else if (shootTimer > 0)
 	{
 		shieldState = 2;
 	}
-	else if (velocityX != 0.0f)
+	else if (velocityX != 0)
 	{
 		shieldState = 1;
 	}
@@ -433,15 +437,15 @@ void ShieldedSoldier::updateShieldAnimation()
 		setShieldAnimation(0);
 	}
 
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
-		body.setFillColor(sf::Color(255, 80, 80));
-		sprite.setColor(sf::Color(255, 120, 120));
+		body.setFillColor(Color(255, 80, 80));
+		sprite.setColor(Color(255, 120, 120));
 	}
 	else
 	{
 		body.setFillColor(fallbackColor);
-		sprite.setColor(sf::Color::White);
+		sprite.setColor(Color::White);
 	}
 }
 
@@ -485,25 +489,25 @@ BazookaSoldier::BazookaSoldier()
 	health = maxHealth;
 	scoreValue = 100;
 	contactDamage = 12;
-	moveSpeed = 52.0f;
-	stopDistance = 300.0f;
-	detectionRange = 760.0f;
-	shootingRange = 620.0f;
-	attackRange = 110.0f;
+	moveSpeed = 52;
+	stopDistance = 300;
+	detectionRange = 760;
+	shootingRange = 620;
+	attackRange = 110;
 	pistolEquipped = false;
 	queuedShot = false;
 	bazookaState = 0;
 	bazookaAnimationState = -1;
-	hurtTimer = 0.0f;
-	fireTimer = 0.0f;
-	rocketReleaseTimer = 0.0f;
-	reloadTimer = 1.0f;
+	hurtTimer = 0;
+	fireTimer = 0;
+	rocketReleaseTimer = 0;
+	reloadTimer = 1;
 	rocketCooldown = 2.7f;
 	queuedRocket = false;
-	fallbackColor = sf::Color(230, 150, 55);
-	width = 56.0f;
-	height = 96.0f;
-	body.setSize(sf::Vector2f(width, height));
+	fallbackColor = Color(230, 150, 55);
+	width = 56;
+	height = 96;
+	body.setSize(Vector2f(width, height));
 	setSpriteScale(2.2f);
 
 	if (loadMaskedTexture(idleTexture, "Sprites/Clean/BazookaSoldier_idle.png") &&
@@ -531,17 +535,17 @@ void BazookaSoldier::updateAI()
 
 	float distanceX = target->getCenterX() - getCenterX();
 	float distanceY = target->getCenterY() - getCenterY();
-	float absoluteDistanceX = std::abs(distanceX);
-	bool canSeePlayer = absoluteDistanceX <= detectionRange && std::abs(distanceY) < 190.0f;
+	float absoluteDistanceX = abs(distanceX);
+	bool canSeePlayer = absoluteDistanceX <= detectionRange && abs(distanceY) < 190;
 
 	if (canSeePlayer)
 	{
-		facingRight = distanceX > 0.0f;
+		facingRight = distanceX > 0;
 
 		// Heavy artillery: stop first, fire once, then wait through a reload.
 		if (absoluteDistanceX <= shootingRange)
 		{
-			if (reloadTimer <= 0.0f && fireTimer <= 0.0f)
+			if (reloadTimer <= 0 && fireTimer <= 0)
 			{
 				queuedRocket = true;
 				reloadTimer = rocketCooldown;
@@ -587,39 +591,39 @@ Projectile* BazookaSoldier::createProjectileIfReady()
 	{
 		return 0;
 	}
-	if (rocketReleaseTimer > 0.0f)
+	if (rocketReleaseTimer > 0)
 	{
 		return 0;
 	}
 
 	queuedRocket = false;
 
-	float rocketVelocityX = facingRight ? 360.0f : -360.0f;
+	float rocketVelocityX = facingRight ? 360 : -360;
 	if (target != 0)
 	{
 		float distanceX = target->getCenterX() - getCenterX();
 		rocketVelocityX = distanceX * 0.65f;
-		if (rocketVelocityX > 430.0f)
+		if (rocketVelocityX > 430)
 		{
-			rocketVelocityX = 430.0f;
+			rocketVelocityX = 430;
 		}
-		if (rocketVelocityX < -430.0f)
+		if (rocketVelocityX < -430)
 		{
-			rocketVelocityX = -430.0f;
+			rocketVelocityX = -430;
 		}
-		if (rocketVelocityX > 0.0f && rocketVelocityX < 260.0f)
+		if (rocketVelocityX > 0 && rocketVelocityX < 260)
 		{
-			rocketVelocityX = 260.0f;
+			rocketVelocityX = 260;
 		}
-		if (rocketVelocityX < 0.0f && rocketVelocityX > -260.0f)
+		if (rocketVelocityX < 0 && rocketVelocityX > -260)
 		{
-			rocketVelocityX = -260.0f;
+			rocketVelocityX = -260;
 		}
 	}
 
-	float rocketX = facingRight ? x + width + 34.0f : x - 66.0f;
-	float rocketY = y + 36.0f;
-	return new EnemyRocketProjectile(rocketX, rocketY, rocketVelocityX, -640.0f);
+	float rocketX = facingRight ? x + width + 34 : x - 66;
+	float rocketY = y + 36;
+	return new EnemyRocketProjectile(rocketX, rocketY, rocketVelocityX, -640);
 }
 
 bool BazookaSoldier::applyProjectileHit(Projectile& projectile)
@@ -631,19 +635,19 @@ bool BazookaSoldier::applyProjectileHit(Projectile& projectile)
 
 void BazookaSoldier::update(float deltaTime)
 {
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
 		hurtTimer -= deltaTime;
 	}
-	if (fireTimer > 0.0f)
+	if (fireTimer > 0)
 	{
 		fireTimer -= deltaTime;
 	}
-	if (rocketReleaseTimer > 0.0f)
+	if (rocketReleaseTimer > 0)
 	{
 		rocketReleaseTimer -= deltaTime;
 	}
-	if (reloadTimer > 0.0f)
+	if (reloadTimer > 0)
 	{
 		reloadTimer -= deltaTime;
 	}
@@ -655,11 +659,11 @@ void BazookaSoldier::update(float deltaTime)
 void BazookaSoldier::updateBazookaAnimation()
 {
 	// Simple integer state: 0 idle, 1 run, 2 fire.
-	if (fireTimer > 0.0f)
+	if (fireTimer > 0)
 	{
 		bazookaState = 2;
 	}
-	else if (velocityX != 0.0f)
+	else if (velocityX != 0)
 	{
 		bazookaState = 1;
 	}
@@ -670,15 +674,15 @@ void BazookaSoldier::updateBazookaAnimation()
 
 	setBazookaAnimation(bazookaState);
 
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
-		body.setFillColor(sf::Color(255, 80, 80));
-		sprite.setColor(sf::Color(255, 120, 120));
+		body.setFillColor(Color(255, 80, 80));
+		sprite.setColor(Color(255, 120, 120));
 	}
 	else
 	{
 		body.setFillColor(fallbackColor);
-		sprite.setColor(sf::Color::White);
+		sprite.setColor(Color::White);
 	}
 }
 
@@ -722,25 +726,25 @@ GrenadeSoldier::GrenadeSoldier()
 	health = maxHealth;
 	scoreValue = 100;
 	contactDamage = 10;
-	moveSpeed = 62.0f;
-	stopDistance = 250.0f;
-	detectionRange = 620.0f;
-	shootingRange = 500.0f;
-	attackRange = 95.0f;
+	moveSpeed = 62;
+	stopDistance = 250;
+	detectionRange = 620;
+	shootingRange = 500;
+	attackRange = 95;
 	pistolEquipped = false;
 	queuedShot = false;
 	grenadeState = 0;
 	grenadeAnimationState = -1;
-	hurtTimer = 0.0f;
-	fireTimer = 0.0f;
-	throwReleaseTimer = 0.0f;
+	hurtTimer = 0;
+	fireTimer = 0;
+	throwReleaseTimer = 0;
 	grenadeTimer = 0.8f;
 	grenadeCooldown = 2.1f;
 	queuedGrenade = false;
-	fallbackColor = sf::Color(120, 210, 90);
-	width = 52.0f;
-	height = 96.0f;
-	body.setSize(sf::Vector2f(width, height));
+	fallbackColor = Color(120, 210, 90);
+	width = 52;
+	height = 96;
+	body.setSize(Vector2f(width, height));
 	setSpriteScale(2.3f);
 
 	if (loadMaskedTexture(idleTexture, "Sprites/Clean/GrenadeSoldier_idle.png") &&
@@ -768,17 +772,17 @@ void GrenadeSoldier::updateAI()
 
 	float distanceX = target->getCenterX() - getCenterX();
 	float distanceY = target->getCenterY() - getCenterY();
-	float absoluteDistanceX = std::abs(distanceX);
-	bool canSeePlayer = absoluteDistanceX <= detectionRange && std::abs(distanceY) < 180.0f;
+	float absoluteDistanceX = abs(distanceX);
+	bool canSeePlayer = absoluteDistanceX <= detectionRange && abs(distanceY) < 180;
 
 	if (canSeePlayer)
 	{
-		facingRight = distanceX > 0.0f;
+		facingRight = distanceX > 0;
 
 		// The grenade soldier plants his feet before throwing, so the arc is easy to read.
 		if (absoluteDistanceX <= shootingRange)
 		{
-			if (grenadeTimer <= 0.0f && fireTimer <= 0.0f)
+			if (grenadeTimer <= 0 && fireTimer <= 0)
 			{
 				queuedGrenade = true;
 				grenadeTimer = grenadeCooldown;
@@ -824,39 +828,39 @@ Projectile* GrenadeSoldier::createProjectileIfReady()
 	{
 		return 0;
 	}
-	if (throwReleaseTimer > 0.0f)
+	if (throwReleaseTimer > 0)
 	{
 		return 0;
 	}
 
 	queuedGrenade = false;
 
-	float throwVelocityX = facingRight ? 330.0f : -330.0f;
+	float throwVelocityX = facingRight ? 330 : -330;
 	if (target != 0)
 	{
 		float distanceX = target->getCenterX() - getCenterX();
 		throwVelocityX = distanceX * 0.9f;
-		if (throwVelocityX > 430.0f)
+		if (throwVelocityX > 430)
 		{
-			throwVelocityX = 430.0f;
+			throwVelocityX = 430;
 		}
-		if (throwVelocityX < -430.0f)
+		if (throwVelocityX < -430)
 		{
-			throwVelocityX = -430.0f;
+			throwVelocityX = -430;
 		}
-		if (throwVelocityX > 0.0f && throwVelocityX < 230.0f)
+		if (throwVelocityX > 0 && throwVelocityX < 230)
 		{
-			throwVelocityX = 230.0f;
+			throwVelocityX = 230;
 		}
-		if (throwVelocityX < 0.0f && throwVelocityX > -230.0f)
+		if (throwVelocityX < 0 && throwVelocityX > -230)
 		{
-			throwVelocityX = -230.0f;
+			throwVelocityX = -230;
 		}
 	}
 
-	float grenadeX = facingRight ? x + width + 18.0f : x - 48.0f;
-	float grenadeY = y + 36.0f;
-	return new EnemyGrenadeProjectile(grenadeX, grenadeY, throwVelocityX, -570.0f);
+	float grenadeX = facingRight ? x + width + 18 : x - 48;
+	float grenadeY = y + 36;
+	return new EnemyGrenadeProjectile(grenadeX, grenadeY, throwVelocityX, -570);
 }
 
 bool GrenadeSoldier::applyProjectileHit(Projectile& projectile)
@@ -868,19 +872,19 @@ bool GrenadeSoldier::applyProjectileHit(Projectile& projectile)
 
 void GrenadeSoldier::update(float deltaTime)
 {
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
 		hurtTimer -= deltaTime;
 	}
-	if (fireTimer > 0.0f)
+	if (fireTimer > 0)
 	{
 		fireTimer -= deltaTime;
 	}
-	if (throwReleaseTimer > 0.0f)
+	if (throwReleaseTimer > 0)
 	{
 		throwReleaseTimer -= deltaTime;
 	}
-	if (grenadeTimer > 0.0f)
+	if (grenadeTimer > 0)
 	{
 		grenadeTimer -= deltaTime;
 	}
@@ -892,11 +896,11 @@ void GrenadeSoldier::update(float deltaTime)
 void GrenadeSoldier::updateGrenadeAnimation()
 {
 	// Simple integer state: 0 idle, 1 run, 2 fire.
-	if (fireTimer > 0.0f)
+	if (fireTimer > 0)
 	{
 		grenadeState = 2;
 	}
-	else if (velocityX != 0.0f)
+	else if (velocityX != 0)
 	{
 		grenadeState = 1;
 	}
@@ -907,15 +911,15 @@ void GrenadeSoldier::updateGrenadeAnimation()
 
 	setGrenadeAnimation(grenadeState);
 
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
-		body.setFillColor(sf::Color(255, 80, 80));
-		sprite.setColor(sf::Color(255, 120, 120));
+		body.setFillColor(Color(255, 80, 80));
+		sprite.setColor(Color(255, 120, 120));
 	}
 	else
 	{
 		body.setFillColor(fallbackColor);
-		sprite.setColor(sf::Color::White);
+		sprite.setColor(Color::White);
 	}
 }
 
@@ -960,13 +964,13 @@ ZombieEnemy::ZombieEnemy()
 	scoreValue = 100;
 	moveSpeed = Constants::ENEMY_MOVE_SPEED * 0.5f;
 	contactDamage = 0;
-	detectionRange = 430.0f;
-	stopDistance = 0.0f;
-	attackRange = 0.0f;
-	fallbackColor = sf::Color(130, 210, 140);
-	width = 52.0f;
-	height = 96.0f;
-	body.setSize(sf::Vector2f(width, height));
+	detectionRange = 430;
+	stopDistance = 0;
+	attackRange = 0;
+	fallbackColor = Color(130, 210, 140);
+	width = 52;
+	height = 96;
+	body.setSize(Vector2f(width, height));
 	setSpriteScale(2.35f);
 	spriteFacesLeft = false;
 
@@ -996,15 +1000,15 @@ MummyEnemy::MummyEnemy()
 	scoreValue = 150;
 	moveSpeed = Constants::ENEMY_MOVE_SPEED * 0.5f;
 	contactDamage = 0;
-	detectionRange = 390.0f;
-	stopDistance = 0.0f;
-	attackRange = 0.0f;
-	fallbackColor = sf::Color(225, 215, 165);
+	detectionRange = 390;
+	stopDistance = 0;
+	attackRange = 0;
+	fallbackColor = Color(225, 215, 165);
 	mummyAnimationState = -1;
-	hurtTimer = 0.0f;
-	width = 52.0f;
-	height = 96.0f;
-	body.setSize(sf::Vector2f(width, height));
+	hurtTimer = 0;
+	width = 52;
+	height = 96;
+	body.setSize(Vector2f(width, height));
 	setSpriteScale(2.25f);
 
 	if (loadMaskedTexture(idleTexture, "Sprites/Clean/MummyWarrior_idle.png") &&
@@ -1017,7 +1021,7 @@ MummyEnemy::MummyEnemy()
 
 void MummyEnemy::update(float deltaTime)
 {
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
 		hurtTimer -= deltaTime;
 	}
@@ -1025,13 +1029,13 @@ void MummyEnemy::update(float deltaTime)
 	Enemy::update(deltaTime);
 	updateMummyAnimation();
 
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
-		sprite.setColor(sf::Color(255, 120, 120));
+		sprite.setColor(Color(255, 120, 120));
 	}
 	else
 	{
-		sprite.setColor(sf::Color::White);
+		sprite.setColor(Color::White);
 	}
 }
 
@@ -1054,7 +1058,7 @@ bool MummyEnemy::applyProjectileHit(Projectile& projectile)
 
 void MummyEnemy::updateMummyAnimation()
 {
-	int nextState = velocityX != 0.0f ? 1 : 0;
+	int nextState = velocityX != 0 ? 1 : 0;
 	if (nextState == mummyAnimationState)
 	{
 		return;
@@ -1086,10 +1090,10 @@ MartianInfantry::MartianInfantry(float startX, float startY)
 	health = maxHealth;
 	scoreValue = 200;
 	contactDamage = 0;
-	moveSpeed = 82.0f;
-	stopDistance = 170.0f;
-	detectionRange = 620.0f;
-	shootingRange = 390.0f;
+	moveSpeed = 82;
+	stopDistance = 170;
+	detectionRange = 620;
+	shootingRange = 390;
 	pistolCooldown = 1.35f;
 	pistolTimer = 0.5f;
 	pistolEquipped = false;
@@ -1099,21 +1103,21 @@ MartianInfantry::MartianInfantry(float startX, float startY)
 	dying = false;
 	martianState = 4;
 	martianAnimationState = -1;
-	hurtTimer = 0.0f;
-	fireTimer = 0.0f;
-	shotReleaseTimer = 0.0f;
+	hurtTimer = 0;
+	fireTimer = 0;
+	shotReleaseTimer = 0;
 	pistolReloadTimer = 0.6f;
 	currentFrames = 0;
 	customFrameCount = 0;
 	customFrameIndex = 0;
 	customAnimationLoop = true;
 	customAnimationFinished = false;
-	customFrameTimer = 0.0f;
+	customFrameTimer = 0;
 	customFrameDuration = 0.12f;
-	fallbackColor = sf::Color(170, 220, 130);
-	width = 44.0f;
-	height = 84.0f;
-	body.setSize(sf::Vector2f(width, height));
+	fallbackColor = Color(170, 220, 130);
+	width = 44;
+	height = 84;
+	body.setSize(Vector2f(width, height));
 	setSpriteScale(2.05f);
 	setPosition(startX, startY);
 
@@ -1143,12 +1147,12 @@ void MartianInfantry::updateAI()
 	}
 
 	float distanceX = target->getCenterX() - getCenterX();
-	float absoluteDistanceX = std::abs(distanceX);
-	facingRight = distanceX > 0.0f;
+	float absoluteDistanceX = abs(distanceX);
+	facingRight = distanceX > 0;
 
 	if (absoluteDistanceX <= shootingRange)
 	{
-		if (pistolReloadTimer <= 0.0f && fireTimer <= 0.0f)
+		if (pistolReloadTimer <= 0 && fireTimer <= 0)
 		{
 			queuedShotReady = true;
 			pistolReloadTimer = pistolCooldown;
@@ -1170,19 +1174,19 @@ void MartianInfantry::updateAI()
 
 void MartianInfantry::update(float deltaTime)
 {
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
 		hurtTimer -= deltaTime;
 	}
-	if (fireTimer > 0.0f)
+	if (fireTimer > 0)
 	{
 		fireTimer -= deltaTime;
 	}
-	if (shotReleaseTimer > 0.0f)
+	if (shotReleaseTimer > 0)
 	{
 		shotReleaseTimer -= deltaTime;
 	}
-	if (pistolReloadTimer > 0.0f)
+	if (pistolReloadTimer > 0)
 	{
 		pistolReloadTimer -= deltaTime;
 	}
@@ -1209,18 +1213,18 @@ void MartianInfantry::update(float deltaTime)
 		landingY = activeLevel->getLandingY(x, x + width, previousBottom, y + height);
 	}
 
-	if (y + height >= landingY - 8.0f && velocityY >= 0.0f)
+	if (y + height >= landingY - 8 && velocityY >= 0)
 	{
 		y = landingY - height;
-		velocityY = 0.0f;
+		velocityY = 0;
 		grounded = true;
 	}
 	else if (y + height >= landingY)
 	{
 		y = landingY - height;
-		if (velocityY > 0.0f)
+		if (velocityY > 0)
 		{
-			velocityY = 0.0f;
+			velocityY = 0;
 		}
 		grounded = true;
 	}
@@ -1236,11 +1240,11 @@ void MartianInfantry::update(float deltaTime)
 
 	if (!teleporting)
 	{
-		if (fireTimer > 0.0f)
+		if (fireTimer > 0)
 		{
 			setMartianAnimation(2);
 		}
-		else if (velocityX != 0.0f)
+		else if (velocityX != 0)
 		{
 			setMartianAnimation(1);
 		}
@@ -1253,28 +1257,28 @@ void MartianInfantry::update(float deltaTime)
 	updateVisualPosition();
 	updateCustomAnimation(deltaTime);
 
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
-		sprite.setColor(sf::Color(255, 120, 120));
-		body.setFillColor(sf::Color(255, 80, 80));
+		sprite.setColor(Color(255, 120, 120));
+		body.setFillColor(Color(255, 80, 80));
 	}
 	else
 	{
-		sprite.setColor(sf::Color::White);
+		sprite.setColor(Color::White);
 		body.setFillColor(fallbackColor);
 	}
 }
 
 Projectile* MartianInfantry::createProjectileIfReady()
 {
-	if (!queuedShotReady || shotReleaseTimer > 0.0f || teleporting || dying)
+	if (!queuedShotReady || shotReleaseTimer > 0 || teleporting || dying)
 	{
 		return 0;
 	}
 
 	queuedShotReady = false;
-	float bulletX = facingRight ? x + width : x - 18.0f;
-	float bulletY = y + 35.0f;
+	float bulletX = facingRight ? x + width : x - 18;
+	float bulletY = y + 35;
 	return new EnemyBullet(bulletX, bulletY, facingRight);
 }
 
@@ -1336,14 +1340,14 @@ void MartianInfantry::setMartianAnimation(int newState)
 	}
 }
 
-void MartianInfantry::setCustomAnimation(sf::Texture& newTexture, const sf::IntRect* frames, int frameCount, bool loop, float frameDuration)
+void MartianInfantry::setCustomAnimation(Texture& newTexture, const IntRect* frames, int frameCount, bool loop, float frameDuration)
 {
 	currentFrames = frames;
 	customFrameCount = frameCount;
 	customAnimationLoop = loop;
 	customFrameDuration = frameDuration;
 	customFrameIndex = 0;
-	customFrameTimer = 0.0f;
+	customFrameTimer = 0;
 	customAnimationFinished = false;
 	sprite.setTexture(newTexture, true);
 	sprite.setTextureRect(currentFrames[0]);
@@ -1363,7 +1367,7 @@ void MartianInfantry::updateCustomAnimation(float deltaTime)
 		return;
 	}
 
-	customFrameTimer = 0.0f;
+	customFrameTimer = 0;
 	if (customFrameIndex + 1 >= customFrameCount)
 	{
 		if (customAnimationLoop)
@@ -1399,18 +1403,18 @@ MartianPod::MartianPod()
 	health = maxHealth;
 	scoreValue = 0;
 	contactDamage = 0;
-	moveSpeed = 105.0f;
-	detectionRange = 620.0f;
+	moveSpeed = 105;
+	detectionRange = 620;
 	canMoveInAir = true;
 	podState = 0;
 	podAnimationState = -1;
-	hoverTimer = 0.0f;
-	hoverBaseY = 330.0f;
-	hurtTimer = 0.0f;
-	attackTimer = 0.0f;
-	bulletReleaseTimer = 0.0f;
-	attackCooldownTimer = 1.0f;
-	spawnDelayTimer = 1.0f;
+	hoverTimer = 0;
+	hoverBaseY = 330;
+	hurtTimer = 0;
+	attackTimer = 0;
+	bulletReleaseTimer = 0;
+	attackCooldownTimer = 1;
+	spawnDelayTimer = 1;
 	attackReleased = false;
 	dying = false;
 	readyToSpawnInfantry = false;
@@ -1420,20 +1424,20 @@ MartianPod::MartianPod()
 	customFrameIndex = 0;
 	customAnimationLoop = true;
 	customAnimationFinished = false;
-	customFrameTimer = 0.0f;
+	customFrameTimer = 0;
 	customFrameDuration = 0.1f;
 	attackFrameIndex = 0;
-	attackFrameTimer = 0.0f;
-	fallbackColor = sf::Color(190, 90, 230);
-	width = 88.0f;
-	height = 70.0f;
-	body.setSize(sf::Vector2f(width, height));
-	body.setOutlineThickness(0.0f);
-	body.setFillColor(sf::Color::Transparent);
+	attackFrameTimer = 0;
+	fallbackColor = Color(190, 90, 230);
+	width = 88;
+	height = 70;
+	body.setSize(Vector2f(width, height));
+	body.setOutlineThickness(0);
+	body.setFillColor(Color::Transparent);
 	setSpriteScale(1.9f);
-	setPosition(900.0f, hoverBaseY);
-	patrolLeft = 760.0f;
-	patrolRight = 1180.0f;
+	setPosition(900, hoverBaseY);
+	patrolLeft = 760;
+	patrolRight = 1180;
 
 	if (loadPodTexture(movementTexture, "Sprites/Clean/MartianPod_movement.png") &&
 		loadPodTexture(attackTexture, "Sprites/Clean/MartianPod_Bullet.png") &&
@@ -1446,16 +1450,16 @@ MartianPod::MartianPod()
 	}
 }
 
-bool MartianPod::loadPodTexture(sf::Texture& targetTexture, const char* fileName)
+bool MartianPod::loadPodTexture(Texture& targetTexture, const char* fileName)
 {
-	sf::Image image;
+	Image image;
 	if (!image.loadFromFile(fileName))
 	{
 		return false;
 	}
 
-	image.createMaskFromColor(sf::Color(255, 0, 255));
-	image.createMaskFromColor(sf::Color::White);
+	image.createMaskFromColor(Color(255, 0, 255));
+	image.createMaskFromColor(Color::White);
 	return targetTexture.loadFromImage(image);
 }
 
@@ -1463,12 +1467,12 @@ void MartianPod::setSpawnPosition(float newX, float newY)
 {
 	setPosition(newX, newY);
 	hoverBaseY = newY;
-	hoverTimer = 0.0f;
-	patrolLeft = newX - 240.0f;
-	patrolRight = newX + 240.0f;
-	if (patrolLeft < 0.0f)
+	hoverTimer = 0;
+	patrolLeft = newX - 240;
+	patrolRight = newX + 240;
+	if (patrolLeft < 0)
 	{
-		patrolLeft = 0.0f;
+		patrolLeft = 0;
 	}
 }
 void MartianPod::updateAI()
@@ -1478,17 +1482,17 @@ void MartianPod::updateAI()
 		return;
 	}
 
-	float distanceX = 0.0f;
-	float distanceY = 0.0f;
+	float distanceX = 0;
+	float distanceY = 0;
 	bool canSeePlayer = false;
 	if (target != 0 && target->isActive())
 	{
 		distanceX = target->getCenterX() - getCenterX();
 		distanceY = target->getCenterY() - getCenterY();
-		canSeePlayer = std::abs(distanceX) <= detectionRange && distanceY > -40.0f && distanceY < 520.0f;
+		canSeePlayer = abs(distanceX) <= detectionRange && distanceY > -40 && distanceY < 520;
 	}
 
-	if (attackTimer <= 0.0f && canSeePlayer && attackCooldownTimer <= 0.0f)
+	if (attackTimer <= 0 && canSeePlayer && attackCooldownTimer <= 0)
 	{
 		attackTimer = 0.72f;
 		bulletReleaseTimer = 0.42f;
@@ -1496,21 +1500,21 @@ void MartianPod::updateAI()
 		attackReleased = false;
 		bulletsToFire = 0;
 		attackFrameIndex = 0;
-		attackFrameTimer = 0.0f;
+		attackFrameTimer = 0;
 		stopMoving();
 		setPodAnimation(1);
 		return;
 	}
 
-	if (attackTimer > 0.0f)
+	if (attackTimer > 0)
 	{
 		stopMoving();
 		return;
 	}
 
-	if (canSeePlayer && std::abs(distanceX) > 70.0f)
+	if (canSeePlayer && abs(distanceX) > 70)
 	{
-		if (distanceX > 0.0f)
+		if (distanceX > 0)
 		{
 			moveRight();
 		}
@@ -1542,11 +1546,11 @@ void MartianPod::updateAI()
 
 void MartianPod::update(float deltaTime)
 {
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
 		hurtTimer -= deltaTime;
 	}
-	if (attackCooldownTimer > 0.0f)
+	if (attackCooldownTimer > 0)
 	{
 		attackCooldownTimer -= deltaTime;
 	}
@@ -1559,7 +1563,7 @@ void MartianPod::update(float deltaTime)
 		{
 			visible = false;
 			spawnDelayTimer -= deltaTime;
-			if (spawnDelayTimer <= 0.0f)
+			if (spawnDelayTimer <= 0)
 			{
 				readyToSpawnInfantry = true;
 			}
@@ -1573,36 +1577,36 @@ void MartianPod::update(float deltaTime)
 	updateCustomAnimation(deltaTime);
 	updateAttackAnimation(deltaTime);
 
-	if (hurtTimer > 0.0f)
+	if (hurtTimer > 0)
 	{
-		sprite.setColor(sf::Color(255, 120, 120));
-		body.setFillColor(sf::Color(255, 80, 80));
+		sprite.setColor(Color(255, 120, 120));
+		body.setFillColor(Color(255, 80, 80));
 	}
 	else
 	{
-		sprite.setColor(sf::Color::White);
+		sprite.setColor(Color::White);
 		body.setFillColor(fallbackColor);
 	}
 }
 
 void MartianPod::updateMovement(float deltaTime)
 {
-	if (hoverTimer <= 0.0f)
+	if (hoverTimer <= 0)
 	{
 		float groundY = static_cast<float>(Constants::GROUND_Y);
 		if (activeLevel != 0)
 		{
 			groundY = activeLevel->getGroundYAt(getCenterX());
 		}
-		hoverBaseY = groundY - 400.0f;
+		hoverBaseY = groundY - 400;
 	}
 	hoverTimer += deltaTime;
 	Entity::update(deltaTime);
-	y = hoverBaseY + std::sin(hoverTimer * 3.0f) * 8.0f;
+	y = hoverBaseY + sin(hoverTimer * 3) * 8;
 
-	if (x <= 0.0f)
+	if (x <= 0)
 	{
-		x = 0.0f;
+		x = 0;
 	}
 	if (x + width > movementMaxX)
 	{
@@ -1614,7 +1618,7 @@ void MartianPod::updateMovement(float deltaTime)
 
 void MartianPod::updateAttack(float deltaTime)
 {
-	if (attackTimer <= 0.0f)
+	if (attackTimer <= 0)
 	{
 		if (podAnimationState != 0)
 		{
@@ -1624,19 +1628,19 @@ void MartianPod::updateAttack(float deltaTime)
 	}
 
 	attackTimer -= deltaTime;
-	if (bulletReleaseTimer > 0.0f)
+	if (bulletReleaseTimer > 0)
 	{
 		bulletReleaseTimer -= deltaTime;
 	}
 
 	// Bullets appear on the final charge frames instead of at the start of the animation.
-	if (!attackReleased && bulletReleaseTimer <= 0.0f)
+	if (!attackReleased && bulletReleaseTimer <= 0)
 	{
 		attackReleased = true;
 		bulletsToFire = 3;
 	}
 
-	if (attackTimer <= 0.0f)
+	if (attackTimer <= 0)
 	{
 		setPodAnimation(0);
 	}
@@ -1650,8 +1654,8 @@ Projectile* MartianPod::createProjectileIfReady()
 	}
 
 	bulletsToFire -= 1;
-	float offset = static_cast<float>(bulletsToFire - 1) * 18.0f;
-	return new EnemyDownwardBullet(getCenterX() + offset - 5.0f, y + height - 4.0f, activeLevel);
+	float offset = static_cast<float>(bulletsToFire - 1) * 18;
+	return new EnemyDownwardBullet(getCenterX() + offset - 5, y + height - 4, activeLevel);
 }
 
 Entity* MartianPod::createSpawnedEntityIfReady()
@@ -1669,7 +1673,7 @@ Entity* MartianPod::createSpawnedEntityIfReady()
 		groundY = activeLevel->getGroundYAt(spawnX);
 	}
 
-	MartianInfantry* infantry = new MartianInfantry(spawnX, groundY - 84.0f);
+	MartianInfantry* infantry = new MartianInfantry(spawnX, groundY - 84);
 	infantry->setTarget(target);
 	deactivate();
 	return infantry;
@@ -1698,19 +1702,19 @@ void MartianPod::startDeathAnimation()
 	dying = true;
 	contactDamage = 0;
 	bulletsToFire = 0;
-	attackTimer = 0.0f;
+	attackTimer = 0;
 	stopMoving();
 	setPodAnimation(2);
 }
 
-void MartianPod::draw(sf::RenderWindow& window)
+void MartianPod::draw(RenderWindow& window)
 {
 	if (!visible)
 	{
 		return;
 	}
 
-	if (!dying && attackTimer > 0.0f && !attackReleased)
+	if (!dying && attackTimer > 0 && !attackReleased)
 	{
 		window.draw(attackSprite);
 	}
@@ -1743,14 +1747,14 @@ void MartianPod::setPodAnimation(int newState)
 	}
 }
 
-void MartianPod::setCustomAnimation(sf::Texture& newTexture, const sf::IntRect* frames, int frameCount, bool loop, float frameDuration)
+void MartianPod::setCustomAnimation(Texture& newTexture, const IntRect* frames, int frameCount, bool loop, float frameDuration)
 {
 	currentFrames = frames;
 	customFrameCount = frameCount;
 	customAnimationLoop = loop;
 	customFrameDuration = frameDuration;
 	customFrameIndex = 0;
-	customFrameTimer = 0.0f;
+	customFrameTimer = 0;
 	customAnimationFinished = false;
 	sprite.setTexture(newTexture, true);
 	sprite.setTextureRect(currentFrames[0]);
@@ -1770,7 +1774,7 @@ void MartianPod::updateCustomAnimation(float deltaTime)
 		return;
 	}
 
-	customFrameTimer = 0.0f;
+	customFrameTimer = 0;
 	if (customFrameIndex + 1 >= customFrameCount)
 	{
 		if (customAnimationLoop)
@@ -1797,7 +1801,7 @@ void MartianPod::updateCustomAnimation(float deltaTime)
 
 void MartianPod::updateAttackAnimation(float deltaTime)
 {
-	if (attackTimer <= 0.0f)
+	if (attackTimer <= 0)
 	{
 		return;
 	}
@@ -1810,7 +1814,7 @@ void MartianPod::updateAttackAnimation(float deltaTime)
 	attackFrameTimer += deltaTime;
 	if (attackFrameTimer >= 0.06f)
 	{
-		attackFrameTimer = 0.0f;
+		attackFrameTimer = 0;
 		attackFrameIndex += 1;
 		if (attackFrameIndex >= 8)
 		{
@@ -1819,8 +1823,8 @@ void MartianPod::updateAttackAnimation(float deltaTime)
 	}
 
 	attackSprite.setTextureRect(MARTIAN_POD_ATTACK_FRAMES[attackFrameIndex]);
-	sf::FloatRect bounds = attackSprite.getGlobalBounds();
-	attackSprite.setPosition(getCenterX() - bounds.width / 2.0f, y + height - 4.0f);
+	FloatRect bounds = attackSprite.getGlobalBounds();
+	attackSprite.setPosition(getCenterX() - bounds.width / 2, y + height - 4);
 }
 
 float MartianPod::findTeleportX() const
@@ -1830,21 +1834,21 @@ float MartianPod::findTeleportX() const
 	{
 		if (target->getCenterX() < getCenterX())
 		{
-			spawnX = target->getX() + 160.0f;
+			spawnX = target->getX() + 160;
 		}
 		else
 		{
-			spawnX = target->getX() - 160.0f;
+			spawnX = target->getX() - 160;
 		}
 	}
 
-	if (spawnX < 120.0f)
+	if (spawnX < 120)
 	{
-		spawnX = 120.0f;
+		spawnX = 120;
 	}
-	if (spawnX > movementMaxX - 120.0f)
+	if (spawnX > movementMaxX - 120)
 	{
-		spawnX = movementMaxX - 120.0f;
+		spawnX = movementMaxX - 120;
 	}
 	return spawnX;
 }
@@ -1860,22 +1864,22 @@ BossEnemy::BossEnemy(int bossPhase)
 	maxHealth = 260;
 	health = maxHealth;
 	scoreValue = 500;
-	width = 140.0f;
-	height = 150.0f;
-	moveSpeed = 95.0f;
-	stopDistance = 220.0f;
+	width = 140;
+	height = 150;
+	moveSpeed = 95;
+	stopDistance = 220;
 	contactDamage = 25;
-	detectionRange = 900.0f;
-	attackRange = 145.0f;
-	fallbackColor = sf::Color(180, 80, 255);
-	body.setSize(sf::Vector2f(width, height));
+	detectionRange = 900;
+	attackRange = 145;
+	fallbackColor = Color(180, 80, 255);
+	body.setSize(Vector2f(width, height));
 
 	if (phase >= 4)
 	{
 		maxHealth = 500;
 		health = maxHealth;
 		scoreValue = 1500;
-		fallbackColor = sf::Color(255, 80, 120);
+		fallbackColor = Color(255, 80, 120);
 	}
 	if (phase == 2 || phase >= 4)
 	{
@@ -1886,13 +1890,13 @@ BossEnemy::BossEnemy(int bossPhase)
 void BossEnemy::updateAI()
 {
 	Enemy::updateAI();
-	if (phase == 2 && y > 420.0f)
+	if (phase == 2 && y > 420)
 	{
-		velocityY = -70.0f;
+		velocityY = -70;
 	}
 	else if (phase == 3 && y < Constants::GROUND_Y - height)
 	{
-		velocityY = 45.0f;
+		velocityY = 45;
 	}
 }
 

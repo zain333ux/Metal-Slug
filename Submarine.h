@@ -1,25 +1,8 @@
 #pragma once
 
-#include "Projectile.h"
+#include "MarinerMissile.h"
 #include "SpriteAnimation.h"
 #include "Vehicle.h"
-
-enum MarinerMissileType
-{
-	MARINER_MISSILE_HORIZONTAL,
-	MARINER_MISSILE_VERTICAL,
-	MARINER_MISSILE_SURFACE // angled surface shot
-};
-
-class MarinerMissile : public Projectile
-{
-private:
-	MarinerMissileType missileType;
-
-public:
-	MarinerMissile(float startX, float startY, bool facingRight, MarinerMissileType type);
-	virtual void update(float deltaTime) override;
-};
 
 /// Player aquatic vehicle (Slug Mariner) — scaled idle sprite only; avoids tank sprite stripping.
 class SlugMariner : public Vehicle

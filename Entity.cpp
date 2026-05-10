@@ -1,13 +1,17 @@
 #include "Entity.h"
 
+
+using namespace std;
+using namespace sf;
+
 Entity::Entity()
 {
-	x = 0.0f;
-	y = 0.0f;
-	width = 0.0f;
-	height = 0.0f;
-	velocityX = 0.0f;
-	velocityY = 0.0f;
+	x = 0;
+	y = 0;
+	width = 0;
+	height = 0;
+	velocityX = 0;
+	velocityY = 0;
 	active = true;
 	visible = true;
 }
@@ -23,7 +27,7 @@ void Entity::update(float deltaTime)
 	sprite.setPosition(x, y);
 }
 
-void Entity::draw(sf::RenderWindow& window)
+void Entity::draw(RenderWindow& window)
 {
 	if (visible)
 	{
@@ -50,11 +54,14 @@ void Entity::setVelocity(float newVelocityX, float newVelocityY)
 	velocityY = newVelocityY;
 }
 
-void Entity::setSprite(const sf::Sprite& newSprite)
+<<<<<<< HEAD
+void Entity::setSprite(const Sprite& newSprite)
 {
 	sprite = newSprite;
 }
 
+=======
+>>>>>>> 6d77c54b1816a0bae93ea8c1ad344f5e135692cd
 void Entity::deactivate()
 {
 	active = false;
@@ -63,11 +70,6 @@ void Entity::deactivate()
 bool Entity::isActive() const
 {
 	return active;
-}
-
-bool Entity::isVisible() const
-{
-	return visible;
 }
 
 float Entity::getX() const
@@ -92,19 +94,19 @@ float Entity::getHeight() const
 
 float Entity::getCenterX() const
 {
-	return x + width / 2.0f;
+	return x + width / 2;
 }
 
 float Entity::getCenterY() const
 {
-	return y + height / 2.0f;
+	return y + height / 2;
 }
 
-sf::FloatRect Entity::getBounds() const
+FloatRect Entity::getBounds() const
 {
-	if (width > 0.0f && height > 0.0f)
+	if (width > 0 && height > 0)
 	{
-		return sf::FloatRect(x, y, width, height);
+		return FloatRect(x, y, width, height);
 	}
 
 	return sprite.getGlobalBounds();

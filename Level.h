@@ -58,11 +58,9 @@ public:
 	virtual void draw(sf::RenderWindow& window);
 	void extendIfNeeded(float playerX);
 
-	bool isLoaded() const;
 	float getWorldWidth() const;
 	float getWorldHeight() const;
 	float getRightBoundary() const;
-	int getLevelNumber() const;
 	float getLandingY(float left, float right, float previousBottom, float currentBottom) const;
 	float getGroundYAt(float x) const;
 	float getMainGroundYAt(float x) const;
