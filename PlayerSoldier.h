@@ -93,6 +93,29 @@ private:
 	sf::Sprite tarmaTorsoSprite;
 	sf::Sprite tarmaLegsSprite;
 
+	bool fioSpritesLoaded;
+	int fioTorsoState;
+	int fioLegState;
+	const sf::IntRect* fioTorsoFrames;
+	const sf::IntRect* fioLegFrames;
+	int fioTorsoFrameCount;
+	int fioLegFrameCount;
+	int fioTorsoFrame;
+	int fioLegFrame;
+	float fioTorsoTimer;
+	float fioLegTimer;
+	float fioTorsoFrameDuration;
+	float fioLegFrameDuration;
+	sf::Texture fioIdleTorsoTexture;
+	sf::Texture fioIdleLegsTexture;
+	sf::Texture fioRunTorsoTexture;
+	sf::Texture fioRunLegsTexture;
+	sf::Texture fioFireTexture;
+	sf::Texture fioFaceUpTexture;
+	sf::Texture fioShootUpTexture;
+	sf::Sprite fioTorsoSprite;
+	sf::Sprite fioLegsSprite;
+
 	bool ridingVehicle;
 
 	void handleInput();
@@ -116,6 +139,12 @@ private:
 	void setTarmaLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
 	void updateTarmaLayeredAnimation(float deltaTime);
 	void updateTarmaSpritePositions();
+
+	void loadFioSprites();
+	void setFioTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void setFioLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture);
+	void updateFioLayeredAnimation(float deltaTime);
+	void updateFioSpritePositions();
 
 public:
 	PlayerSoldier();

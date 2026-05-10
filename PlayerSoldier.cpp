@@ -173,6 +173,61 @@ static const float ERI_IDLE_LEG_ORIGIN_Y[] = { 15.0f };
 static const float ERI_RUN_LEG_ORIGIN_X[] = { 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.0f };
 static const float ERI_RUN_LEG_ORIGIN_Y[] = { 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f, 22.0f };
 
+// Fio — frame rects from Sprites/Clean/Fio_*.png (tight alpha bounds); pivots at foot mid-x / bottom row
+static const sf::IntRect FIO_IDLE_TORSO_FRAMES[] =
+{
+	sf::IntRect(3, 4, 28, 26), sf::IntRect(36, 4, 28, 26), sf::IntRect(69, 4, 28, 26), sf::IntRect(102, 4, 28, 26)
+};
+
+static const sf::IntRect FIO_IDLE_LEG_FRAMES[] =
+{
+	sf::IntRect(6, 4, 20, 24)
+};
+
+static const sf::IntRect FIO_RUN_TORSO_FRAMES[] =
+{
+	sf::IntRect(3, 3, 27, 26), sf::IntRect(35, 4, 27, 26), sf::IntRect(67, 5, 27, 26), sf::IntRect(99, 4, 27, 26),
+	sf::IntRect(131, 3, 27, 26), sf::IntRect(163, 3, 28, 26), sf::IntRect(196, 4, 28, 26), sf::IntRect(229, 5, 28, 26),
+	sf::IntRect(262, 5, 29, 26), sf::IntRect(296, 6, 28, 26), sf::IntRect(329, 4, 26, 27), sf::IntRect(360, 4, 27, 27)
+};
+
+static const sf::IntRect FIO_RUN_LEG_FRAMES[] =
+{
+	sf::IntRect(3, 5, 22, 26), sf::IntRect(30, 5, 25, 25), sf::IntRect(60, 6, 27, 23), sf::IntRect(92, 5, 25, 26),
+	sf::IntRect(122, 5, 17, 26), sf::IntRect(144, 6, 18, 25), sf::IntRect(167, 6, 21, 25), sf::IntRect(193, 6, 26, 23),
+	sf::IntRect(224, 6, 30, 25), sf::IntRect(259, 6, 24, 25), sf::IntRect(288, 5, 18, 26), sf::IntRect(311, 5, 20, 26)
+};
+
+static const sf::IntRect FIO_FIRE_FRAMES[] =
+{
+	sf::IntRect(3, 4, 48, 19), sf::IntRect(56, 4, 58, 19), sf::IntRect(114, 3, 49, 20)
+};
+
+static const sf::IntRect FIO_FACE_UP_FRAMES[] =
+{
+	sf::IntRect(3, 4, 24, 23), sf::IntRect(32, 4, 24, 23), sf::IntRect(61, 4, 25, 23), sf::IntRect(91, 4, 25, 23)
+};
+
+static const sf::IntRect FIO_SHOOT_UP_FRAMES[] =
+{
+	sf::IntRect(8, 10, 22, 59), sf::IntRect(32, 7, 22, 62), sf::IntRect(51, 5, 27, 64), sf::IntRect(75, 36, 28, 33)
+};
+
+static const float FIO_IDLE_TORSO_ORIGIN_X[] = { 11.5f, 11.5f, 11.5f, 11.5f };
+static const float FIO_IDLE_TORSO_ORIGIN_Y[] = { 26.0f, 26.0f, 26.0f, 26.0f };
+static const float FIO_RUN_TORSO_ORIGIN_X[] = { 13.0f, 13.0f, 13.0f, 13.0f, 13.0f, 13.5f, 13.5f, 13.5f, 14.0f, 13.5f, 12.5f, 13.0f };
+static const float FIO_RUN_TORSO_ORIGIN_Y[] = { 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 26.0f, 27.0f, 27.0f };
+static const float FIO_FIRE_ORIGIN_X[] = { 10.0f, 11.0f, 10.0f };
+static const float FIO_FIRE_ORIGIN_Y[] = { 23.0f, 23.0f, 23.0f };
+static const float FIO_FACE_UP_ORIGIN_X[] = { 8.5f, 8.5f, 8.5f, 8.5f };
+static const float FIO_FACE_UP_ORIGIN_Y[] = { 26.0f, 26.0f, 26.0f, 26.0f };
+static const float FIO_SHOOT_UP_ORIGIN_X[] = { 9.0f, 9.0f, 10.0f, 11.0f };
+static const float FIO_SHOOT_UP_ORIGIN_Y[] = { 64.0f, 65.0f, 66.0f, 66.0f };
+static const float FIO_IDLE_LEG_ORIGIN_X[] = { 9.5f };
+static const float FIO_IDLE_LEG_ORIGIN_Y[] = { 24.0f };
+static const float FIO_RUN_LEG_ORIGIN_X[] = { 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f, 15.0f };
+static const float FIO_RUN_LEG_ORIGIN_Y[] = { 26.0f, 25.0f, 23.0f, 26.0f, 26.0f, 25.0f, 25.0f, 23.0f, 25.0f, 25.0f, 26.0f, 26.0f };
+
 PlayerSoldier::PlayerSoldier()
 {
 	firing = false;
@@ -235,12 +290,27 @@ PlayerSoldier::PlayerSoldier()
 	tarmaTorsoFrameDuration = 0.12f;
 	tarmaLegFrameDuration = 0.09f;
 
+	fioSpritesLoaded = false;
+	fioTorsoState = -1;
+	fioLegState = -1;
+	fioTorsoFrames = 0;
+	fioLegFrames = 0;
+	fioTorsoFrameCount = 1;
+	fioLegFrameCount = 1;
+	fioTorsoFrame = 0;
+	fioLegFrame = 0;
+	fioTorsoTimer = 0.0f;
+	fioLegTimer = 0.0f;
+	fioTorsoFrameDuration = 0.12f;
+	fioLegFrameDuration = 0.09f;
+
 	ridingVehicle = false;
 	setPosition(120.0f, 500.0f);
 	setSpriteScale(2.2f);
 	loadMarcoSprites();
 	loadEriSprites();
 	loadTarmaSprites();
+	loadFioSprites();
 	applyCharacterStats();
 }
 
@@ -307,6 +377,23 @@ void PlayerSoldier::loadTarmaSprites()
 	}
 }
 
+void PlayerSoldier::loadFioSprites()
+{
+	if (loadMaskedTexture(fioIdleTorsoTexture, "Sprites/Clean/Fio_idle_torso.png") &&
+		loadMaskedTexture(fioIdleLegsTexture, "Sprites/Clean/Fio_idle_legs.png") &&
+		loadMaskedTexture(fioRunTorsoTexture, "Sprites/Clean/Fio_run_torso.png") &&
+		loadMaskedTexture(fioRunLegsTexture, "Sprites/Clean/Fio_run_legs.png") &&
+		loadMaskedTexture(fioFireTexture, "Sprites/Clean/Fio_fire.png") &&
+		loadMaskedTexture(fioFaceUpTexture, "Sprites/Clean/Fio_faceUp.png") &&
+		loadMaskedTexture(fioShootUpTexture, "Sprites/Clean/Fio_shootUp.png"))
+	{
+		fioSpritesLoaded = true;
+		usingSprite = false;
+		setFioTorsoAnimation(0, FIO_IDLE_TORSO_FRAMES, 4, 0.16f, fioIdleTorsoTexture);
+		setFioLegAnimation(0, FIO_IDLE_LEG_FRAMES, 1, 0.16f, fioIdleLegsTexture);
+	}
+}
+
 void PlayerSoldier::takeDamage(int damage)
 {
 	if (DeveloperMode::isEnabled())
@@ -347,6 +434,8 @@ void PlayerSoldier::respawn()
 	eriLegState = -1;
 	tarmaTorsoState = -1;
 	tarmaLegState = -1;
+	fioTorsoState = -1;
+	fioLegState = -1;
 	setRidingVehicle(false);
 	playAnimation(Constants::PLAYER_ANIM_IDLE, 4, 0.18f);
 }
@@ -499,6 +588,11 @@ void PlayerSoldier::updatePlayerAnimation(float deltaTime)
 	else if (currentCharacter == 1 && tarmaSpritesLoaded)
 	{
 		updateTarmaLayeredAnimation(deltaTime);
+		return;
+	}
+	else if (currentCharacter == 3 && fioSpritesLoaded)
+	{
+		updateFioLayeredAnimation(deltaTime);
 		return;
 	}
 
@@ -1252,6 +1346,185 @@ void PlayerSoldier::updateTarmaSpritePositions()
 	tarmaTorsoSprite.setPosition(centerX, legAnchorY - torsoOffsetY * scale);
 }
 
+void PlayerSoldier::setFioTorsoAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+{
+	if (fioTorsoState == newState)
+	{
+		return;
+	}
+
+	fioTorsoState = newState;
+	fioTorsoFrames = frames;
+	fioTorsoFrameCount = frameCount;
+	fioTorsoFrame = 0;
+	fioTorsoTimer = 0.0f;
+	fioTorsoFrameDuration = frameDuration;
+	fioTorsoSprite.setTexture(texture, true);
+	fioTorsoSprite.setTextureRect(fioTorsoFrames[0]);
+	updateFioSpritePositions();
+}
+
+void PlayerSoldier::setFioLegAnimation(int newState, const sf::IntRect* frames, int frameCount, float frameDuration, sf::Texture& texture)
+{
+	if (fioLegState == newState)
+	{
+		return;
+	}
+
+	fioLegState = newState;
+	fioLegFrames = frames;
+	fioLegFrameCount = frameCount;
+	fioLegFrame = 0;
+	fioLegTimer = 0.0f;
+	fioLegFrameDuration = frameDuration;
+	fioLegsSprite.setTexture(texture, true);
+	fioLegsSprite.setTextureRect(fioLegFrames[0]);
+	updateFioSpritePositions();
+}
+
+void PlayerSoldier::updateFioLayeredAnimation(float deltaTime)
+{
+	bool running = currentState == Constants::SOLDIER_STATE_RUNNING;
+	bool airborne = currentState == Constants::SOLDIER_STATE_JUMPING || currentState == Constants::SOLDIER_STATE_FALLING;
+
+	if (fireAnimationTimer > 0.0f)
+	{
+		fireAnimationTimer -= deltaTime;
+	}
+	else
+	{
+		firing = false;
+	}
+
+	if (running && !airborne)
+	{
+		setFioLegAnimation(1, FIO_RUN_LEG_FRAMES, 12, 0.075f, fioRunLegsTexture);
+	}
+	else
+	{
+		setFioLegAnimation(0, FIO_IDLE_LEG_FRAMES, 1, 0.16f, fioIdleLegsTexture);
+	}
+
+	if (aimingUp && fireAnimationTimer > 0.0f)
+	{
+		setFioTorsoAnimation(4, FIO_SHOOT_UP_FRAMES, 4, 0.08f, fioShootUpTexture);
+	}
+	else if (aimingUp)
+	{
+		setFioTorsoAnimation(3, FIO_FACE_UP_FRAMES, 4, 0.12f, fioFaceUpTexture);
+	}
+	else if (fireAnimationTimer > 0.0f)
+	{
+		setFioTorsoAnimation(2, FIO_FIRE_FRAMES, 3, 0.08f, fioFireTexture);
+	}
+	else if (running && !airborne)
+	{
+		setFioTorsoAnimation(1, FIO_RUN_TORSO_FRAMES, 12, 0.075f, fioRunTorsoTexture);
+	}
+	else
+	{
+		setFioTorsoAnimation(0, FIO_IDLE_TORSO_FRAMES, 4, 0.16f, fioIdleTorsoTexture);
+	}
+
+	bool syncRunFrames = fioTorsoState == 1 && fioLegState == 1;
+
+	if (!syncRunFrames)
+	{
+		fioTorsoTimer += deltaTime;
+		if (fioTorsoFrameCount > 1 && fioTorsoTimer >= fioTorsoFrameDuration)
+		{
+			fioTorsoTimer = 0.0f;
+			fioTorsoFrame += 1;
+			if (fioTorsoFrame >= fioTorsoFrameCount)
+			{
+				fioTorsoFrame = 0;
+			}
+			fioTorsoSprite.setTextureRect(fioTorsoFrames[fioTorsoFrame]);
+		}
+	}
+
+	fioLegTimer += deltaTime;
+	if (fioLegFrameCount > 1 && fioLegTimer >= fioLegFrameDuration)
+	{
+		fioLegTimer = 0.0f;
+		fioLegFrame += 1;
+		if (fioLegFrame >= fioLegFrameCount)
+		{
+			fioLegFrame = 0;
+		}
+		fioLegsSprite.setTextureRect(fioLegFrames[fioLegFrame]);
+	}
+
+	if (syncRunFrames)
+	{
+		fioTorsoFrame = fioLegFrame;
+		fioTorsoSprite.setTextureRect(fioTorsoFrames[fioTorsoFrame]);
+	}
+
+	updateFioSpritePositions();
+}
+
+void PlayerSoldier::updateFioSpritePositions()
+{
+	if (!fioSpritesLoaded)
+	{
+		return;
+	}
+
+	float scale = 2.45f;
+	bool drawFlipped = !facingRight;
+	if (drawFlipped)
+	{
+		fioLegsSprite.setScale(-scale, scale);
+		fioTorsoSprite.setScale(-scale, scale);
+	}
+	else
+	{
+		fioLegsSprite.setScale(scale, scale);
+		fioTorsoSprite.setScale(scale, scale);
+	}
+
+	float centerX = x + width / 2.0f;
+	float legOriginX = FIO_IDLE_LEG_ORIGIN_X[0];
+	float legOriginY = FIO_IDLE_LEG_ORIGIN_Y[0];
+	if (fioLegState == 1)
+	{
+		legOriginX = FIO_RUN_LEG_ORIGIN_X[fioLegFrame];
+		legOriginY = FIO_RUN_LEG_ORIGIN_Y[fioLegFrame];
+	}
+
+	float torsoOriginX = FIO_IDLE_TORSO_ORIGIN_X[fioTorsoFrame];
+	float torsoOriginY = FIO_IDLE_TORSO_ORIGIN_Y[fioTorsoFrame];
+	if (fioTorsoState == 1)
+	{
+		torsoOriginX = FIO_RUN_TORSO_ORIGIN_X[fioTorsoFrame];
+		torsoOriginY = FIO_RUN_TORSO_ORIGIN_Y[fioTorsoFrame];
+	}
+	else if (fioTorsoState == 2)
+	{
+		torsoOriginX = FIO_FIRE_ORIGIN_X[fioTorsoFrame];
+		torsoOriginY = FIO_FIRE_ORIGIN_Y[fioTorsoFrame];
+	}
+	else if (fioTorsoState == 3)
+	{
+		torsoOriginX = FIO_FACE_UP_ORIGIN_X[fioTorsoFrame];
+		torsoOriginY = FIO_FACE_UP_ORIGIN_Y[fioTorsoFrame];
+	}
+	else if (fioTorsoState == 4)
+	{
+		torsoOriginX = FIO_SHOOT_UP_ORIGIN_X[fioTorsoFrame];
+		torsoOriginY = FIO_SHOOT_UP_ORIGIN_Y[fioTorsoFrame];
+	}
+
+	fioLegsSprite.setOrigin(legOriginX, legOriginY);
+	fioTorsoSprite.setOrigin(torsoOriginX, torsoOriginY);
+
+	float legAnchorY = y + height;
+	float torsoOffsetY = 12.0f;
+	fioLegsSprite.setPosition(centerX, legAnchorY);
+	fioTorsoSprite.setPosition(centerX, legAnchorY - torsoOffsetY * scale);
+}
+
 void PlayerSoldier::draw(sf::RenderWindow& window)
 {
 	if (!visible)
@@ -1274,8 +1547,13 @@ void PlayerSoldier::draw(sf::RenderWindow& window)
 		window.draw(tarmaLegsSprite);
 		window.draw(tarmaTorsoSprite);
 	}
+	else if (currentCharacter == 3 && fioSpritesLoaded)
+	{
+		window.draw(fioLegsSprite);
+		window.draw(fioTorsoSprite);
+	}
 
-	if ((currentCharacter == 0 && marcoSpritesLoaded) || (currentCharacter == 2 && eriSpritesLoaded) || (currentCharacter == 1 && tarmaSpritesLoaded))
+	if ((currentCharacter == 0 && marcoSpritesLoaded) || (currentCharacter == 2 && eriSpritesLoaded) || (currentCharacter == 1 && tarmaSpritesLoaded) || (currentCharacter == 3 && fioSpritesLoaded))
 	{
 		if (maxHealth > 0)
 		{
