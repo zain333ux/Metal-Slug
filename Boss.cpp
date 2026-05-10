@@ -42,6 +42,7 @@ namespace
 
 		float dx = player->getCenterX() - boss.getCenterX();
 		float dy = player->getCenterY() - boss.getCenterY();
+		// normalize aim vector so speed stays same at any distance
 		float length = sqrt(dx * dx + dy * dy);
 		if (length < 1)
 		{
@@ -86,6 +87,7 @@ Boss::Boss(BossType newBossType, BiomeType newBiomeType, bool newFinalPhase)
 	maxHealth = 150;
 	if (finalPhase)
 	{
+		// final phase bosses use half hp to keep fight manageable
 		maxHealth /= 2;
 	}
 	health = maxHealth;
@@ -118,6 +120,7 @@ bool Boss::loadStaticBossTexture(const char* fileName, float scale)
 	}
 
 	Vector2u textureSize = texture.getSize();
+	// boss size follows actual sprite so hitbox matches visual better
 	sprite.setTexture(texture);
 	spriteScale = scale;
 	spriteFacesLeft = true;
@@ -135,6 +138,7 @@ void Boss::enqueueProjectile(int projectileKind)
 	{
 		return;
 	}
+	// queue is used so attacks can spawn projectiles after animation timing
 	pendingProjectiles[pendingProjectileCount] = projectileKind;
 	pendingProjectileCount += 1;
 }
@@ -178,6 +182,7 @@ void Boss::update(float deltaTime)
 
 void Boss::clampToArena()
 {
+	// boss stays inside current phase arena
 	float maxX = arenaRight - width;
 	float maxY = arenaBottom - height;
 	if (maxX < arenaLeft)
@@ -197,6 +202,7 @@ void Boss::updateMinionBatch(EntityManager& entities)
 {
 	if (waitingForMinionBatchClear && entities.countActiveNonBossEnemies() == 0)
 	{
+		// reward appears only after spawned minions are cleared
 		ItemCollectible* crate = new ItemCollectible(COLLECTIBLE_TURKEY, getCenterX() - 16, y - 32);
 		entities.addEntity(crate);
 		waitingForMinionBatchClear = false;
@@ -238,6 +244,7 @@ bool Boss::applyProjectileHit(Projectile& projectile)
 	int bossDamage = 3;
 	if (projectile.isExplosive())
 	{
+		// explosives are stronger against boss than normal bullets
 		bossDamage = 20;
 	}
 	else if (projectile.isMelee())

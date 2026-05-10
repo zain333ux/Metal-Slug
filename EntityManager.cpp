@@ -35,6 +35,7 @@ EntityManager::EntityManager()
 
 EntityManager::~EntityManager()
 {
+	// manager owns the full entity pool so cleanup yahin hoti he
 	clear();
 }
 
@@ -47,6 +48,7 @@ void EntityManager::addEntity(Entity* entity)
 {
 	if (entity != 0)
 	{
+		// new entity ko level context bhi chahiye hota he for ground and water checks
 		assignActiveLevel(entity);
 		Projectile* projectile = dynamic_cast<Projectile*>(entity);
 		if (projectile != 0)
@@ -76,6 +78,7 @@ void EntityManager::assignActiveLevel(Entity* entity)
 		return;
 	}
 
+	// polymorphism se type check kr ke sirf relevant objects ko level diya ja raha he
 	Soldier* soldier = dynamic_cast<Soldier*>(entity);
 	if (soldier != 0)
 	{
@@ -115,6 +118,7 @@ void EntityManager::assignActiveLevel(Entity* entity)
 
 void EntityManager::updateAll(float deltaTime)
 {
+	// first pass updates current objects only so newly spawned objects do not disturb loop
 	for (int i = 0; i < entities.getSize(); i += 1)
 	{
 		if (entities.get(i) != 0 && entities.get(i)->isActive())
@@ -126,6 +130,7 @@ void EntityManager::updateAll(float deltaTime)
 	int originalSize = entities.getSize();
 	for (int i = 0; i < originalSize; i += 1)
 	{
+		// enemies return bullets or minions through base class functions
 		Enemy* enemy = dynamic_cast<Enemy*>(entities.get(i));
 		if (enemy != 0 && enemy->isActive())
 		{
@@ -146,6 +151,7 @@ void EntityManager::updateAll(float deltaTime)
 	originalSize = entities.getSize();
 	for (int i = 0; i < originalSize; i += 1)
 	{
+		// prisoner crate is spawned after animation decides reward is ready
 		Prisoner* prisoner = dynamic_cast<Prisoner*>(entities.get(i));
 		if (prisoner != 0 && prisoner->isActive())
 		{
@@ -171,6 +177,7 @@ void EntityManager::checkProjectileEnemyCollisions()
 {
 	for (int i = 0; i < entities.getSize(); i += 1)
 	{
+		// only player projectiles damage enemies in this pass
 		Projectile* projectile = dynamic_cast<Projectile*>(entities.get(i));
 		if (projectile == 0 || !projectile->isActive() || !projectile->isPlayerOwned())
 		{
@@ -197,6 +204,7 @@ void EntityManager::checkProjectileEnemyCollisions()
 				hitSomething = true;
 				if (projectile->isExplosive())
 				{
+					// blast radius lets one rocket damage nearby enemies too
 					float centerX = projectile->getCenterX();
 					float centerY = projectile->getCenterY();
 					for (int k = 0; k < entities.getSize(); k += 1)
@@ -240,6 +248,7 @@ void EntityManager::checkProjectileEnemyCollisions()
 
 		if (hitSomething)
 		{
+			// bonus score yahan add hota he taake kill type track rahe
 			if (projectile->isMelee() && killedByThisProjectile > 0)
 			{
 				pendingScore += ScoreManager::meleeBonus();
@@ -260,6 +269,7 @@ void EntityManager::checkProjectilePrisonerCollisions()
 {
 	for (int i = 0; i < entities.getSize(); i += 1)
 	{
+		// same projectile system prisoner ko free karne ke liye reuse kiya he
 		Projectile* projectile = dynamic_cast<Projectile*>(entities.get(i));
 		if (projectile == 0 || !projectile->isActive() || !projectile->isPlayerOwned())
 		{
@@ -292,6 +302,7 @@ void EntityManager::checkProjectileVehicleCollisions()
 {
 	for (int i = 0; i < entities.getSize(); i += 1)
 	{
+		// enemy bullets damage mounted vehicles instead of going through them
 		Projectile* projectile = dynamic_cast<Projectile*>(entities.get(i));
 		if (projectile == 0 || !projectile->isActive() || projectile->isPlayerOwned())
 		{
@@ -375,6 +386,7 @@ void EntityManager::checkEnemyPlayerCollisions()
 {
 	for (int i = 0; i < entities.getSize(); i += 1)
 	{
+		// contact cooldown prevents damage every single frame
 		Enemy* enemy = dynamic_cast<Enemy*>(entities.get(i));
 		if (enemy == 0 || !enemy->isActive())
 		{
@@ -413,6 +425,7 @@ void EntityManager::checkPlayerCollectibleCollisions()
 {
 	for (int i = 0; i < entities.getSize(); i += 1)
 	{
+		// pickup logic stays in Collectible so player code stays cleaner
 		PlayerSoldier* player = dynamic_cast<PlayerSoldier*>(entities.get(i));
 		if (player == 0 || !player->isActive() || player->isDead())
 		{
@@ -446,6 +459,7 @@ void EntityManager::handleEnemyKilled(Enemy* enemy)
 		return;
 	}
 
+	// deathProcessed avoids duplicate score when multiple checks hit same enemy
 	enemy->markDeathProcessed();
 
 	pendingScore += enemy->getScoreValue();
@@ -466,6 +480,7 @@ void EntityManager::handleEnemyKilled(Enemy* enemy)
 
 void EntityManager::spawnDropForEnemy(const Enemy& enemy)
 {
+	// random drop chance simple rakha he for arcade style rewards
 	int roll = rand() % 100;
 	CollectibleKind dropKind;
 	if (roll < 5)
@@ -634,6 +649,7 @@ void EntityManager::removeEnemiesBehind(float minimumX)
 
 void EntityManager::clearBossPhaseTransientEntities()
 {
+	// boss phase change pe old bullets and minions remove krne zaroori hein
 	for (int i = 0; i < entities.getSize(); i += 1)
 	{
 		Enemy* enemy = dynamic_cast<Enemy*>(entities.get(i));
@@ -653,6 +669,7 @@ void EntityManager::removeInactive()
 	{
 		if (entities.get(i) == 0 || !entities.get(i)->isActive())
 		{
+			// destroyed vehicle counts are used for survival spawning progression
 			EnemyVehicle* enemyVehicle = dynamic_cast<EnemyVehicle*>(entities.get(i));
 			if (enemyVehicle != 0 && enemyVehicle->isDead())
 			{
@@ -674,6 +691,7 @@ void EntityManager::removeInactive()
 			Vehicle* vehicle = dynamic_cast<Vehicle*>(entities.get(i));
 			if (vehicle != 0 && vehicle->isOccupied())
 			{
+				// vehicle delete hone se pehle player ko bahar nikalna hota he
 				PlayerSoldier* player = getPlayer();
 				if (player != 0)
 				{

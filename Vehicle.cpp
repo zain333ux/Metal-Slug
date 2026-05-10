@@ -30,6 +30,7 @@ Vehicle::Vehicle(float startX, float startY)
 	movementMaxX = Constants::WORLD_WIDTH_LEVEL_3 + 2200;
 	damageFlashTimer = 0;
 	activeLevel = 0;
+	// vehicle owns this cooldown helper for its cannon
 	weapon.setCooldown(baseFireCooldown);
 
 	resetAnimation(normalIdleAnimation);
@@ -120,6 +121,7 @@ bool Vehicle::loadVehicleSprites()
 
 	Color backgroundColor = sheetImage.getPixel(0, 0);
 
+	// frame data is manual because original tank sheet spacing is uneven
 	loadAnimation(normalIdleAnimation, sheetImage, backgroundColor, 8, 23, 195, 59, 3, 0.18f, true);
 	loadAnimation(normalMoveAnimation, sheetImage, backgroundColor, 263, 881, 354, 58, 5, 0.10f, true);
 	loadAnimation(normalShootAnimation, sheetImage, backgroundColor, 330, 442, 249, 55, 4, 0.07f, false);
@@ -233,6 +235,7 @@ bool Vehicle::loadAnimation(VehicleAnimation& animation, const Image& sheetImage
 	Image animationImage;
 	animationImage.create(totalWidth, totalHeight, backgroundColor);
 	animationImage.copy(sheetImage, 0, 0, IntRect(x, y, totalWidth, totalHeight));
+	// mask removes sheet background from cropped animation
 	animationImage.createMaskFromColor(backgroundColor);
 
 	if (!animation.texture.loadFromImage(animationImage))
@@ -268,6 +271,7 @@ void Vehicle::setFrameBounds(VehicleAnimation& animation, int frameIndex, int fr
 		return;
 	}
 
+	// manual bounds help reduce shaking between frames
 	animation.frameLefts[frameIndex] = frameLeft;
 	animation.frameWidths[frameIndex] = frameWidth;
 }
@@ -466,6 +470,7 @@ void Vehicle::update(float deltaTime)
 
 	if (occupied)
 	{
+		// only mounted vehicles read player input
 		handleMovementInput();
 		usingUphillAnimation = Keyboard::isKeyPressed(Keyboard::W) || Keyboard::isKeyPressed(Keyboard::Up);
 	}
@@ -484,6 +489,7 @@ void Vehicle::update(float deltaTime)
 	float gravity = Constants::GRAVITY;
 	if (wasInWater)
 	{
+		// vehicle floats slower in water so aquatic sections feel different
 		gravity *= 0.24f;
 		if (velocityY > 120)
 		{
@@ -500,6 +506,7 @@ void Vehicle::update(float deltaTime)
 	float waterSurfaceY = static_cast<float>(Constants::WORLD_HEIGHT) + 1;
 	if (activeLevel != 0)
 	{
+		// terrain and water surface both come from current level
 		landingY = activeLevel->getLandingY(x, x + width, previousBottom, y + height);
 		waterSurfaceY = activeLevel->getWaterSurfaceYAt(x + width * 0.5f);
 	}
@@ -511,6 +518,7 @@ void Vehicle::update(float deltaTime)
 	float floatingBottom = waterSurfaceY + height * 0.28f;
 	if (canFloatOnWater && y + height > floatingBottom)
 	{
+		// float point keeps vehicle partly above water surface
 		y = floatingBottom - height;
 		if (velocityY > 0)
 		{
@@ -584,6 +592,7 @@ void Vehicle::updateAnimation(float deltaTime)
 
 	if (nextAnimationKind != currentAnimationKind)
 	{
+		// reset frame on animation switch so shooting and hit start cleanly
 		currentAnimationKind = nextAnimationKind;
 		currentAnimationFrame = 0;
 		animationTimer = 0;
@@ -636,6 +645,7 @@ void Vehicle::handleWeaponInput(EntityManager& entityManager, float deltaTime)
 		bool canFireNow = weapon.canFire();
 		if (canFireNow)
 		{
+			// cooldown is used so cannon does not fire every frame
 			float cannonY = usingUphillAnimation ? y + 16 : y + 28;
 			float bulletX = facingRight ? x + width + 48 : x - 48;
 			float bulletY = cannonY;

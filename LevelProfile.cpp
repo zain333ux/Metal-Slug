@@ -54,6 +54,7 @@ int AquaticProfile::getDifficulty() const
 
 LevelProfile* LevelProfileFactory::createProfile(int option)
 {
+	// factory option ke hisab se campaign profile banati he
 	if (option == 1)
 	{
 		return new MountainProfile();

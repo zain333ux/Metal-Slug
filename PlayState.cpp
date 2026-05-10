@@ -33,6 +33,7 @@ namespace
 		const float worldWidth = level->getWorldWidth();
 		const float step = 160;
 
+		// nearby water search krte hein so mariner dry land par na aaye
 		for (int offset = 0; offset < 40; offset += 1)
 		{
 			for (int side = 0; side < 2; side += 1)
@@ -109,6 +110,7 @@ void PlayState::configureHud()
 
 void PlayState::loadCurrentLevel(Game& game)
 {
+	// level reload pe old entities clear hoti hein
 	game.getEntityManager().clear();
 	player = 0;
 	vehicle = 0;
@@ -120,6 +122,7 @@ void PlayState::loadCurrentLevel(Game& game)
 
 	if (mode == PLAY_MODE_CAMPAIGN)
 	{
+		// campaign profile decides world width and difficulty feel
 		LevelProfile* profile = LevelProfileFactory::createProfile(campaignProfileOption);
 		game.getLevelManager().loadLevel(new GameLevel(1, profile->getWorldWidth(), true));
 		delete profile;
@@ -164,6 +167,7 @@ void PlayState::loadCurrentLevel(Game& game)
 	Level* loadedLevel = game.getLevelManager().getCurrentLevel();
 	if (loadedLevel != 0)
 	{
+		// manager and player dono ko active level reference chahiye
 		game.getEntityManager().setActiveLevel(loadedLevel);
 		player->setMovementMaxX(loadedLevel->getWorldWidth());
 		player->setPosition(120, loadedLevel->getGroundYAt(120) - player->getHeight());
@@ -186,6 +190,7 @@ void PlayState::spawnEnemy(Game& game, EnemyKind kind, float x, float y)
 	bool bossEnemy = kind == ENEMY_BOSS_1 || kind == ENEMY_BOSS_2 || kind == ENEMY_BOSS_3 || kind == ENEMY_ULTIMATE_BOSS;
 	if (!bossEnemy && !enemy->hasSpriteVisual())
 	{
+		// invisible enemy ko spawn nahi karte
 		delete enemy;
 		return;
 	}
@@ -194,6 +199,7 @@ void PlayState::spawnEnemy(Game& game, EnemyKind kind, float x, float y)
 	bool flyingEnemy = kind == ENEMY_MARTIAN || kind == ENEMY_BOSS_2;
 	if (level != 0 && !flyingEnemy)
 	{
+		// ground enemies level profile se ground y lete hein
 		enemy->setPosition(x, level->getGroundYAt(x) - enemy->getHeight());
 	}
 	game.getEntityManager().addEntity(enemy);
@@ -212,6 +218,7 @@ void PlayState::spawnSurvivalPrisoner(Game& game)
 		return;
 	}
 
+	// one prisoner per survival level hardcoded as project reward objective
 	float prisonerX = 2480;
 	if (currentLevel == 2)
 	{
@@ -280,6 +287,7 @@ void PlayState::spawnCampaignWave(Game& game)
 	int activeEnemies = game.getEntityManager().countActiveEnemies();
 	const int enemyCap = 10;
 
+	// campaign wave grows harder based on kills
 	for (int i = 0; i < 3 && activeEnemies < enemyCap; i += 1)
 	{
 		float x = campaignSpawnX + static_cast<float>(i) * 480;
@@ -330,6 +338,7 @@ void PlayState::updateCampaignSpawning(Game& game, float deltaTime)
 	Level* level = game.getLevelManager().getCurrentLevel();
 	if (level != 0)
 	{
+		// campaign level expands as player moves forward
 		level->extendIfNeeded(player->getX());
 		player->setMovementMaxX(level->getWorldWidth());
 		if (vehicle != 0)
@@ -351,6 +360,7 @@ void PlayState::updateCampaignSpawning(Game& game, float deltaTime)
 
 	if (campaignSpawnTimer <= 0 && game.getEntityManager().countActiveEnemies() < 10)
 	{
+		// enemies spawn ahead of camera so player does not see pop in
 		if (campaignSpawnX < player->getX() + 900)
 		{
 			campaignSpawnX = player->getX() + 900;
@@ -385,6 +395,7 @@ void PlayState::spawnVehicle(Game& game)
 	float vehicleX = 330;
 	float vehicleY = static_cast<float>(Constants::GROUND_Y) - 96;
 
+	// default vehicle uses ground height from level mask
 	if (level != 0)
 	{
 		vehicleY = level->getMainGroundYAt(vehicleX) - 96;
@@ -400,7 +411,7 @@ void PlayState::spawnVehicle(Game& game)
 		game.getEntityManager().addEntity(vehicle);
 	}
 
-	// Spawn Slug Flyer in higher terrain regions for aerial biome traversal.
+	// flyer is placed higher so aerial biome can be reached
 	if (level != 0 && !aquaticVehicleLevel && (mode == PLAY_MODE_CAMPAIGN || currentLevel <= 3))
 	{
 		float flyerX = level->getWorldWidth() * 0.28f;
@@ -415,7 +426,7 @@ void PlayState::spawnVehicle(Game& game)
 		game.getEntityManager().addEntity(flyer);
 	}
 
-	// Aquatic levels use the Slug Mariner. Search for real water so it never spawns below the map.
+	// aquatic levels use real water position for mariner spawn
 	if (aquaticVehicleLevel)
 	{
 		float subX = 1800;

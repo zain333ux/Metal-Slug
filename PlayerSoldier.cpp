@@ -68,7 +68,7 @@ static const float MARCO_IDLE_LEG_ORIGIN_Y[] = { 15 };
 static const float MARCO_RUN_LEG_ORIGIN_X[] = { 10.5f, 14, 15.5f, 9.5f, 7.5f, 8, 10.5f, 13, 15.5f, 10, 7.5f, 9 };
 static const float MARCO_RUN_LEG_ORIGIN_Y[] = { 19, 19, 15, 19, 19, 19, 19, 19, 15, 19, 19, 19 };
 
-// Tarma Animation Constants
+// Tarma frame data
 static const IntRect TARMA_IDLE_TORSO_FRAMES[] =
 {
 	IntRect(4, 4, 32, 26), IntRect(40, 4, 32, 26), IntRect(76, 4, 32, 26), IntRect(112, 4, 32, 26)
@@ -123,7 +123,7 @@ static const float TARMA_IDLE_LEG_ORIGIN_Y[] = { 15 };
 static const float TARMA_RUN_LEG_ORIGIN_X[] = { 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13 };
 static const float TARMA_RUN_LEG_ORIGIN_Y[] = { 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17 };
 
-// Eri Animation Constants
+// Eri frame data
 static const IntRect ERI_IDLE_TORSO_FRAMES[] =
 {
 	IntRect(5, 4, 29, 29), IntRect(39, 4, 29, 29), IntRect(73, 4, 30, 28), IntRect(108, 4, 29, 27)
@@ -178,7 +178,7 @@ static const float ERI_IDLE_LEG_ORIGIN_Y[] = { 15 };
 static const float ERI_RUN_LEG_ORIGIN_X[] = { 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13 };
 static const float ERI_RUN_LEG_ORIGIN_Y[] = { 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22 };
 
-// Fio — frame rects from Sprites/Clean/Fio_*.png (tight alpha bounds); pivots at foot mid-x / bottom row
+// Fio frames use foot anchor so running does not slide
 static const IntRect FIO_IDLE_TORSO_FRAMES[] =
 {
 	IntRect(3, 4, 28, 26), IntRect(36, 4, 28, 26), IntRect(69, 4, 28, 26), IntRect(102, 4, 28, 26)
@@ -248,6 +248,7 @@ static const IntRect PLAYER_MUMMY_IDLE_FRAMES[] =
 
 PlayerSoldier::PlayerSoldier()
 {
+	// Soldier base keeps weapon as strategy pointer but PlayerSoldier owns actual object
 	setWeapon(&weapon);
 	firing = false;
 	fireAnimationTimer = 0;
@@ -492,6 +493,7 @@ void PlayerSoldier::setPilotHiddenForVehicle(bool hide)
 
 void PlayerSoldier::applyCharacterStats()
 {
+	// each character has small stat differences without making four classes
 	moveSpeed = Constants::PLAYER_MOVE_SPEED;
 	maxHealth = 100;
 
@@ -525,6 +527,7 @@ void PlayerSoldier::switchCharacter()
 	int startCharacter = currentCharacter;
 	for (int i = 0; i < 4; i += 1)
 	{
+		// dead character skip krte hein taake player stuck na ho
 		currentCharacter = (currentCharacter + 1) % 4;
 		if (lives[currentCharacter] > 0)
 		{
@@ -558,6 +561,7 @@ void PlayerSoldier::handleInput()
 	stopMoving();
 	if (isTransformed())
 	{
+		// transformed forms use limited movement and no normal aiming
 		aimingUp = false;
 		moveSpeed = Constants::PLAYER_MOVE_SPEED * 0.5f;
 		if (transformationState == PLAYER_FORM_ZOMBIE_EMERGE)
@@ -580,6 +584,7 @@ void PlayerSoldier::handleInput()
 	bool switchKey = Keyboard::isKeyPressed(Keyboard::Z);
 	if (switchKey && !previousSwitchKey)
 	{
+		// previous key check se one press par one switch hota he
 		switchCharacter();
 	}
 	previousSwitchKey = switchKey;
@@ -596,6 +601,7 @@ void PlayerSoldier::handleInput()
 
 	if (inWater)
 	{
+		// water control jump se zyada swim feel deta he
 		if (Keyboard::isKeyPressed(Keyboard::Space) ||
 			Keyboard::isKeyPressed(Keyboard::W) ||
 			Keyboard::isKeyPressed(Keyboard::Up))
@@ -635,6 +641,7 @@ void PlayerSoldier::update(float deltaTime)
 
 	if (DeveloperMode::isEnabled())
 	{
+		// demo mode mein testing ke liye health and ammo refill rehta he
 		health = maxHealth;
 		refillDemoInventory();
 	}
@@ -666,12 +673,14 @@ void PlayerSoldier::updatePlayerAnimation(float deltaTime)
 {
 	if (isTransformed())
 	{
+		// zombie and mummy use separate sprite sheets from normal soldiers
 		updateTransformationAnimation(deltaTime);
 		return;
 	}
 
 	if (currentCharacter == 0 && marcoSpritesLoaded)
 	{
+		// layered torso and legs allow running while shooting
 		updateMarcoLayeredAnimation(deltaTime);
 		return;
 	}
@@ -725,11 +734,13 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 
 	if (transformationState == PLAYER_FORM_ZOMBIE_EMERGE)
 	{
+		// emerge animation finish hone tak zombie fire nahi karta
 		return;
 	}
 
 	if (isZombieForm())
 	{
+		// zombie keeps simple straight firing so form feels different
 		if (Keyboard::isKeyPressed(Keyboard::LControl) || Keyboard::isKeyPressed(Keyboard::J))
 		{
 			if (Keyboard::isKeyPressed(Keyboard::Left) || Keyboard::isKeyPressed(Keyboard::A))
@@ -748,6 +759,7 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 
 	if (isMummyForm())
 	{
+		// mummy form only melee use karti he
 		bool meleeKey = Keyboard::isKeyPressed(Keyboard::K);
 		if (meleeKey && !previousMeleeKey && meleeTimer <= 0)
 		{
@@ -794,6 +806,7 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 
 		if (canFireWeapon)
 		{
+			// priority rocket then HMG then normal pistol
 			if (rockets[currentCharacter] > 0 || (DeveloperMode::isEnabled() && currentCharacter == 2))
 			{
 				RocketProjectile* rocket = new RocketProjectile(bulletX, bulletY, facingRight, aimingUp);
@@ -811,15 +824,14 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 				{
 					hmgBullets[currentCharacter] -= 1;
 				}
-				// Double fire rate: set cooldown to half of the normal cooldown
+				// HMG fires faster than pistol
 				weapon.setCooldown(Constants::PLAYER_FIRE_COOLDOWN * 0.5f);
 				weapon.restartCooldown();
-				// Note: cooldown will be reset to character default in applyCharacterStats if they switch, 
-				// but for HMG we want it persistent while firing.
+				// switch karne par normal cooldown wapas apply ho jata he
 			}
 			else
 			{
-				// Ensure cooldown is normal for pistol
+				// pistol default stats use karta he
 				applyCharacterStats(); 
 				weapon.fire(entityManager, bulletX, bulletY, facingRight, aimingUp);
 			}
@@ -829,6 +841,7 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 	bool meleeKey = Keyboard::isKeyPressed(Keyboard::K);
 	if (meleeKey && !previousMeleeKey && meleeTimer <= 0)
 	{
+		// melee hitbox short lived projectile pipeline reuse karta he
 		float hitX = facingRight ? x + width : x;
 		MeleeHitbox* hitbox = new MeleeHitbox(hitX, y + 18, facingRight, !grounded);
 		entityManager.addEntity(hitbox);
@@ -840,6 +853,7 @@ void PlayerSoldier::handleWeaponInput(EntityManager& entityManager, float deltaT
 	bool grenadeKey = Keyboard::isKeyPressed(Keyboard::G);
 	if (grenadeKey && !previousGrenadeKey && grenadeTimer <= 0)
 	{
+		// grenade key edge check repeated throws ko stop karta he
 		if (grenades[currentCharacter] > 0 || DeveloperMode::isEnabled())
 		{
 			float grenadeX = facingRight ? x + width : x;
@@ -1021,6 +1035,7 @@ void PlayerSoldier::zombify()
 		return;
 	}
 
+	// enemy contact changes player form through state object
 	transformationState = PLAYER_FORM_ZOMBIE_EMERGE;
 	setTransformation(new ZombieTransformationState());
 	transformationTimer = 10;
@@ -1042,6 +1057,7 @@ void PlayerSoldier::mummify()
 		return;
 	}
 
+	// mummy state swaps animation and disables normal weapons
 	transformationState = PLAYER_FORM_MUMMY;
 	setTransformation(new MummyTransformationState());
 	transformationTimer = 10;
@@ -1087,12 +1103,14 @@ void PlayerSoldier::updateTransformation(float deltaTime)
 
 	if (transformationState == PLAYER_FORM_ZOMBIE_EMERGE)
 	{
+		// emerge animation has its own timing so timer does not count down yet
 		return;
 	}
 
 	transformationTimer -= deltaTime;
 	if (transformationTimer <= 0)
 	{
+		// form expires and player returns to normal stats
 		transformationState = PLAYER_FORM_NORMAL;
 		setTransformation(new NormalTransformationState());
 		transformationTimer = 0;
@@ -1104,6 +1122,7 @@ void PlayerSoldier::updateTransformation(float deltaTime)
 
 void PlayerSoldier::updateTransformationAnimation(float deltaTime)
 {
+	// frame sizes change because each transformation sheet is different
 	int frameWidthLocal = 45;
 	int frameHeightLocal = 41;
 	int frameCount = 24;
@@ -1150,12 +1169,14 @@ void PlayerSoldier::updateTransformationAnimation(float deltaTime)
 	transformationFrameTimer += deltaTime;
 	if (transformationFrameTimer >= frameDuration)
 	{
+		// animation timer keeps zombie and mummy movement smooth
 		transformationFrameTimer = 0;
 		transformationFrame += 1;
 		if (transformationFrame >= frameCount)
 		{
 			if (transformationState == PLAYER_FORM_ZOMBIE_EMERGE)
 			{
+				// after emerge ends zombie starts walk animation
 				transformationState = PLAYER_FORM_ZOMBIE;
 				transformationFrame = 0;
 				transformationFrameTimer = 0;

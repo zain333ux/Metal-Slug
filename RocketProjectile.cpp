@@ -25,6 +25,7 @@ static void applyPlayerRocketTexture(RectangleShape& body)
 {
 	if (!playerRocketTextureLoaded)
 	{
+		// texture is loaded once and reused by all player rockets
 		Image image;
 		if (image.loadFromFile("Sprites/Clean/Bazooka_bullet.png"))
 		{
@@ -98,6 +99,7 @@ void RocketProjectile::update(float deltaTime)
 {
 	if (exploded)
 	{
+		// explosion animation controls when rocket disappears
 		frameTimer += deltaTime;
 		if (frameTimer >= 0.05f)
 		{
@@ -125,6 +127,7 @@ void RocketProjectile::update(float deltaTime)
 	frameTimer += deltaTime;
 	if (frameTimer >= 0.08f)
 	{
+		// rocket sprite has small flame loop while flying
 		frameTimer = 0;
 		currentFrame += 1;
 		if (currentFrame >= 4)

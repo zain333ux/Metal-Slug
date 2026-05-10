@@ -21,6 +21,7 @@ BossLevelManager::BossLevelManager()
 
 void BossLevelManager::reset()
 {
+	// boss fight hamesha phase 1 se start hoti he
 	currentPhase = BossPhase::GroundIronNokana;
 	currentBoss = 0;
 	clearBossPointers();
@@ -51,6 +52,7 @@ void BossLevelManager::startBossLevel(EntityManager& entities, PlayerSoldier* pl
 void BossLevelManager::spawnPhaseBoss(EntityManager& entities, PlayerSoldier* player, LevelManager& levelManager)
 {
 	Level* level = levelManager.getCurrentLevel();
+	// arena bounds player aur boss ko current phase ke area mein rakhte hein
 	float startX = phaseStartX(currentPhase);
 	float arenaLeft = startX + 50;
 	float arenaRight = phaseEndX(currentPhase) - 50;
@@ -58,6 +60,7 @@ void BossLevelManager::spawnPhaseBoss(EntityManager& entities, PlayerSoldier* pl
 	float arenaBottom = level != 0 ? level->getWorldHeight() - 20 : Constants::WORLD_HEIGHT - 20;
 	if (currentPhase == BossPhase::GroundIronNokana)
 	{
+		// Iron Nokana ground boss he isliye fixed ground position use ki he
 		float ironGroundY = 1297;
 		currentBoss = new IronNokanaBoss(1118, ironGroundY, false);
 		currentBoss->setTarget(player);
@@ -83,6 +86,7 @@ void BossLevelManager::spawnPhaseBoss(EntityManager& entities, PlayerSoldier* pl
 	}
 	else if (currentPhase == BossPhase::FinalMerged)
 	{
+		// final phase mein teeno bosses same manager array se track hote hein
 		float ironX = 5000;
 		float seaX = 5700;
 		float ironGroundY = level != 0 ? level->getGroundYAt(ironX) : 1297;
@@ -106,6 +110,7 @@ void BossLevelManager::spawnPhaseBoss(EntityManager& entities, PlayerSoldier* pl
 void BossLevelManager::spawnPhaseVehicle(EntityManager& entities, LevelManager& levelManager)
 {
 	Level* level = levelManager.getCurrentLevel();
+	// har biome ke liye matching vehicle spawn hoti he
 	float startX = phaseStartX(currentPhase);
 	float maxX = level != 0 ? level->getWorldWidth() : Constants::BOSS_WORLD_WIDTH;
 
@@ -153,6 +158,7 @@ void BossLevelManager::lockArena(PlayerSoldier* player)
 {
 	if (player != 0)
 	{
+		// player ko phase end se aage jaane se rokte hein
 		player->setMovementMaxX(phaseEndX(currentPhase));
 	}
 	phaseLocked = true;
@@ -169,7 +175,7 @@ void BossLevelManager::unlockArena(PlayerSoldier* player)
 
 void BossLevelManager::cleanupPhase(EntityManager& entities)
 {
-	// Phase transitions remove boss bullets and leftover minions so the next biome starts clean.
+	// phase change pe purane bullets and minions clean kr dete hein
 	entities.clearBossPhaseTransientEntities();
 	currentBoss = 0;
 	for (int i = 0; i < 3; i += 1)
@@ -181,6 +187,7 @@ void BossLevelManager::cleanupPhase(EntityManager& entities)
 
 void BossLevelManager::advancePhase(EntityManager& entities, PlayerSoldier* player, LevelManager& level)
 {
+	// boss phase hp finish hone ke baad next biome start hota he
 	if (currentPhase == BossPhase::GroundIronNokana)
 	{
 		currentPhase = BossPhase::AquaticSeaSatan;
@@ -213,6 +220,7 @@ void BossLevelManager::update(float deltaTime, EntityManager& entities, PlayerSo
 
 	if (currentPhase != BossPhase::FinalMerged)
 	{
+		// single boss phases simple currentBoss pointer se handle ho jate hein
 		if (currentBoss == 0 || !currentBoss->isActive())
 		{
 			return;
@@ -234,6 +242,7 @@ void BossLevelManager::update(float deltaTime, EntityManager& entities, PlayerSo
 
 	for (int i = 0; i < 3; i += 1)
 	{
+		// final phase mein bosses independent hp ke sath update hote hein
 		if (finalBosses[i] != 0 && finalBosses[i]->isActive())
 		{
 			if (finalBosses[i]->getHealth() <= 0)
@@ -319,6 +328,7 @@ const char* BossLevelManager::getPhaseName() const
 
 bool BossLevelManager::finalBossesDefeated() const
 {
+	// all three flags true hon to boss level complete hota he
 	for (int i = 0; i < 3; i += 1)
 	{
 		if (!finalBossDefeated[i])

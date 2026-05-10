@@ -34,8 +34,10 @@ void ProjectileWeapon::fire(EntityManager& entityManager, float startX, float st
 		return;
 	}
 
+	// weapon strategy creates projectile and manager owns it after addEntity
 	BasicStraightProjectile* projectile = new BasicStraightProjectile(startX, startY, facingRight, upward);
 	entityManager.addEntity(projectile);
+	// cooldown is reset after successful shot only
 	cooldownTimer = cooldown;
 }
 

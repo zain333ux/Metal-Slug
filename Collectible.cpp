@@ -36,6 +36,7 @@ Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 	else if (kind == COLLECTIBLE_TURKEY)
 	{
 		loadMaskedTexture("Sprites/Clean/turkey_item.png");
+		// turkey has multiple frames so pickup feels alive on ground
 		static const IntRect TURKEY_FRAMES[] =
 		{
 			IntRect(1, 2, 26, 32), IntRect(32, 4, 26, 30), IntRect(63, 3, 26, 31),
@@ -58,6 +59,7 @@ Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 	else
 	{
 		loadMaskedTexture("Sprites/Clean/crate.png");
+		// crate frames are cropped by hand to avoid choppy visual edges
 		static const IntRect CRATE_FRAMES[] =
 		{
 			IntRect(3, 6, 32, 28),  
@@ -77,6 +79,7 @@ Collectible::Collectible(CollectibleKind newKind, float newX, float newY)
 
 	if (!spriteLoaded)
 	{
+		// fallback color keeps item visible even if sprite load fails
 		fallbackBody.setSize(Vector2f(width, height));
 		if (kind == COLLECTIBLE_FRUIT)
 		{
@@ -121,10 +124,12 @@ void Collectible::update(float deltaTime)
 	lifeTime -= deltaTime;
 	if (lifeTime <= 0)
 	{
+		// drops expire so level does not keep old rewards forever
 		deactivate();
 		return;
 	}
 
+	// pickups use same landing logic as player so slopes still work
 	float previousBottom = y + height;
 	velocityY += Constants::GRAVITY * deltaTime;
 	Entity::update(deltaTime);
@@ -142,6 +147,7 @@ void Collectible::update(float deltaTime)
 
 	if (animationFrames != 0 && animationFrameCount > 1)
 	{
+		// frame timer keeps item animation smooth
 		animationTimer += deltaTime;
 		if (animationTimer >= animationFrameDuration)
 		{
@@ -160,6 +166,7 @@ void Collectible::update(float deltaTime)
 
 void Collectible::apply(PlayerSoldier& player)
 {
+	// reward effect stays inside Collectible instead of spreading in manager
 	if (kind == COLLECTIBLE_FRUIT)
 	{
 		player.heal(20);
@@ -178,6 +185,7 @@ void Collectible::apply(PlayerSoldier& player)
 	}
 	else //crate
 	{
+		// supply crate gives fixed support plus one random weapon reward
 		player.addGrenades(5);
 		player.heal(30);
 		if (rand() % 2 == 0)

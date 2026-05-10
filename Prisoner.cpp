@@ -11,6 +11,7 @@ namespace
 {
 	void makeStrip(FrameRect* frames, int count, int width, int height)
 	{
+		// simple strip helper because prisoner sheets are straight rows
 		int frameWidth = width / count;
 		for (int i = 0; i < count; i += 1)
 		{
@@ -63,6 +64,7 @@ void Prisoner::buildAnimations()
 	static bool framesReady = false;
 	if (!framesReady)
 	{
+		// frames are prepared once and reused for every prisoner
 		makeStrip(stuckFrames, 2, 84, 35);
 		makeStrip(breakFrames, 9, 378, 35);
 		makeStrip(dropFrames, 11, 484, 38);
@@ -105,6 +107,7 @@ void Prisoner::setState(PrisonerState newState)
 {
 	state = newState;
 	currentAnimation().reset();
+	// state change controls movement after rescue animation
 	if (state == PRISONER_RUNNING)
 	{
 		velocityX = runSpeed;
@@ -154,6 +157,7 @@ void Prisoner::update(float deltaTime)
 
 	if (state == PRISONER_DROPPING)
 	{
+		// prisoner visibly pops up and falls before dropping crate
 		velocityY += Constants::GRAVITY * deltaTime;
 		Entity::update(deltaTime);
 	}
@@ -178,6 +182,7 @@ void Prisoner::update(float deltaTime)
 		{
 			y = groundY - height;
 			velocityY = 0;
+			// crate is queued after landing so it does not appear too early
 			crateQueued = true;
 		}
 	}
@@ -241,6 +246,7 @@ Collectible* Prisoner::createCrateIfReady()
 	}
 
 	crateCreated = true;
+	// reward spawns next to prisoner after he is freed
 	float crateX = x + width + 12;
 	float crateY = y + height - 72;
 	return new ItemCollectible(COLLECTIBLE_SUPPLY_CRATE, crateX, crateY);

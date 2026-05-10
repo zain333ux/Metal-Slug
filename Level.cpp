@@ -38,6 +38,7 @@ GameLevel::GameLevel(int newLevelNumber, float newWorldWidth, bool newCampaignGe
 
 void Level::load()
 {
+	// level loads visual background first then collision helpers
 	loadBackground();
 
 	if (grassTexture.loadFromFile("Sprites/blocks/grass_block_side.png") &&
@@ -57,6 +58,7 @@ void Level::load()
 
 bool Level::loadBackground()
 {
+	// survival and boss levels prefer full biome image when available
 	if (!campaignGenerated && levelNumber >= 1 && levelNumber <= 4 &&
 		loadFullBiomeBackground("Sprites/Clean/3biomes.png", "Sprites/Clean/CollisionFinal.png"))
 	{
@@ -92,6 +94,7 @@ bool Level::loadFullBiomeBackground(const char* fileName, const char* collisionM
 
 	int contentTop = 0;
 	int contentHeight = static_cast<int>(image.getSize().y);
+	// white empty border remove kr ke camera framing better hoti he
 	findImageContentY(image, contentTop, contentHeight);
 	if (!backgroundTexture.loadFromImage(image))
 	{
@@ -120,6 +123,7 @@ bool Level::loadCollisionMask(const char* fileName)
 	Vector2u backgroundSize = backgroundTexture.getSize();
 	if (maskSize.x != backgroundSize.x || maskSize.y != backgroundSize.y)
 	{
+		// mask and background same size hon warna mapping wrong ho jati he
 		collisionMaskLoaded = false;
 		return false;
 	}
@@ -143,6 +147,7 @@ void Level::setupFullBiomeRect(int contentTop, int contentHeight)
 
 	float sectionStart = 0;
 	float sectionWidth = Constants::WORLD_WIDTH_LEVEL_1;
+	// one big biome image ko level number ke hisab se crop kiya jata he
 	if (levelNumber == 4)
 	{
 		sectionStart = 0;
@@ -198,6 +203,7 @@ void Level::findImageContentY(const Image& image, int& contentTop, int& contentH
 
 	for (unsigned int y = 0; y < imageSize.y; y += 2)
 	{
+		// sampling skip karta he because exact pixel perfect scan slow hota he
 		for (unsigned int x = 0; x < imageSize.x; x += 8)
 		{
 			Color pixel = image.getPixel(x, y);
@@ -239,6 +245,7 @@ void Level::buildGroundProfileFromMask()
 	}
 
 	int sampleCount = static_cast<int>(worldWidth / static_cast<float>(groundProfileSpacing)) + 2;
+	// ground profile stores sampled height so collision check fast rahe
 	float previousGroundY = static_cast<float>(Constants::GROUND_Y);
 	int startY = backgroundTextureRect.top;
 	int endY = backgroundTextureRect.top + backgroundTextureRect.height;

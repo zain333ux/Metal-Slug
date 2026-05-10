@@ -16,6 +16,7 @@ LevelManager::~LevelManager()
 
 void LevelManager::loadLevel(Level* newLevel)
 {
+	// old level delete hota he before new one is loaded
 	clear();
 	currentLevel = newLevel;
 
@@ -48,6 +49,7 @@ Level* LevelManager::getCurrentLevel()
 
 void LevelManager::clear()
 {
+	// LevelManager owns currentLevel so delete yahin hota he
 	delete currentLevel;
 	currentLevel = 0;
 }

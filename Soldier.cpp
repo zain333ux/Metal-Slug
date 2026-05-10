@@ -40,7 +40,9 @@ Soldier::Soldier()
 	body.setOutlineThickness(2);
 	body.setPosition(x, y);
 	spriteFacesLeft = false;
+	// Soldier owns this state object for transformation pattern
 	transformation = new NormalTransformationState();
+	// weapon is only referenced here actual owner child class ho sakti he
 	activeWeapon = 0;
 	transformation->enter(*this);
 }
@@ -59,6 +61,7 @@ void Soldier::update(float deltaTime)
 {
 	if (transformation != 0)
 	{
+		// current form ko update ka chance milta he before movement
 		transformation->update(*this, deltaTime);
 	}
 
@@ -71,6 +74,7 @@ void Soldier::update(float deltaTime)
 	float gravity = Constants::GRAVITY;
 	if (wasInWater)
 	{
+		// water mein fall slow rakha he so movement floaty feel kare
 		gravity *= 0.28f;
 		velocityX *= 0.82f;
 	}
@@ -83,6 +87,7 @@ void Soldier::update(float deltaTime)
 	float previousBottom = y + height;
 	Entity::update(deltaTime);
 
+	// previous bottom se landing check stable rehta he when falling fast
 	float landingY = static_cast<float>(Constants::GROUND_Y);
 	if (activeLevel != 0)
 	{
@@ -151,6 +156,7 @@ void Soldier::updateAnimation(float deltaTime)
 		return;
 	}
 
+	// frame timer isliye hai taake animation speed FPS par depend na kare
 	animationTimer += deltaTime;
 	if (animationTimer >= animationFrameDuration)
 	{
@@ -172,6 +178,7 @@ void Soldier::updateVisualPosition()
 
 	if (usingSprite)
 	{
+		// kuch sprite sheets left facing hoti hein isliye flag se flip fix hota he
 		bool drawFlipped = !facingRight;
 		if (spriteFacesLeft)
 		{
@@ -203,6 +210,7 @@ void Soldier::updateState(float deltaTime)
 {
 	stateTimer += deltaTime;
 
+	// movement values se common soldier state decide hoti he
 	int nextState = Constants::SOLDIER_STATE_IDLE;
 
 	if (!grounded && velocityY < 0)
@@ -413,6 +421,7 @@ void Soldier::setTransformation(TransformationState* newTransformation)
 		return;
 	}
 
+	// purani state delete krni hoti he warna memory leak ho sakta he
 	if (transformation != 0)
 	{
 		transformation->exit(*this);

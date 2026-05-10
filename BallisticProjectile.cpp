@@ -44,6 +44,7 @@ void BallisticProjectile::explode()
 {
 	if (exploded)
 	{
+		// duplicate collision calls should not restart explosion
 		return;
 	}
 
@@ -59,6 +60,7 @@ void BallisticProjectile::explode()
 	velocityX = 0;
 	velocityY = 0;
 
+	// hitbox expands around projectile center for blast damage
 	float centerX = getCenterX();
 	float centerY = getCenterY();
 	width = blastRadius * 2;
@@ -73,6 +75,7 @@ void BallisticProjectile::update(float deltaTime)
 {
 	if (exploded)
 	{
+		// explosion stays briefly then removes itself
 		explosionTimer -= deltaTime;
 		if (explosionTimer <= 0)
 		{
@@ -93,6 +96,7 @@ void BallisticProjectile::update(float deltaTime)
 	Entity::update(deltaTime);
 	body.setPosition(x, y);
 
+	// ground hit triggers same explosion path as enemy hit
 	if (y + height >= Constants::GROUND_Y)
 	{
 		y = Constants::GROUND_Y - height;

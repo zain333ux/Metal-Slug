@@ -52,6 +52,7 @@ Enemy::Enemy()
 	animationTimer = 0;
 	animationFrameDuration = 0.15f;
 	deathProcessed = false;
+	// AI state is aggregated only enemy does not own it
 	aiState = 0;
 	width = 52;
 	height = 96;
@@ -70,6 +71,7 @@ Enemy::~Enemy()
 void Enemy::setSpawnPosition(float newX, float newY)
 {
 	setPosition(newX, newY);
+	// patrol range spawn ke around banti he
 	patrolLeft = newX - 180;
 	patrolRight = newX + 180;
 	if (patrolLeft < 0)
@@ -106,6 +108,7 @@ void Enemy::update(float deltaTime)
 
 	if (aiState != 0)
 	{
+		// optional state object default AI ko replace kar sakta he
 		aiState->update(*this, deltaTime);
 	}
 	else
@@ -114,6 +117,7 @@ void Enemy::update(float deltaTime)
 	}
 	if (activeLevel != 0 && grounded && velocityX != 0)
 	{
+		// edge check prevents enemies from walking off platforms
 		float lookAheadX = velocityX > 0 ? x + width + 14 : x - 14;
 		float nextGroundY = activeLevel->getGroundYAt(lookAheadX);
 		float currentBottom = y + height;
@@ -133,6 +137,7 @@ void Enemy::update(float deltaTime)
 	float gravity = Constants::GRAVITY;
 	if (wasInWater)
 	{
+		// pani mein fall thora slow rakha he
 		gravity *= 0.28f;
 		velocityX *= 0.75f;
 	}
@@ -225,6 +230,7 @@ void Enemy::draw(RenderWindow& window)
 
 	if (maxHealth > 0)
 	{
+		// health bar se damage feedback clear hota he
 		float healthRatio = static_cast<float>(health) / static_cast<float>(maxHealth);
 		if (healthRatio < 0)
 		{
@@ -262,6 +268,7 @@ void Enemy::updateAI()
 	float distanceX = target->getCenterX() - getCenterX();
 	float distanceY = target->getCenterY() - getCenterY();
 	float absoluteDistanceX = abs(distanceX);
+	// yahan simple vision check he taake enemy har waqt chase na kare
 	bool canSeePlayer = absoluteDistanceX <= detectionRange && abs(distanceY) < 150;
 
 	if (canSeePlayer)

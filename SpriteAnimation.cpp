@@ -34,6 +34,7 @@ void SpriteAnimation::setFrames(const FrameRect* rects, int count)
 	frameCount = count;
 	if (frameCount > MAX_FRAMES)
 	{
+		// fixed array limit rakha he so no dynamic allocation needed here
 		frameCount = MAX_FRAMES;
 	}
 	for (int i = 0; i < frameCount; i += 1)
@@ -107,6 +108,7 @@ void SpriteAnimation::update(float dt)
 		return;
 	}
 
+	// timer based frames keep animation same on slow and fast machines
 	elapsed = 0;
 
 	if (playBackward)
@@ -181,6 +183,7 @@ void SpriteAnimation::drawAtAnchor(RenderWindow& window, float anchorCentreX, fl
 	float ox = static_cast<float>(fr.offsetX);
 	float oy = static_cast<float>(fr.offsetY);
 
+	// anchor bottom se character ground par stable rehta he
 	float drawY = anchorBottomY - fh * scaleY + oy * scaleY;
 	float drawX = anchorCentreX - fw * scaleX * 0.5f + ox * scaleX;
 
@@ -191,6 +194,7 @@ void SpriteAnimation::drawAtAnchor(RenderWindow& window, float anchorCentreX, fl
 	}
 	else
 	{
+		// flipped sprite ka x adjust krna parta he warna mirror shift hota he
 		sprite.setScale(-scaleX, scaleY);
 		sprite.setPosition(drawX + fw * scaleX, drawY);
 	}
