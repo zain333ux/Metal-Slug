@@ -10,8 +10,6 @@
 #include "Submarine.h"
 #include "Vehicle.h"
 
-#include <iostream>
-
 BossLevelManager::BossLevelManager()
 {
 	sectionWidth = Constants::BOSS_PLAINS_END_X;
@@ -45,7 +43,6 @@ void BossLevelManager::startBossLevel(EntityManager& entities, PlayerSoldier* pl
 	spawnPhaseBoss(entities, player, level);
 	spawnPhaseVehicle(entities, level);
 	lockArena(player);
-	std::cout << "Boss phase changed: " << getPhaseName() << std::endl;
 }
 
 void BossLevelManager::spawnPhaseBoss(EntityManager& entities, PlayerSoldier* player, LevelManager& levelManager)
@@ -58,12 +55,12 @@ void BossLevelManager::spawnPhaseBoss(EntityManager& entities, PlayerSoldier* pl
 	float arenaBottom = level != 0 ? level->getWorldHeight() - 20.0f : Constants::WORLD_HEIGHT - 20.0f;
 	if (currentPhase == BossPhase::GroundIronNokana)
 	{
-		currentBoss = new IronNokanaBoss(1118.0f, 1297.0f, false);
+		float ironGroundY = 1297.0f;
+		currentBoss = new IronNokanaBoss(1118.0f, ironGroundY, false);
 		currentBoss->setTarget(player);
-		currentBoss->setArenaBounds(arenaLeft, arenaRight, 1297.0f, 1297.0f);
+		currentBoss->setArenaBounds(arenaLeft, arenaRight, currentBoss->getY(), currentBoss->getY() + currentBoss->getHeight());
 		currentBoss->setMovementMaxX(level != 0 ? level->getWorldWidth() : Constants::BOSS_WORLD_WIDTH);
 		entities.addEntity(currentBoss);
-		std::cout << "Iron Nokana spawned at world position (1118, 1297), HP 300" << std::endl;
 	}
 	else if (currentPhase == BossPhase::AquaticSeaSatan)
 	{
@@ -72,32 +69,33 @@ void BossLevelManager::spawnPhaseBoss(EntityManager& entities, PlayerSoldier* pl
 		currentBoss->setArenaBounds(arenaLeft, arenaRight, 1006.0f, arenaBottom);
 		currentBoss->setMovementMaxX(level != 0 ? level->getWorldWidth() : Constants::BOSS_WORLD_WIDTH);
 		entities.addEntity(currentBoss);
-		std::cout << "Sea Satan spawned at world position (2829, 1154), HP 300" << std::endl;
 	}
 	else if (currentPhase == BossPhase::AerialHairbuster)
 	{
-		currentBoss = new HairbusterRibertsBoss(4248.0f, 500.0f, false);
+		currentBoss = new HairbusterRibertsBoss(Constants::BOSS_AQUATIC_END_X + 760.0f, 260.0f, false);
 		currentBoss->setTarget(player);
-		currentBoss->setArenaBounds(arenaLeft, arenaRight, 250.0f, 700.0f);
+		currentBoss->setArenaBounds(arenaLeft, arenaRight, 180.0f, 560.0f);
 		currentBoss->setMovementMaxX(level != 0 ? level->getWorldWidth() : Constants::BOSS_WORLD_WIDTH);
 		entities.addEntity(currentBoss);
-		std::cout << "Hairbuster spawned at world position (4248, 500), HP 300" << std::endl;
 	}
 	else if (currentPhase == BossPhase::FinalMerged)
 	{
-		finalBosses[0] = new IronNokanaBoss(5000.0f, 1297.0f, true);
-		finalBosses[1] = new SeaSatanBoss(5700.0f, 1154.0f, true);
-		finalBosses[2] = new HairbusterRibertsBoss(6400.0f, 500.0f, true);
-		finalBosses[0]->setArenaBounds(arenaLeft, arenaRight, 1297.0f, 1297.0f);
-		finalBosses[1]->setArenaBounds(arenaLeft, arenaRight, 1006.0f, arenaBottom);
-		finalBosses[2]->setArenaBounds(arenaLeft, arenaRight, 250.0f, 700.0f);
+		float ironX = 5000.0f;
+		float seaX = 5700.0f;
+		float ironGroundY = level != 0 ? level->getGroundYAt(ironX) : 1297.0f;
+		float seaGroundY = level != 0 ? level->getGroundYAt(seaX) : 1297.0f;
+		finalBosses[0] = new IronNokanaBoss(ironX, ironGroundY, true);
+		finalBosses[1] = new SeaSatanBoss(seaX, seaGroundY, true);
+		finalBosses[1]->setPosition(seaX, seaGroundY - finalBosses[1]->getHeight());
+		finalBosses[2] = new HairbusterRibertsBoss(6400.0f, 260.0f, true);
+		finalBosses[0]->setArenaBounds(arenaLeft, arenaRight, finalBosses[0]->getY(), finalBosses[0]->getY() + finalBosses[0]->getHeight());
+		finalBosses[1]->setArenaBounds(arenaLeft, arenaRight, finalBosses[1]->getY(), finalBosses[1]->getY() + finalBosses[1]->getHeight());
+		finalBosses[2]->setArenaBounds(arenaLeft, arenaRight, 180.0f, 560.0f);
 		for (int i = 0; i < 3; i += 1)
 		{
 			finalBosses[i]->setTarget(player);
 			finalBosses[i]->setMovementMaxX(level != 0 ? level->getWorldWidth() : Constants::BOSS_WORLD_WIDTH);
 			entities.addEntity(finalBosses[i]);
-			std::cout << finalBosses[i]->getBossDisplayName() << " spawned at world position ("
-				<< finalBosses[i]->getX() << ", " << finalBosses[i]->getY() << "), HP 300" << std::endl;
 		}
 	}
 }
@@ -125,7 +123,7 @@ void BossLevelManager::spawnPhaseVehicle(EntityManager& entities, LevelManager& 
 	}
 	else if (currentPhase == BossPhase::AerialHairbuster)
 	{
-		SlugFlyer* flyer = new SlugFlyer(startX + 280.0f, 330.0f);
+		SlugFlyer* flyer = new SlugFlyer(startX + 280.0f, 620.0f);
 		flyer->setMovementMaxX(maxX);
 		flyer->setActiveLevel(level);
 		entities.addEntity(flyer);
@@ -201,7 +199,6 @@ void BossLevelManager::advancePhase(EntityManager& entities, PlayerSoldier* play
 	spawnPhaseBoss(entities, player, level);
 	spawnPhaseVehicle(entities, level);
 	lockArena(player);
-	std::cout << "Boss phase changed: " << getPhaseName() << std::endl;
 }
 
 void BossLevelManager::update(float deltaTime, EntityManager& entities, PlayerSoldier* player, LevelManager& level)
@@ -220,7 +217,6 @@ void BossLevelManager::update(float deltaTime, EntityManager& entities, PlayerSo
 
 		if (currentBoss->getHealth() <= 0)
 		{
-			std::cout << currentBoss->getBossDisplayName() << " defeated." << std::endl;
 			entities.addBonusScore(500);
 			unlockArena(player);
 			cleanupPhase(entities);
@@ -239,7 +235,6 @@ void BossLevelManager::update(float deltaTime, EntityManager& entities, PlayerSo
 		{
 			if (finalBosses[i]->getHealth() <= 0)
 			{
-				std::cout << finalBosses[i]->getBossDisplayName() << " defeated." << std::endl;
 				entities.addBonusScore(500);
 				finalBosses[i]->deactivate();
 				finalBosses[i] = 0;
@@ -261,7 +256,6 @@ void BossLevelManager::update(float deltaTime, EntityManager& entities, PlayerSo
 		}
 		unlockArena(player);
 		currentPhase = BossPhase::Completed;
-		std::cout << "Boss phase changed: " << getPhaseName() << std::endl;
 	}
 }
 

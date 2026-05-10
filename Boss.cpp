@@ -13,7 +13,6 @@
 
 #include <cmath>
 #include <cstdlib>
-#include <iostream>
 
 namespace
 {
@@ -80,7 +79,11 @@ Boss::Boss(BossType newBossType, BiomeType newBiomeType, bool newFinalPhase)
 	minionSpawnTimer = 4.0f;
 	waitingForMinionBatchClear = false;
 	pendingProjectileCount = 0;
-	maxHealth = 300;
+	maxHealth = 150;
+	if (finalPhase)
+	{
+		maxHealth /= 2;
+	}
 	health = maxHealth;
 	scoreValue = 500;
 	contactDamage = 24;
@@ -107,7 +110,6 @@ bool Boss::loadStaticBossTexture(const char* fileName, float scale)
 	if (!texture.loadFromFile(fileName))
 	{
 		usingSprite = false;
-		std::cout << "Boss texture failed to load: " << fileName << std::endl;
 		return false;
 	}
 
@@ -225,8 +227,6 @@ void Boss::takeDamage(int amount)
 	{
 		health = 0;
 	}
-	std::cout << getBossDisplayName() << " took " << amount << " damage, HP now "
-		<< health << "/" << maxHealth << std::endl;
 }
 
 bool Boss::applyProjectileHit(Projectile& projectile)
@@ -246,7 +246,6 @@ bool Boss::applyProjectileHit(Projectile& projectile)
 		return false;
 	}
 
-	std::cout << "Bullet hit " << getBossDisplayName() << " once, bullet destroyed." << std::endl;
 	takeDamage(bossDamage);
 	return false;
 }
@@ -310,9 +309,8 @@ void Boss::setArenaBounds(float left, float right, float top, float bottom)
 IronNokanaBoss::IronNokanaBoss(float startX, float worldY, bool finalPhaseBoss)
 	: Boss(BossType::IronNokana, finalPhaseBoss ? BiomeType::Merged : BiomeType::Plains, finalPhaseBoss)
 {
-	float ironScale = 1.20f;     // CHANGE THIS to make boss bigger/smaller
+	float ironScale = 1.55f;
 	float ironXOffset = 0.0f;    // negative = left, positive = right
-	float ironYOffset = -200.0f;  // negative = up, positive = down
 
 	width = 180.0f * ironScale;
 	height = 121.0f * ironScale;
@@ -326,7 +324,7 @@ IronNokanaBoss::IronNokanaBoss(float startX, float worldY, bool finalPhaseBoss)
 
 	loadStaticBossTexture("Sprites/Clean/Iron_Nokana.png", ironScale);
 
-	setSpawnPosition(startX + ironXOffset, worldY + ironYOffset);
+	setSpawnPosition(startX + ironXOffset, worldY - height);
 
 	updateBossVisual();
 }
@@ -362,6 +360,7 @@ void IronNokanaBoss::update(float deltaTime, PlayerSoldier& player, EntityManage
 	{
 		spawnMinions(entities);
 	}
+
 }
 
 void IronNokanaBoss::attack(PlayerSoldier& player, EntityManager& entities)
@@ -446,7 +445,7 @@ SeaSatanBoss::SeaSatanBoss(float startX, float startY, bool finalPhaseBoss)
 	body.setFillColor(fallbackColor);
 	loadStaticBossTexture("Sprites/Clean/Sea_Satan.png", 1.0f);
 	setSpawnPosition(startX, startY);
-	velocityX = -moveSpeed;
+	velocityX = finalPhase ? 0.0f : -moveSpeed;
 	updateBossVisual();
 }
 
@@ -455,7 +454,12 @@ void SeaSatanBoss::update(float deltaTime, PlayerSoldier& player, EntityManager&
 	(void)level;
 	facingRight = player.getCenterX() > getCenterX();
 
-	if (x <= patrolLeftBound)
+	if (finalPhase)
+	{
+		velocityX = 0.0f;
+		velocityY = 0.0f;
+	}
+	else if (x <= patrolLeftBound)
 	{
 		velocityX = moveSpeed;
 	}
@@ -482,6 +486,7 @@ void SeaSatanBoss::update(float deltaTime, PlayerSoldier& player, EntityManager&
 	{
 		spawnMinions(entities);
 	}
+
 }
 
 void SeaSatanBoss::attack(PlayerSoldier& player, EntityManager& entities)
@@ -594,6 +599,7 @@ void HairbusterRibertsBoss::update(float deltaTime, PlayerSoldier& player, Entit
 	{
 		spawnMinions(entities);
 	}
+
 }
 
 void HairbusterRibertsBoss::attack(PlayerSoldier& player, EntityManager& entities)
