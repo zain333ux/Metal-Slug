@@ -16,6 +16,7 @@ private:
 	Text title;
 	Text survivalOption;
 	Text campaignOption;
+	Text bossLevelOption;
 	Text instructions;
 	Text message;
 

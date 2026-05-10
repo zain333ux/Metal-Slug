@@ -38,5 +38,10 @@ public:
 	static constexpr float WORLD_WIDTH_LEVEL_3 = 5200.0f;
 	static constexpr float WORLD_HEIGHT = 1800.0f;
 	static constexpr float FULL_BIOME_WORLD_WIDTH = WORLD_WIDTH_LEVEL_1 + WORLD_WIDTH_LEVEL_2 + WORLD_WIDTH_LEVEL_3;
-	static constexpr float BOSS_WORLD_WIDTH = 2600.0f;
+	static constexpr float BOSS_PLAINS_END_X = 1570.0f;
+	static constexpr float BOSS_AQUATIC_END_X = 3195.0f;
+	static constexpr float BOSS_AERIAL_END_X = 4760.0f;
+	static constexpr float BOSS_FINAL_END_X = 7000.0f;
+	static constexpr float BOSS_SECTION_WIDTH = BOSS_PLAINS_END_X;
+	static constexpr float BOSS_WORLD_WIDTH = BOSS_FINAL_END_X;
 };

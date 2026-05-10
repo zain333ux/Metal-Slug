@@ -48,7 +48,7 @@ void Level::load()
 
 bool Level::loadBackground()
 {
-	if (!campaignGenerated && levelNumber >= 1 && levelNumber <= 3 &&
+	if (!campaignGenerated && levelNumber >= 1 && levelNumber <= 4 &&
 		loadFullBiomeBackground("Sprites/Clean/3biomes.png", "Sprites/Clean/CollisionFinal.png"))
 	{
 		return true;
@@ -134,7 +134,12 @@ void Level::setupFullBiomeRect(int contentTop, int contentHeight)
 
 	float sectionStart = 0.0f;
 	float sectionWidth = Constants::WORLD_WIDTH_LEVEL_1;
-	if (levelNumber == 2)
+	if (levelNumber == 4)
+	{
+		sectionStart = 0.0f;
+		sectionWidth = Constants::FULL_BIOME_WORLD_WIDTH;
+	}
+	else if (levelNumber == 2)
 	{
 		sectionStart = Constants::WORLD_WIDTH_LEVEL_1;
 		sectionWidth = Constants::WORLD_WIDTH_LEVEL_2;

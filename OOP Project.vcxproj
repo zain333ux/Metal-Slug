@@ -85,6 +85,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Collectible.cpp" />
+    <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="BossLevelManager.cpp" />
     <ClCompile Include="DamageableEntity.cpp" />
     <ClCompile Include="DeveloperMode.cpp" />
     <ClCompile Include="BallisticProjectile.cpp" />
@@ -131,6 +133,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collectible.h" />
+    <ClInclude Include="Boss.h" />
+    <ClInclude Include="BossLevelManager.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="DamageableEntity.h" />
     <ClInclude Include="DeveloperMode.h" />

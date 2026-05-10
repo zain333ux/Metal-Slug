@@ -38,7 +38,9 @@ public:
 	void updateAll(float deltaTime);
 	void drawAll(sf::RenderWindow& window);
 	int collectPendingScore();
+	void addBonusScore(int score);
 	int countActiveEnemies() const;
+	int countActiveNonBossEnemies() const;
 	PlayerSoldier* getPlayer() const;
 	Vehicle* getVehicle() const;
 	Vehicle* getClosestVehicle(float x, float y) const;
@@ -46,6 +48,7 @@ public:
 	int getDestroyedBradleyCount() const;
 	int getDestroyedEnemySubCount() const;
 	void removeEnemiesBehind(float minimumX);
+	void clearBossPhaseTransientEntities();
 	void removeInactive();
 	void clear();
 };

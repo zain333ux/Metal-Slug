@@ -61,14 +61,14 @@ namespace
 	}
 }
 
-PlayState::PlayState(PlayMode newMode, int newCampaignProfileOption)
+PlayState::PlayState(PlayMode newMode, int newCampaignProfileOption, int startLevel)
 {
 	initialized = false;
 	levelComplete = false;
 	waitingForContinue = false;
 	gameOver = false;
 	mode = newMode;
-	currentLevel = 1;
+	currentLevel = startLevel;
 	campaignProfileOption = newCampaignProfileOption;
 	campaignSpawnX = 1200.0f;
 	campaignSpawnTimer = 0.0f;
@@ -108,6 +108,7 @@ void PlayState::loadCurrentLevel(Game& game)
 	player = 0;
 	vehicle = 0;
 	previousVehicleKey = false;
+	bossLevelManager.reset();
 
 	player = new PlayerSoldier();
 	game.getEntityManager().addEntity(player);
@@ -122,7 +123,6 @@ void PlayState::loadCurrentLevel(Game& game)
 	else if (currentLevel == 4)
 	{
 		game.getLevelManager().loadLevel(new Level(4, Constants::BOSS_WORLD_WIDTH, false));
-		spawnBossWave(game);
 	}
 	else
 	{
@@ -148,6 +148,10 @@ void PlayState::loadCurrentLevel(Game& game)
 	}
 
 	spawnVehicle(game);
+	if (mode != PLAY_MODE_CAMPAIGN && currentLevel == 4)
+	{
+		bossLevelManager.startBossLevel(game.getEntityManager(), player, game.getLevelManager());
+	}
 	campaignVehicleSpawnTimer = 2.5f;
 	levelComplete = false;
 	waitingForContinue = false;
@@ -327,6 +331,11 @@ void PlayState::updateCampaignSpawning(Game& game, float deltaTime)
 
 void PlayState::spawnVehicle(Game& game)
 {
+	if (mode != PLAY_MODE_CAMPAIGN && currentLevel == 4)
+	{
+		return;
+	}
+
 	Level* level = game.getLevelManager().getCurrentLevel();
 	bool aquaticVehicleLevel = currentLevel == 3 || (mode == PLAY_MODE_CAMPAIGN && campaignProfileOption == 2);
 	float vehicleX = 330.0f;
@@ -478,6 +487,10 @@ void PlayState::update(Game& game, float deltaTime)
 			player->handleWeaponInput(game.getEntityManager(), deltaTime);
 		}
 	}
+	if (mode != PLAY_MODE_CAMPAIGN && currentLevel == 4)
+	{
+		bossLevelManager.update(deltaTime, game.getEntityManager(), player, game.getLevelManager());
+	}
 	game.getEntityManager().updateAll(deltaTime);
 	vehicle = game.getEntityManager().getVehicle();
 	syncPlayerWithVehicle();
@@ -516,7 +529,11 @@ void PlayState::update(Game& game, float deltaTime)
 		}
 	}
 
-	if (!waitingForContinue && mode != PLAY_MODE_CAMPAIGN)
+	if (!waitingForContinue && mode != PLAY_MODE_CAMPAIGN && currentLevel == 4 && bossLevelManager.isCompleted())
+	{
+		completeLevel(game);
+	}
+	else if (!waitingForContinue && mode != PLAY_MODE_CAMPAIGN && currentLevel != 4)
 	{
 		Level* level = game.getLevelManager().getCurrentLevel();
 		if (level != 0 && player != 0 &&
@@ -628,6 +645,10 @@ void PlayState::updateHud(Game& game)
 		{
 			text += "  Clear Enemies";
 		}
+	}
+	if (mode != PLAY_MODE_CAMPAIGN && currentLevel == 4)
+	{
+		bossLevelManager.appendHudText(text);
 	}
 	if (DeveloperMode::isEnabled())
 	{

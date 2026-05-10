@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameState.h"
+#include "BossLevelManager.h"
 #include "EnemyFactory.h"
 #include "ScoreManager.h"
 
@@ -28,6 +29,7 @@ private:
 	float campaignVehicleSpawnTimer;
 	int campaignKills;
 	ScoreManager scoreManager;
+	BossLevelManager bossLevelManager;
 	PlayerSoldier* player;
 	Vehicle* vehicle;
 	bool previousVehicleKey;
@@ -56,7 +58,7 @@ private:
 	void updateWindowTitle(Game& game);
 
 public:
-	PlayState(PlayMode newMode = PLAY_MODE_SURVIVAL, int newCampaignProfileOption = 0);
+	PlayState(PlayMode newMode = PLAY_MODE_SURVIVAL, int newCampaignProfileOption = 0, int startLevel = 1);
 
 	void handleInput(Game& game);
 	void update(Game& game, float deltaTime);

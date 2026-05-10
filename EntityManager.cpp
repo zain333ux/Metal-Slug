@@ -10,6 +10,7 @@
 #include "Soldier.h"
 #include "Vehicle.h"
 #include "EnemyTypes.h"
+#include "Boss.h"
 
 #include <cmath>
 #include <cstdlib>
@@ -435,6 +436,14 @@ int EntityManager::collectPendingScore()
 	return score;
 }
 
+void EntityManager::addBonusScore(int score)
+{
+	if (score > 0)
+	{
+		pendingScore += score;
+	}
+}
+
 int EntityManager::countActiveEnemies() const
 {
 	int count = 0;
@@ -442,6 +451,22 @@ int EntityManager::countActiveEnemies() const
 	{
 		Enemy* enemy = dynamic_cast<Enemy*>(entities.get(i));
 		if (enemy != 0 && enemy->isActive())
+		{
+			count += 1;
+		}
+	}
+
+	return count;
+}
+
+int EntityManager::countActiveNonBossEnemies() const
+{
+	int count = 0;
+	for (int i = 0; i < entities.getSize(); i += 1)
+	{
+		Enemy* enemy = dynamic_cast<Enemy*>(entities.get(i));
+		Boss* boss = dynamic_cast<Boss*>(entities.get(i));
+		if (enemy != 0 && boss == 0 && enemy->isActive())
 		{
 			count += 1;
 		}
@@ -525,6 +550,21 @@ void EntityManager::removeEnemiesBehind(float minimumX)
 		if (enemy != 0 && enemy->getX() < minimumX)
 		{
 			enemy->deactivate();
+		}
+	}
+}
+
+void EntityManager::clearBossPhaseTransientEntities()
+{
+	for (int i = 0; i < entities.getSize(); i += 1)
+	{
+		Enemy* enemy = dynamic_cast<Enemy*>(entities.get(i));
+		Projectile* projectile = dynamic_cast<Projectile*>(entities.get(i));
+		if (enemy != 0 || projectile != 0)
+		{
+			delete entities.get(i);
+			entities.removeAt(i);
+			i -= 1;
 		}
 	}
 }
