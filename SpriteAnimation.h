@@ -57,7 +57,4 @@ public:
 	bool isFinished() const;
 	void setFinished(bool value);
 	int getFrameCount() const;
-	int getCurrentFrameIndex() const;
-	int getCurrentFrameWidth() const;
-	int getCurrentFrameHeight() const;
 };

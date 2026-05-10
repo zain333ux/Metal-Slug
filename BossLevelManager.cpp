@@ -331,11 +331,6 @@ bool BossLevelManager::isCompleted() const
 	return currentPhase == BossPhase::Completed;
 }
 
-BossPhase BossLevelManager::getCurrentPhase() const
-{
-	return currentPhase;
-}
-
 void BossLevelManager::appendHudText(std::string& text) const
 {
 	if (!started)

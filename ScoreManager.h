@@ -11,7 +11,6 @@ public:
 	void reset();
 	void add(int amount);
 	void addSurvivalClear();
-	void addCampaignClear();
 	int getScore() const;
 
 	static int meleeBonus();

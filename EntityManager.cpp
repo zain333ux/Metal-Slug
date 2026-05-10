@@ -43,39 +43,14 @@ void EntityManager::addEntity(Entity* entity)
 {
 	if (entity != 0)
 	{
-		Soldier* soldier = dynamic_cast<Soldier*>(entity);
-		if (soldier != 0)
-		{
-			soldier->setActiveLevel(activeLevel);
-		}
-		Enemy* enemy = dynamic_cast<Enemy*>(entity);
-		if (enemy != 0)
-		{
-			enemy->setActiveLevel(activeLevel);
-		}
-		Vehicle* vehicle = dynamic_cast<Vehicle*>(entity);
-		if (vehicle != 0)
-		{
-			vehicle->setActiveLevel(activeLevel);
-		}
+		assignActiveLevel(entity);
 		Projectile* projectile = dynamic_cast<Projectile*>(entity);
 		if (projectile != 0)
 		{
-			projectile->setActiveLevel(activeLevel);
 			if (audioManager != 0 && !projectile->isMelee() && !projectile->isExplosive())
 			{
 				audioManager->playSound(SFX_BULLET_FIRE);
 			}
-		}
-		Collectible* collectible = dynamic_cast<Collectible*>(entity);
-		if (collectible != 0)
-		{
-			collectible->setActiveLevel(activeLevel);
-		}
-		Prisoner* prisoner = dynamic_cast<Prisoner*>(entity);
-		if (prisoner != 0)
-		{
-			prisoner->setActiveLevel(activeLevel);
 		}
 		entities.pushBack(entity);
 	}
@@ -86,36 +61,51 @@ void EntityManager::setActiveLevel(Level* level)
 	activeLevel = level;
 	for (int i = 0; i < entities.getSize(); i += 1)
 	{
-		Soldier* soldier = dynamic_cast<Soldier*>(entities.get(i));
-		if (soldier != 0)
-		{
-			soldier->setActiveLevel(activeLevel);
-		}
-		Enemy* enemy = dynamic_cast<Enemy*>(entities.get(i));
-		if (enemy != 0)
-		{
-			enemy->setActiveLevel(activeLevel);
-		}
-		Vehicle* vehicle = dynamic_cast<Vehicle*>(entities.get(i));
-		if (vehicle != 0)
-		{
-			vehicle->setActiveLevel(activeLevel);
-		}
-		Projectile* projectile = dynamic_cast<Projectile*>(entities.get(i));
-		if (projectile != 0)
-		{
-			projectile->setActiveLevel(activeLevel);
-		}
-		Collectible* collectible = dynamic_cast<Collectible*>(entities.get(i));
-		if (collectible != 0)
-		{
-			collectible->setActiveLevel(activeLevel);
-		}
-		Prisoner* prisoner = dynamic_cast<Prisoner*>(entities.get(i));
-		if (prisoner != 0)
-		{
-			prisoner->setActiveLevel(activeLevel);
-		}
+		assignActiveLevel(entities.get(i));
+	}
+}
+
+void EntityManager::assignActiveLevel(Entity* entity)
+{
+	if (entity == 0)
+	{
+		return;
+	}
+
+	Soldier* soldier = dynamic_cast<Soldier*>(entity);
+	if (soldier != 0)
+	{
+		soldier->setActiveLevel(activeLevel);
+	}
+
+	Enemy* enemy = dynamic_cast<Enemy*>(entity);
+	if (enemy != 0)
+	{
+		enemy->setActiveLevel(activeLevel);
+	}
+
+	Vehicle* vehicle = dynamic_cast<Vehicle*>(entity);
+	if (vehicle != 0)
+	{
+		vehicle->setActiveLevel(activeLevel);
+	}
+
+	Projectile* projectile = dynamic_cast<Projectile*>(entity);
+	if (projectile != 0)
+	{
+		projectile->setActiveLevel(activeLevel);
+	}
+
+	Collectible* collectible = dynamic_cast<Collectible*>(entity);
+	if (collectible != 0)
+	{
+		collectible->setActiveLevel(activeLevel);
+	}
+
+	Prisoner* prisoner = dynamic_cast<Prisoner*>(entity);
+	if (prisoner != 0)
+	{
+		prisoner->setActiveLevel(activeLevel);
 	}
 }
 

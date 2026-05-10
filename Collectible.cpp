@@ -204,11 +204,6 @@ void Collectible::setActiveLevel(Level* level)
 	activeLevel = level;
 }
 
-CollectibleKind Collectible::getKind() const
-{
-	return kind;
-}
-
 bool Collectible::loadMaskedTexture(const char* fileName)
 {
 	sf::Image image;

@@ -31,6 +31,7 @@ private:
 	void checkPlayerCollectibleCollisions();
 	void handleEnemyKilled(Enemy* enemy);
 	void spawnDropForEnemy(const Enemy& enemy);
+	void assignActiveLevel(Entity* entity);
 
 public:
 	EntityManager();

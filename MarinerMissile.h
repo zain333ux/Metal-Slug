@@ -6,7 +6,7 @@ enum MarinerMissileType
 {
     MARINER_MISSILE_HORIZONTAL,
     MARINER_MISSILE_VERTICAL,
-    MARINER_MISSILE_SURFACE // Reverse projectile motion
+    MARINER_MISSILE_SURFACE
 };
 
 class MarinerMissile : public Projectile

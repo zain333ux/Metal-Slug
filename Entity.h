@@ -25,11 +25,9 @@ public:
 	void setPosition(float newX, float newY);
 	void setSize(float newWidth, float newHeight);
 	void setVelocity(float newVelocityX, float newVelocityY);
-	void setSprite(const sf::Sprite& newSprite);
 	void deactivate();
 
 	bool isActive() const;
-	bool isVisible() const;
 	float getX() const;
 	float getY() const;
 	float getWidth() const;

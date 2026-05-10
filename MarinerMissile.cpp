@@ -1,11 +1,10 @@
 #include "MarinerMissile.h"
 #include "Constants.h"
-#include <cmath>
 
 MarinerMissile::MarinerMissile(float startX, float startY, bool facingRight, MarinerMissileType type)
 {
     missileType = type;
-    damage = 30; // Mariner missiles should be powerful
+    damage = 30;
     lifeTime = 3.0f;
     width = 32.0f;
     height = 16.0f;
@@ -29,7 +28,6 @@ MarinerMissile::MarinerMissile(float startX, float startY, bool facingRight, Mar
         height = 32.0f;
         break;
     case MARINER_MISSILE_SURFACE:
-        // Initial velocity slightly horizontal and downwards, then it floats up
         if (facingRight)
             setVelocity(200.0f, 100.0f);
         else
@@ -38,7 +36,7 @@ MarinerMissile::MarinerMissile(float startX, float startY, bool facingRight, Mar
     }
 
     body.setSize(sf::Vector2f(width, height));
-    body.setFillColor(sf::Color(255, 150, 50)); // Orange-ish for missiles
+    body.setFillColor(sf::Color(255, 150, 50));
     body.setOutlineColor(sf::Color::Black);
     body.setOutlineThickness(1.0f);
 }
@@ -47,10 +45,7 @@ void MarinerMissile::update(float deltaTime)
 {
     if (missileType == MARINER_MISSILE_SURFACE)
     {
-        // "Reverse projectile motion" - buoyancy pulls it up
         velocityY -= Constants::GRAVITY * 1.2f * deltaTime;
-        
-        // Cap upward speed
         if (velocityY < -600.0f)
             velocityY = -600.0f;
     }

@@ -711,21 +711,6 @@ void Level::drawWaterBlocks(sf::RenderWindow& window)
 {
 	(void)window;
 	return;
-
-	if (waterBlocks.getSize() == 0)
-	{
-		return;
-	}
-
-	sf::RectangleShape waterBlock;
-	waterBlock.setFillColor(sf::Color(30, 120, 220, 24));
-	for (int i = 0; i < waterBlocks.getSize(); i += 1)
-	{
-		const sf::FloatRect& block = waterBlocks.get(i);
-		waterBlock.setPosition(block.left, block.top);
-		waterBlock.setSize(sf::Vector2f(block.width, block.height));
-		window.draw(waterBlock);
-	}
 }
 
 void Level::drawTileRow(sf::RenderWindow& window, sf::Texture& texture, int y)
@@ -863,11 +848,6 @@ void Level::extendIfNeeded(float playerX)
 	}
 }
 
-bool Level::isLoaded() const
-{
-	return loaded;
-}
-
 float Level::getWorldWidth() const
 {
 	return worldWidth;
@@ -881,11 +861,6 @@ float Level::getWorldHeight() const
 float Level::getRightBoundary() const
 {
 	return worldWidth - 120.0f;
-}
-
-int Level::getLevelNumber() const
-{
-	return levelNumber;
 }
 
 float Level::getLandingY(float left, float right, float previousBottom, float currentBottom) const

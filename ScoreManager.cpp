@@ -23,11 +23,6 @@ void ScoreManager::addSurvivalClear()
 	score += 1000;
 }
 
-void ScoreManager::addCampaignClear()
-{
-	score += 3000;
-}
-
 int ScoreManager::getScore() const
 {
 	return score;

@@ -195,19 +195,6 @@ void PlayState::spawnEnemy(Game& game, EnemyKind kind, float x, float y)
 	game.getEntityManager().addEntity(enemy);
 }
 
-void PlayState::spawnEnemyAt(Game& game, EnemyKind kind, float x, float y)
-{
-	Enemy* enemy = EnemyFactory::createEnemy(kind, x, y, player);
-	bool bossEnemy = kind == ENEMY_BOSS_1 || kind == ENEMY_BOSS_2 || kind == ENEMY_BOSS_3 || kind == ENEMY_ULTIMATE_BOSS;
-	if (!bossEnemy && !enemy->hasSpriteVisual())
-	{
-		delete enemy;
-		return;
-	}
-
-	game.getEntityManager().addEntity(enemy);
-}
-
 void PlayState::spawnSurvivalPrisoner(Game& game)
 {
 	if (mode != PLAY_MODE_SURVIVAL || currentLevel < 1 || currentLevel > 3)
@@ -282,14 +269,6 @@ void PlayState::spawnSurvivalWave(Game& game)
 
 	Level* level = game.getLevelManager().getCurrentLevel();
 	EnemyVehicleFactory::spawnEnemyVehiclesForSurvivalLevel(currentLevel, level, game.getEntityManager(), player);
-}
-
-void PlayState::spawnBossWave(Game& game)
-{
-	spawnEnemy(game, ENEMY_BOSS_1, 900.0f, 430.0f);
-	spawnEnemy(game, ENEMY_BOSS_2, 1450.0f, 360.0f);
-	spawnEnemy(game, ENEMY_BOSS_3, 1900.0f, 430.0f);
-	spawnEnemy(game, ENEMY_ULTIMATE_BOSS, 2300.0f, 430.0f);
 }
 
 void PlayState::spawnCampaignWave(Game& game)

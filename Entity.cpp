@@ -50,11 +50,6 @@ void Entity::setVelocity(float newVelocityX, float newVelocityY)
 	velocityY = newVelocityY;
 }
 
-void Entity::setSprite(const sf::Sprite& newSprite)
-{
-	sprite = newSprite;
-}
-
 void Entity::deactivate()
 {
 	active = false;
@@ -63,11 +58,6 @@ void Entity::deactivate()
 bool Entity::isActive() const
 {
 	return active;
-}
-
-bool Entity::isVisible() const
-{
-	return visible;
 }
 
 float Entity::getX() const

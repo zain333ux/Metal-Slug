@@ -209,27 +209,3 @@ int SpriteAnimation::getFrameCount() const
 	return frameCount;
 }
 
-int SpriteAnimation::getCurrentFrameIndex() const
-{
-	return currentFrameIndex;
-}
-
-int SpriteAnimation::getCurrentFrameWidth() const
-{
-	if (frameCount <= 0)
-	{
-		return 0;
-	}
-
-	return frames[currentFrameIndex].w;
-}
-
-int SpriteAnimation::getCurrentFrameHeight() const
-{
-	if (frameCount <= 0)
-	{
-		return 0;
-	}
-
-	return frames[currentFrameIndex].h;
-}

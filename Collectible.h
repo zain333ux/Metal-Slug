@@ -37,7 +37,6 @@ public:
 	void apply(PlayerSoldier& player);
 	void draw(sf::RenderWindow& window);
 	void setActiveLevel(Level* level);
-	CollectibleKind getKind() const;
 
 private:
 	bool loadMaskedTexture(const char* fileName);

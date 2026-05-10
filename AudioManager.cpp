@@ -120,24 +120,6 @@ void AudioManager::playSound(SoundEffectType type)
 	sfxSounds[index].play();
 }
 
-void AudioManager::setMusicVolume(float volume)
-{
-	musicVolume = volume;
-	backgroundMusic.setVolume(musicVolume);
-}
-
-void AudioManager::setSfxVolume(float volume)
-{
-	sfxVolume = volume;
-	for (int i = 0; i < 5; i += 1)
-	{
-		if (sfxLoaded[i])
-		{
-			sfxSounds[i].setVolume(sfxVolume);
-		}
-	}
-}
-
 void AudioManager::playGlobalSound(SoundEffectType type)
 {
 	if (activeManager != 0)

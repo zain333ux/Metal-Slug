@@ -333,12 +333,6 @@ void Soldier::setSpriteScale(float scale)
 	updateVisualPosition();
 }
 
-void Soldier::setSpriteFacesLeft(bool facesLeft)
-{
-	spriteFacesLeft = facesLeft;
-	updateVisualPosition();
-}
-
 void Soldier::playAnimation(int row, int frameCount, float frameDuration)
 {
 	playAnimation(row, 0, frameCount, frameDuration);
@@ -389,11 +383,6 @@ void Soldier::setActiveLevel(Level* level)
 	activeLevel = level;
 }
 
-int Soldier::getCurrentState() const
-{
-	return currentState;
-}
-
 bool Soldier::isFacingRight() const
 {
 	return facingRight;
@@ -404,7 +393,3 @@ bool Soldier::isGrounded() const
 	return grounded;
 }
 
-bool Soldier::isInWater() const
-{
-	return inWater;
-}
